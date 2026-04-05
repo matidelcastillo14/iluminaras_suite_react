@@ -1,0 +1,57 @@
+{% extends "flex/base.html" %}
+
+{% block content %}
+  <div class="fx-card">
+    <div class="fx-big">Pedido {{ shipment.id_web or shipment.order_name }}</div>
+    <div class="fx-row">
+      <span class="fx-muted">Tracking</span>
+      <code>{{ shipment.tracking_code }}</code>
+    </div>
+    <div class="fx-row">
+      <span class="fx-muted">Estado</span>
+      <b>{{ shipment.status }}</b>
+    </div>
+    <div class="fx-row">
+      <span class="fx-muted">Cliente</span>
+      <span>{{ snapshot.recipient_name or "(sin nombre)" }}</span>
+    </div>
+    <div class="fx-row">
+      <span class="fx-muted">Teléfono</span>
+      {% if snapshot.phone %}
+        <span>{{ snapshot.phone }}</span>
+      {% else %}
+        <span class="fx-muted">(sin teléfono)</span>
+      {% endif %}
+    </div>
+    <div class="fx-row">
+      <span class="fx-muted">Dirección</span>
+      <span>{{ address_text }}</span>
+    </div>
+
+    <div class="fx-row" style="gap:8px; flex-wrap:wrap; margin-top:10px;">
+      {% if snapshot.phone %}
+        <a class="fx-btn ghost" href="tel:{{ snapshot.phone }}">Llamar</a>
+      {% endif %}
+      <a class="fx-btn ghost" href="{{ nav.google }}" target="_blank" rel="noopener">Google Maps</a>
+      <a class="fx-btn ghost" href="{{ nav.waze }}" target="_blank" rel="noopener">Waze</a>
+    </div>
+  </div>
+
+  <div class="fx-card">
+    <div class="fx-big" style="font-size:16px;">Últimos eventos</div>
+    {% if events %}
+      <ul style="margin:10px 0 0; padding-left:18px;">
+        {% for ev in events %}
+          <li>
+            <b>{{ ev.event_type }}</b>
+            <span class="fx-muted">— {{ ev.created_at }}</span>
+            {% if ev.note %}<div class="fx-muted">{{ ev.note }}</div>{% endif %}
+            {% if ev.payload and (ev.payload.receiver_relation or ev.payload.receiver_name or ev.payload.receiver_id) %}<div class="fx-muted"><b>Receptor:</b> {% if ev.payload.receiver_relation %}{{ ev.payload.receiver_relation }} · {% endif %}{% if ev.payload.receiver_name %}{{ ev.payload.receiver_name }}{% endif %}{% if ev.payload.receiver_id %} (CI {{ ev.payload.receiver_id }}){% endif %}</div>{% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <div class="fx-muted">Sin eventos.</div>
+    {% endif %}
+  </div>
+{% endblock %}

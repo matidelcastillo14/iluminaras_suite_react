@@ -1,0 +1,32 @@
+{% extends 'public_tracking/base.html' %}
+
+{% block head %}
+  {% if recaptcha_render and recaptcha_sitekey %}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  <h1 class="pt-title">¡Rastreá tu pedido!</h1>
+
+  <section class="pt-card">
+    <p class="pt-help">Ingresá el número de rastreo para saber el estado de tu pedido.</p>
+
+    {% if error %}
+      <div class="pt-alert" role="alert">{{ error }}</div>
+    {% endif %}
+
+    <form method="post" action="{{ url_for('public_tracking.search_post') }}" class="pt-form">
+      <label class="pt-label" for="code">Número de rastreo</label>
+      <input class="pt-input" id="code" name="code" type="text" placeholder="Número de pedido" autocomplete="off" required />
+
+      {% if recaptcha_render and recaptcha_sitekey %}
+        <div class="pt-turnstile">
+          <div class="g-recaptcha" data-sitekey="{{ recaptcha_sitekey }}"></div>
+        </div>
+      {% endif %}
+
+      <button class="pt-btn" type="submit">Rastrear</button>
+    </form>
+  </section>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">Mis pedidos escaneados</h2>
+
+  <form method="get" style="margin-bottom:12px;">
+    <label>Día (YYYY-MM-DD)</label>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:end;">
+      <input name="day" value="{{ day }}" style="max-width:220px;" />
+      <button class="btn primary" type="submit">Filtrar</button>
+      <a class="btn" href="{{ url_for('rastreo.cadeteria') }}">Volver a escanear</a>
+    </div>
+  </form>
+
+  <table>
+    <thead><tr><th style="width:180px;">Escaneado</th><th style="width:180px;">Código</th><th>Pedido</th><th style="width:160px;">Estado</th><th></th></tr></thead>
+    <tbody>
+      {% for r in rows %}
+        <tr>
+          <td>{{ format_dt(r.scanned_at) }}</td>
+          <td><code>{{ r.tracking_code }}</code></td>
+          <td>{{ r.order_name }}</td>
+          <td>{{ label_status(r.status) }} <span style="color:#888;">(<code>{{ r.status }}</code>)</span></td>
+          <td><a class="btn" href="{{ url_for('rastreo.cadeteria_detail', tracking_code=r.tracking_code) }}">Abrir</a></td>
+        </tr>
+      {% endfor %}
+      {% if not rows %}
+        <tr><td colspan="5" style="color:#666;">Sin escaneos en ese día.</td></tr>
+      {% endif %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

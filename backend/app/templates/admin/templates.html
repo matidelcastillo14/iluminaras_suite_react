@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">Plantillas</h2>
+  <table>
+    <thead><tr><th>Tipo</th><th>Nombre</th><th>Motor</th><th>Activa</th><th></th></tr></thead>
+    <tbody>
+      {% for t in templates %}
+      <tr>
+        <td><code>{{ t.template_type }}</code></td>
+        <td>{{ t.name }}</td>
+        <td>{{ t.engine }}</td>
+        <td>{{ "Sí" if t.is_active else "No" }}</td>
+        <td style="white-space:nowrap;">
+          {% if t.engine == 'layout_json' %}
+            <a class="btn" href="{{ url_for('admin.template_edit', tpl_id=t.id) }}">Editar</a>
+            <form method="post" action="{{ url_for('admin.template_preview', tpl_id=t.id) }}" style="display:inline;margin-left:6px;">
+              <button class="btn" type="submit">Preview</button>
+            </form>
+          {% endif %}
+          <form method="post" action="{{ url_for('admin.template_activate', tpl_id=t.id) }}" style="display:inline;margin-left:6px;">
+            <button class="btn primary" type="submit">Activar</button>
+          </form>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <div style="margin-top:10px;font-size:13px;color:#444;">
+    Default: las plantillas Legacy están activas para reproducir el comportamiento actual. Activá una "Editable" si querés usar el editor visual.
+  </div>
+</div>
+{% endblock %}

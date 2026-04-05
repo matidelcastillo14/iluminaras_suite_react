@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>{{ title or "Cadete Flex" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='flex/flex.css') }}" />
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<header class="fx-header">
+  <div class="fx-left">
+    {% if request.path != url_for('cadete_flex.home') %}
+      <a class="fx-back" href="{{ request.referrer or url_for('cadete_flex.home') }}">←</a>
+    {% endif %}
+    <div class="fx-title">
+      {{ title or "Cadete Flex" }}
+    </div>
+  </div>
+  <div class="fx-right">
+    <span class="fx-user">{{ current_user.first_name or current_user.username }}</span>
+    <a class="fx-link" href="{{ url_for('auth.logout') }}">Salir</a>
+  </div>
+</header>
+
+  <nav class="fx-tabs">
+    <a class="fx-tab {% if request.endpoint == 'cadete_flex.scan' %}is-active{% endif %}" href="{{ url_for('cadete_flex.scan') }}">Escanear</a>
+    <a class="fx-tab {% if request.endpoint in ['cadete_flex.route_stops','cadete_flex.stop_detail','cadete_flex.shipment_detail'] %}is-active{% endif %}" href="{{ url_for('cadete_flex.home') }}">En reparto</a>
+    {% if flex_active_route %}
+      <a class="fx-tab {% if request.endpoint == 'cadete_flex.route_map' %}is-active{% endif %}" href="{{ url_for('cadete_flex.route_map', route_id=flex_active_route.id) }}">Mapa</a>
+    {% else %}
+      <span class="fx-tab is-disabled">Mapa</span>
+    {% endif %}
+  </nav>
+
+<main class="fx-main">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="fx-msg fx-msg-{{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</main>
+
+{% block scripts %}{% endblock %}
+</body>
+</html>

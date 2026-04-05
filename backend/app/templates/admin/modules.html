@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin-top:0">Módulos</h2>
+  <p style="margin-top:6px;color:#333;font-size:13px">
+    <strong>Interno OFF</strong>: el módulo no se muestra en la interfaz y queda bloqueado por URL para todos (incluye Admin).
+    {% raw %}<br>{% endraw %}
+    <strong>Público OFF</strong>: desactiva las vistas públicas (si aplica) sin afectar el uso interno.
+  </p>
+
+  <form method="post" action="{{ url_for('admin.modules_post') }}">
+    <table>
+      <thead>
+        <tr>
+          <th>Módulo</th>
+          <th>Interno</th>
+          <th>Público</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in modules %}
+        <tr>
+          <td><strong>{{ m.label }}</strong></td>
+          <td>
+            <label style="display:inline-flex;align-items:center;gap:8px;margin:0">
+              <input type="checkbox" name="internal_{{ m.key }}" {% if m.internal_enabled %}checked{% endif %} />
+              <span>{{ "ON" if m.internal_enabled else "OFF" }}</span>
+            </label>
+          </td>
+          <td>
+            {% if m.has_public %}
+              <label style="display:inline-flex;align-items:center;gap:8px;margin:0">
+                <input type="checkbox" name="public_{{ m.key }}" {% if m.public_enabled %}checked{% endif %} />
+                <span>{{ m.public_label }}: {{ "ON" if m.public_enabled else "OFF" }}</span>
+              </label>
+            {% else %}
+              <span style="opacity:.7">—</span>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <div style="margin-top:12px;display:flex;gap:10px;align-items:center">
+      <button class="btn primary" type="submit">Guardar</button>
+      <a class="btn" href="{{ url_for('admin.dashboard') }}">Volver</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

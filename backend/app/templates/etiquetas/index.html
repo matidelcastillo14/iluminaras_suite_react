@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">Etiquetas</h2>
+  <div class="grid">
+    <div class="card">
+      <label>Buscar pedido</label>
+      <input id="q" placeholder="Ej: SO123, cliente..." />
+      <div style="margin-top:10px;">
+        <button class="btn primary" onclick="doSearch()">Buscar</button>
+      </div>
+      <div id="results" style="margin-top:12px;font-size:13px;"></div>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">Detalle</h3>
+      <div id="detail" style="font-size:13px;"></div>
+      <div id="actions" style="margin-top:10px;display:none;">
+        <button class="btn primary" onclick="doGenerate()">Generar etiqueta</button>
+      </div>
+      <div id="out" style="margin-top:12px;font-size:13px;"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedOrderId = null;
+
+async function doSearch(){
+  const q = document.getElementById('q').value.trim();
+  selectedOrderId = null;
+  document.getElementById('detail').innerHTML = '';
+  document.getElementById('actions').style.display = 'none';
+  document.getElementById('out').innerHTML = '';
+
+  const r = await fetch(`{{ url_for('etiquetas.api_orders_search') }}?q=${encodeURIComponent(q)}`);
+  const data = await r.json();
+  if(!Array.isArray(data)){ document.getElementById('results').innerHTML = 'Error buscando.'; return; }
+  if(data.length === 0){ document.getElementById('results').innerHTML = 'Sin resultados.'; return; }
+
+  let html = '<table><thead><tr><th>Pedido</th><th>Cliente</th><th></th></tr></thead><tbody>';
+  for(const row of data){
+    html += `<tr>
+      <td>${row.pedido || ''}</td>
+      <td>${row.cliente || ''}</td>
+      <td><button class="btn" onclick="selectOrder(${row.id})">Elegir</button></td>
+    </tr>`;
+  }
+  html += '</tbody></table>';
+  document.getElementById('results').innerHTML = html;
+}
+
+async function selectOrder(id){
+  selectedOrderId = id;
+  document.getElementById('out').innerHTML = '';
+  const r = await fetch(`{{ url_for('etiquetas.api_order_detail', order_id=0) }}`.replace('/0', `/${id}`));
+  const d = await r.json();
+  if(d.error){ document.getElementById('detail').innerHTML = 'No encontrado.'; return; }
+
+  document.getElementById('detail').innerHTML = `
+    <div><strong>Pedido:</strong> ${d.pedido || ''}</div>
+    <div><strong>Nombre:</strong> ${d.nombre || ''}</div>
+    <div><strong>Dirección:</strong> ${d.direccion || ''}</div>
+    <div><strong>Tel:</strong> ${d.telefono || ''}</div>
+    <div><strong>Envío:</strong> ${d.envio || ''}</div>
+    <div><strong>ShipCode:</strong> ${d.ship_code || ''}</div>
+  `;
+  document.getElementById('actions').style.display = 'block';
+}
+
+async function doGenerate(){
+  if(!selectedOrderId) return;
+  document.getElementById('out').innerHTML = 'Generando...';
+  const form = new FormData();
+  form.append('order_id', String(selectedOrderId));
+  const r = await fetch(`{{ url_for('etiquetas.generate') }}`, {method:'POST', body: form});
+  const d = await r.json();
+  if(!d.ok){ document.getElementById('out').innerHTML = 'Error: ' + (d.error || ''); return; }
+  document.getElementById('out').innerHTML = `<a class="btn primary" target="_blank" href="${d.pdf_url}">Abrir PDF</a>`;
+}
+</script>
+{% endblock %}

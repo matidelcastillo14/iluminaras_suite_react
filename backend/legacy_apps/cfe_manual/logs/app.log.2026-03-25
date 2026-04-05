@@ -1,0 +1,111 @@
+2026-03-25 11:11:42,714 INFO access pid=15556 rid=3897231ff86a start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:11:42,716 INFO access pid=15556 rid=3897231ff86a end status=200 ms=2 bytes=12920
+2026-03-25 11:11:42,772 INFO access pid=15556 rid=71a2d7623063 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:11:42,774 INFO access pid=15556 rid=71a2d7623063 end status=304 ms=1 bytes=-
+2026-03-25 11:11:48,514 INFO access pid=15556 rid=a5bf5f87a321 start GET /api/orders/search?q=327504 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:11:51,010 INFO access pid=15556 rid=a5bf5f87a321 end status=200 ms=2496 bytes=269
+2026-03-25 11:11:52,159 INFO access pid=15556 rid=6df311dc8da2 start GET /api/orders/93236?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:11:53,050 INFO access pid=15556 rid=6df311dc8da2 end status=200 ms=890 bytes=427
+2026-03-25 11:11:54,691 INFO access pid=15556 rid=a797ddfb7ed9 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:11:54,693 INFO app pid=15556 generate_start doc_type=move doc_id=93236
+2026-03-25 11:11:55,151 INFO app pid=15556 pdf_start tipo=e-Ticket serie=A nro=327504 total=606.74
+2026-03-25 11:11:55,259 INFO app pid=15556 generate_ok doc_type=move doc_id=93236 pdf=cfe_A327504_20260325_111155_fa2bfec8.pdf
+2026-03-25 11:11:55,262 INFO access pid=15556 rid=a797ddfb7ed9 end status=200 ms=570 bytes=89
+2026-03-25 11:11:55,344 INFO access pid=15556 rid=421f05fac9ac start GET /pdf/cfe_A327504_20260325_111155_fa2bfec8.pdf?t=1774447913744 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:11:55,361 INFO access pid=15556 rid=421f05fac9ac end status=200 ms=16 bytes=-
+2026-03-25 11:32:10,554 INFO access pid=15556 rid=dafd5a8bade9 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:32:10,555 INFO access pid=15556 rid=dafd5a8bade9 end status=200 ms=1 bytes=12920
+2026-03-25 11:32:14,828 INFO access pid=15556 rid=8be608b5bee1 start GET /api/orders/search?q=327101 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:32:17,303 INFO access pid=15556 rid=8be608b5bee1 end status=200 ms=2475 bytes=243
+2026-03-25 11:32:17,351 INFO access pid=15556 rid=9efef65c020e start GET /api/orders/search?q=327101 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:32:18,077 INFO access pid=15556 rid=a89c15323adf start GET /api/orders/92761?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:32:18,079 INFO access pid=15556 rid=a89c15323adf end status=503 ms=1 bytes=47
+2026-03-25 11:32:19,311 INFO access pid=15556 rid=9efef65c020e end status=200 ms=1960 bytes=243
+2026-03-25 11:32:20,556 INFO access pid=15556 rid=19ac66c8cbf0 start GET /api/orders/92761?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:32:21,428 INFO access pid=15556 rid=19ac66c8cbf0 end status=200 ms=872 bytes=433
+2026-03-25 11:32:22,743 INFO access pid=15556 rid=b607c5f24c85 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:32:22,745 INFO app pid=15556 generate_start doc_type=move doc_id=92761
+2026-03-25 11:32:23,169 INFO app pid=15556 pdf_start tipo=e-Ticket serie=A nro=327101 total=2108.0
+2026-03-25 11:32:23,273 INFO app pid=15556 generate_ok doc_type=move doc_id=92761 pdf=cfe_A327101_20260325_113223_1653d784.pdf
+2026-03-25 11:32:23,275 INFO access pid=15556 rid=b607c5f24c85 end status=200 ms=532 bytes=89
+2026-03-25 11:32:23,360 INFO access pid=15556 rid=bfbd0fb61ae4 start GET /pdf/cfe_A327101_20260325_113223_1653d784.pdf?t=1774449141749 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:32:23,374 INFO access pid=15556 rid=bfbd0fb61ae4 end status=200 ms=14 bytes=-
+2026-03-25 11:40:38,277 INFO access pid=15556 rid=b1065ea5de54 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:40:38,279 INFO access pid=15556 rid=b1065ea5de54 end status=200 ms=2 bytes=12920
+2026-03-25 11:40:44,630 INFO access pid=15556 rid=3b7aba25a09c start GET /api/orders/search?q=325897 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:40:46,925 INFO access pid=15556 rid=3b7aba25a09c end status=200 ms=2295 bytes=249
+2026-03-25 11:40:47,822 INFO access pid=15556 rid=9d91f7bc46fb start GET /api/orders/88892?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:40:48,706 INFO access pid=15556 rid=9d91f7bc46fb end status=200 ms=883 bytes=417
+2026-03-25 11:40:49,872 INFO access pid=15556 rid=b2cad057dda9 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:40:49,874 INFO app pid=15556 generate_start doc_type=move doc_id=88892
+2026-03-25 11:40:50,330 INFO app pid=15556 pdf_start tipo=e-Ticket serie=A nro=325897 total=1288.06
+2026-03-25 11:40:50,440 INFO app pid=15556 generate_ok doc_type=move doc_id=88892 pdf=cfe_A325897_20260325_114050_a0f43218.pdf
+2026-03-25 11:40:50,442 INFO access pid=15556 rid=b2cad057dda9 end status=200 ms=569 bytes=89
+2026-03-25 11:40:50,518 INFO access pid=15556 rid=8fb0b85d6416 start GET /pdf/cfe_A325897_20260325_114050_a0f43218.pdf?t=1774449648908 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 11:40:50,534 INFO access pid=15556 rid=8fb0b85d6416 end status=200 ms=16 bytes=-
+2026-03-25 11:47:33,419 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-25 11:59:19,075 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-25 11:59:33,435 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-25 12:04:00,846 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-25 12:04:03,350 WARNING waitress.queue pid=15556 Task queue depth is 2
+2026-03-25 12:04:05,848 WARNING waitress.queue pid=15556 Task queue depth is 3
+2026-03-25 12:04:08,337 WARNING waitress.queue pid=15556 Task queue depth is 4
+2026-03-25 12:04:10,845 WARNING waitress.queue pid=15556 Task queue depth is 5
+2026-03-25 12:04:12,458 WARNING waitress.queue pid=15556 Task queue depth is 6
+2026-03-25 12:04:12,459 WARNING waitress.queue pid=15556 Task queue depth is 7
+2026-03-25 12:04:13,344 WARNING waitress.queue pid=15556 Task queue depth is 8
+2026-03-25 12:04:15,845 WARNING waitress.queue pid=15556 Task queue depth is 9
+2026-03-25 12:04:18,342 WARNING waitress.queue pid=15556 Task queue depth is 10
+2026-03-25 12:04:20,846 WARNING waitress.queue pid=15556 Task queue depth is 11
+2026-03-25 12:04:23,343 WARNING waitress.queue pid=15556 Task queue depth is 12
+2026-03-25 12:04:25,847 WARNING waitress.queue pid=15556 Task queue depth is 13
+2026-03-25 12:04:30,846 WARNING waitress.queue pid=15556 Task queue depth is 14
+2026-03-25 12:04:33,355 WARNING waitress.queue pid=15556 Task queue depth is 15
+2026-03-25 12:04:35,844 WARNING waitress.queue pid=15556 Task queue depth is 16
+2026-03-25 12:11:51,098 INFO app pid=15556 home_office_mark_queued user_id=36 username=CoutoV ref=47556406 event_key=8f596e90e43d455ac851ba0589a8c039a27b3ab8a19c7ebac9232a1ff1aa2234
+2026-03-25 12:33:17,514 INFO access pid=15556 rid=10e53f591676 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 12:33:17,527 INFO access pid=15556 rid=10e53f591676 end status=200 ms=13 bytes=12920
+2026-03-25 12:33:17,611 INFO access pid=15556 rid=7d6c99c58970 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 12:33:17,625 INFO access pid=15556 rid=7d6c99c58970 end status=304 ms=14 bytes=-
+2026-03-25 12:33:23,999 INFO access pid=15556 rid=ad56fd31ec06 start GET /api/orders/search?q=41946 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 12:33:26,352 INFO access pid=15556 rid=ad56fd31ec06 end status=200 ms=2352 bytes=2505
+2026-03-25 12:33:27,328 INFO access pid=15556 rid=f6bad802f8a0 start GET /api/orders/94006?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 12:33:28,202 INFO access pid=15556 rid=f6bad802f8a0 end status=200 ms=874 bytes=379
+2026-03-25 12:33:29,610 INFO access pid=15556 rid=f2b1ce35b080 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 12:33:29,612 INFO app pid=15556 generate_start doc_type=move doc_id=94006
+2026-03-25 12:33:30,461 INFO app pid=15556 pdf_start tipo=e-Factura serie=A nro=41946 total=1654.0
+2026-03-25 12:33:30,572 INFO app pid=15556 generate_ok doc_type=move doc_id=94006 pdf=cfe_A41946_20260325_123330_deed874f.pdf
+2026-03-25 12:33:30,575 INFO access pid=15556 rid=f2b1ce35b080 end status=200 ms=964 bytes=88
+2026-03-25 12:33:30,657 INFO access pid=15556 rid=c7fa7eba0bea start GET /pdf/cfe_A41946_20260325_123330_deed874f.pdf?t=1774452810680 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 12:33:30,666 INFO access pid=15556 rid=c7fa7eba0bea end status=200 ms=9 bytes=-
+2026-03-25 13:29:59,370 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-25 13:30:04,374 WARNING waitress.queue pid=15556 Task queue depth is 2
+2026-03-25 13:30:09,371 WARNING waitress.queue pid=15556 Task queue depth is 3
+2026-03-25 15:21:41,126 INFO access pid=15556 rid=a951b9b6dbb2 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 15:21:41,127 INFO access pid=15556 rid=a951b9b6dbb2 end status=200 ms=1 bytes=12920
+2026-03-25 15:21:41,220 INFO access pid=15556 rid=7d41490a0c2c start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 15:21:41,221 INFO access pid=15556 rid=7d41490a0c2c end status=304 ms=1 bytes=-
+2026-03-25 15:21:45,622 INFO access pid=15556 rid=ee18732590c5 start GET /api/orders/search?q=27307 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 15:21:48,108 INFO access pid=15556 rid=ee18732590c5 end status=200 ms=2485 bytes=4574
+2026-03-25 15:21:50,647 INFO access pid=15556 rid=55d469c954f5 start GET /api/orders/93892?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 15:21:51,505 INFO access pid=15556 rid=55d469c954f5 end status=200 ms=858 bytes=384
+2026-03-25 15:21:53,272 INFO access pid=15556 rid=d0fee16bf680 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 15:21:53,273 INFO app pid=15556 generate_start doc_type=move doc_id=93892
+2026-03-25 15:21:53,708 INFO app pid=15556 pdf_start tipo=e-Ticket serie=A nro=27307 total=1887.4
+2026-03-25 15:21:53,777 INFO app pid=15556 generate_ok doc_type=move doc_id=93892 pdf=cfe_A27307_20260325_152153_479c4648.pdf
+2026-03-25 15:21:53,779 INFO access pid=15556 rid=d0fee16bf680 end status=200 ms=507 bytes=88
+2026-03-25 15:21:54,105 INFO access pid=15556 rid=eca8b3bc7e1e start GET /pdf/cfe_A27307_20260325_152153_479c4648.pdf?t=1774462913458 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 15:21:54,129 INFO access pid=15556 rid=eca8b3bc7e1e end status=200 ms=24 bytes=-
+2026-03-25 15:22:46,066 INFO access pid=15556 rid=dd71777102e7 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-25 15:22:46,068 INFO app pid=15556 generate_start doc_type=move doc_id=93892
+2026-03-25 15:22:46,507 INFO app pid=15556 pdf_start tipo=e-Ticket serie=A nro=27307 total=1887.4
+2026-03-25 15:22:46,626 INFO app pid=15556 generate_ok doc_type=move doc_id=93892 pdf=cfe_A27307_20260325_152246_1ec05c77.pdf
+2026-03-25 15:22:46,629 INFO access pid=15556 rid=dd71777102e7 end status=200 ms=563 bytes=88
+2026-03-25 15:35:07,699 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-25 15:35:12,703 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-25 15:35:14,960 WARNING waitress.queue pid=15556 Task queue depth is 2
+2026-03-25 15:52:34,767 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-25 15:52:35,397 WARNING waitress.queue pid=15556 Task queue depth is 2
+2026-03-25 15:52:39,763 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-25 18:22:12,913 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-25 21:08:14,360 INFO app pid=15556 home_office_mark_queued user_id=36 username=CoutoV ref=47556406 event_key=5bca2b34623744d6734f958cafe13f9828f75f08ffb00a4b1a272cd500d6c269

@@ -1,0 +1,142 @@
+{% extends "flex/base.html" %}
+
+{% block content %}
+  <div class="fx-card">
+    <div class="fx-stop-addr">{{ stop.address_text }}</div>
+    <div class="fx-row">
+      <button id="btnArriving" class="fx-btn arriving" data-stop-id="{{ stop.id }}">Estoy llegando</button>
+      <a class="fx-btn ghost" href="{{ url_for('cadete_flex.route_stops', route_id=route.id) }}">Volver a paradas</a>
+    </div>
+  </div>
+
+  <div class="fx-list">
+    {% for sh in shipments %}
+      <div class="fx-card fx-shipment" data-shipment-id="{{ sh.id }}">
+        <div class="fx-row fx-space">
+          <div>
+            <div class="fx-idweb">{{ sh.id_web or sh.order_name }}</div>
+            <div class="fx-muted">
+              Estado:
+              {% if sh.status == 'DELIVERY_FAILED' %}
+                DELIVERY_FAILED · <b>No entregado (pendiente)</b>
+              {% elif sh.status == 'RETURN_TO_DEPOT_REQUESTED' %}
+                RETURN_TO_DEPOT_REQUESTED · <b>Devuelto (pendiente confirmación)</b>
+              {% else %}
+                {{ sh.status }}
+              {% endif %}
+              {% if delivered_by_map and delivered_by_map.get(sh.id) %}
+                · Entregado por: {{ delivered_by_map.get(sh.id) }}
+              {% endif %}
+            </div>
+          </div>
+          <div class="fx-muted">{{ sh.tracking_code }}</div>
+        </div>
+
+        {% set snap = snapshots_map.get(sh.id) %}
+        {% set nav = nav_map.get(sh.id) %}
+        <div class="fx-muted" style="margin-top:6px">
+          {% if snap and snap.recipient_name %}<b>{{ snap.recipient_name }}</b>{% else %}<b>(sin nombre)</b>{% endif %}
+          {% if snap and snap.address_text %} · {{ snap.address_text }}{% endif %}
+          {% if snap and snap.phone %} · Tel: {{ snap.phone }}{% endif %}
+        </div>
+
+        <div class="fx-row" style="flex-wrap:wrap; gap:8px; margin-top:10px;">
+          <a class="fx-btn ghost" href="{{ url_for('cadete_flex.shipment_detail', shipment_id=sh.id) }}">Detalle</a>
+          {% if snap and snap.phone %}<a class="fx-btn ghost" href="tel:{{ snap.phone }}">Llamar</a>{% endif %}
+          {% if nav %}
+            <a class="fx-btn ghost" href="{{ nav.google }}" target="_blank" rel="noopener">Google Maps</a>
+            <a class="fx-btn ghost" href="{{ nav.waze }}" target="_blank" rel="noopener">Waze</a>
+          {% endif %}
+        </div>
+
+        <div class="fx-row fx-actions" style="margin-top:10px; flex-wrap:wrap; gap:8px;">
+          {% if sh.status == 'DELIVERY_FAILED' %}
+            <button class="fx-btn primary act" data-action="OUT_FOR_DELIVERY">Reintentar entrega</button>
+            <button class="fx-btn ghost act" data-action="DEFERRED_NEXT_SHIFT">Siguiente turno</button>
+            <button class="fx-btn ghost act" data-action="RETURN_TO_DEPOT_REQUESTED">Devolver a depósito</button>
+          {% elif sh.status == 'RETURN_TO_DEPOT_REQUESTED' %}
+            <span class="fx-muted">Devuelto a depósito (pendiente de confirmación).</span>
+          {% elif sh.status in ['DELIVERED','RETURNED'] %}
+            <span class="fx-muted">Sin acciones disponibles.</span>
+          {% else %}
+            <button class="fx-btn primary act" data-action="DELIVERED">Entregado</button>
+            <button class="fx-btn ghost act" data-action="DELIVERY_FAILED">No entregado</button>
+            <button class="fx-btn ghost act" data-action="RETURN_TO_DEPOT_REQUESTED">Devuelto a depósito</button>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+  <dialog id="dlgAction" class="fx-dialog">
+    <form id="actionForm" method="dialog" class="fx-dialog-form" enctype="multipart/form-data">
+      <div class="fx-dialog-title" id="dlgTitle">Acción</div>
+      <input type="hidden" name="shipment_id" id="fShipmentId" />
+      <input type="hidden" name="action" id="fAction" />
+      <input type="hidden" name="stop_id" id="fStopId" value="{{ stop.id }}" />
+
+      {# NUEVO: receptor (solo para DELIVERED) #}
+      <div id="receiverWrap" style="display:none">
+        <label>Relación (requerido)</label>
+        <select name="receiver_relation" id="fReceiverRelation">
+          <option value="">Seleccionar…</option>
+          <option value="Titular (comprador)">Titular (comprador)</option>
+          <option value="Cónyuge / pareja">Cónyuge / pareja</option>
+          <option value="Padre / Madre">Padre / Madre</option>
+          <option value="Hijo/a">Hijo/a</option>
+          <option value="Hermano/a">Hermano/a</option>
+          <option value="Otro familiar">Otro familiar</option>
+          <option value="Amigo/a">Amigo/a</option>
+          <option value="Vecino/a">Vecino/a</option>
+          <option value="Portero / Conserje">Portero / Conserje</option>
+          <option value="Recepción / Administración">Recepción / Administración</option>
+          <option value="Guardia de seguridad">Guardia de seguridad</option>
+          <option value="Empleada doméstica">Empleada doméstica</option>
+          <option value="Encargado/a">Encargado/a</option>
+          <option value="Compañero/a de trabajo">Compañero/a de trabajo</option>
+          <option value="Otro">Otro</option>
+        </select>
+
+        <label>Nombre (requerido)</label>
+        <input type="text" name="receiver_name" id="fReceiverName" placeholder="Nombre" />
+
+        <label>Documento (requerido)</label>
+        <input type="text" name="receiver_id" id="fReceiverId" placeholder="CI" />
+      </div>
+
+      <div id="returnToWrap" style="display:none">
+        <label>Devolver a (depósito)</label>
+        <select name="return_to_user_id" id="fReturnTo">
+          <option value="">Seleccionar…</option>
+          {% for u in depot_receivers %}
+            <option value="{{ u.id }}">{{ u.label }}{% if u.role %} ({{ u.role }}){% endif %}</option>
+          {% endfor %}
+        </select>
+      </div>
+
+      <label>Nota (opcional)</label>
+      <textarea name="note" id="fNote" rows="3" placeholder="Detalle (opcional)"></textarea>
+
+      <label>Foto (opcional)</label>
+      <input type="file" name="photo" id="fPhoto" accept="image/*" capture="environment" />
+
+      <div id="dlgErr" class="fx-msg fx-msg-error" style="display:none"></div>
+
+      <div class="fx-row">
+        <button class="fx-btn ghost" value="cancel">Cancelar</button>
+        {# IMPORTANTE: type="button" para que no cierre el dialog automáticamente #}
+        <button id="btnConfirm" type="button" class="fx-btn primary">Confirmar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    window.FLEX_STOP_ID = {{ stop.id }};
+    window.FLEX_CURRENT_USER_ID = {{ current_user.id }};
+  </script>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='flex/flex_api.js') }}"></script>
+  <script src="{{ url_for('static', filename='flex/flex_stop_detail.js') }}"></script>
+{% endblock %}

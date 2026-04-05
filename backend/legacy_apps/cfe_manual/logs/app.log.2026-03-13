@@ -1,0 +1,59 @@
+2026-03-13 10:31:01,390 WARNING legacy_apps.cfe_auto.app pid=9672 LOG_TEST: app.logger is working (startup)
+2026-03-13 10:31:01,432 WARNING legacy_apps.cfe_auto.app pid=9672 LOG_TEST: app.logger is working (startup)
+2026-03-13 10:31:01,447 INFO waitress pid=9672 Serving on http://0.0.0.0:5800
+2026-03-13 12:12:43,847 INFO access pid=9672 rid=3f38a0c45eb6 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:12:43,893 INFO access pid=9672 rid=3f38a0c45eb6 end status=200 ms=45 bytes=12920
+2026-03-13 12:12:43,960 INFO access pid=9672 rid=44970d8d1cf9 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:12:43,962 INFO access pid=9672 rid=44970d8d1cf9 end status=304 ms=1 bytes=-
+2026-03-13 12:12:53,307 INFO access pid=9672 rid=67751a422b18 start GET /api/orders/search?q=325260 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:12:57,988 INFO access pid=9672 rid=67751a422b18 end status=200 ms=4680 bytes=279
+2026-03-13 12:12:58,728 INFO access pid=9672 rid=f07f04ed0add start GET /api/orders/87584?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:12:59,798 INFO access pid=9672 rid=f07f04ed0add end status=200 ms=1070 bytes=437
+2026-03-13 12:13:01,307 INFO access pid=9672 rid=0fcca575f3f4 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:13:01,308 INFO app pid=9672 generate_start doc_type=move doc_id=87584
+2026-03-13 12:13:01,807 INFO app pid=9672 pdf_start tipo=e-Ticket serie=A nro=325260 total=1082.48
+2026-03-13 12:13:01,915 INFO app pid=9672 generate_ok doc_type=move doc_id=87584 pdf=cfe_A325260_20260313_121301_926ef834.pdf
+2026-03-13 12:13:01,915 INFO access pid=9672 rid=0fcca575f3f4 end status=200 ms=608 bytes=89
+2026-03-13 12:13:01,999 INFO access pid=9672 rid=b374325299c9 start GET /pdf/cfe_A325260_20260313_121301_926ef834.pdf?t=1773414781039 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:13:02,014 INFO access pid=9672 rid=b374325299c9 end status=200 ms=15 bytes=-
+2026-03-13 12:14:15,527 INFO access pid=9672 rid=67635e129593 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:14:15,528 INFO access pid=9672 rid=67635e129593 end status=200 ms=0 bytes=12920
+2026-03-13 12:20:02,002 INFO access pid=9672 rid=3ac205655f5f start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:20:02,002 INFO access pid=9672 rid=3ac205655f5f end status=200 ms=0 bytes=12920
+2026-03-13 12:45:47,892 INFO access pid=9672 rid=36a64bae3d93 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:45:47,893 INFO access pid=9672 rid=36a64bae3d93 end status=200 ms=0 bytes=12920
+2026-03-13 12:45:54,324 INFO access pid=9672 rid=d075c1055aad start GET /api/orders/search?q=325539 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:45:56,570 INFO access pid=9672 rid=d075c1055aad end status=200 ms=2246 bytes=269
+2026-03-13 12:45:57,316 INFO access pid=9672 rid=05e8c87a64c2 start GET /api/orders/83090?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:45:58,191 INFO access pid=9672 rid=05e8c87a64c2 end status=200 ms=875 bytes=432
+2026-03-13 12:46:01,109 INFO access pid=9672 rid=e9bc78740632 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:46:01,110 INFO app pid=9672 generate_start doc_type=move doc_id=83090
+2026-03-13 12:46:01,535 INFO app pid=9672 pdf_start tipo=e-Ticket serie=A nro=325539 total=1566.21
+2026-03-13 12:46:01,653 INFO app pid=9672 generate_ok doc_type=move doc_id=83090 pdf=cfe_A325539_20260313_124601_c2ac42cb.pdf
+2026-03-13 12:46:01,653 INFO access pid=9672 rid=e9bc78740632 end status=200 ms=544 bytes=89
+2026-03-13 12:46:01,744 INFO access pid=9672 rid=cf88ca365424 start GET /pdf/cfe_A325539_20260313_124601_c2ac42cb.pdf?t=1773416760726 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 12:46:01,763 INFO access pid=9672 rid=cf88ca365424 end status=200 ms=19 bytes=-
+2026-03-13 12:51:04,797 INFO access pid=9672 rid=09aa758f4286 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-13 12:51:04,798 INFO access pid=9672 rid=09aa758f4286 end status=200 ms=0 bytes=12920
+2026-03-13 12:51:04,861 INFO access pid=9672 rid=c5566cb4f89c start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-13 12:51:04,861 INFO access pid=9672 rid=c5566cb4f89c end status=304 ms=0 bytes=-
+2026-03-13 14:22:46,007 INFO access pid=9672 rid=43a2a29c0be7 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 14:22:46,007 INFO access pid=9672 rid=43a2a29c0be7 end status=200 ms=0 bytes=12920
+2026-03-13 14:22:50,705 INFO access pid=9672 rid=9c82b439b0f3 start GET /api/orders/search?q=2000011954695653 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 14:22:53,696 INFO access pid=9672 rid=9c82b439b0f3 end status=200 ms=2990 bytes=265
+2026-03-13 14:22:54,682 INFO access pid=9672 rid=0e0799fa4349 start GET /api/orders/89629?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 14:22:55,731 INFO access pid=9672 rid=0e0799fa4349 end status=200 ms=1049 bytes=637
+2026-03-13 14:34:11,702 INFO access pid=9672 rid=5a3b3460cfc4 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 14:34:11,702 INFO access pid=9672 rid=5a3b3460cfc4 end status=200 ms=0 bytes=12920
+2026-03-13 14:34:13,688 INFO access pid=9672 rid=60c4656626ad start GET /api/orders/search?q=655561 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 14:34:16,026 INFO access pid=9672 rid=60c4656626ad end status=200 ms=2338 bytes=453
+2026-03-13 14:34:18,124 INFO access pid=9672 rid=5f29643be7cb start GET /api/orders/87407?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 14:34:19,008 INFO access pid=9672 rid=5f29643be7cb end status=200 ms=883 bytes=389
+2026-03-13 14:34:22,143 INFO access pid=9672 rid=30fe38570754 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 14:34:22,144 INFO app pid=9672 generate_start doc_type=move doc_id=87407
+2026-03-13 14:34:22,591 INFO app pid=9672 pdf_start tipo=e-Ticket serie=A nro=325025 total=1693.02
+2026-03-13 14:34:22,692 INFO app pid=9672 generate_ok doc_type=move doc_id=87407 pdf=cfe_A325025_20260313_143422_5787dbc1.pdf
+2026-03-13 14:34:22,692 INFO access pid=9672 rid=30fe38570754 end status=200 ms=549 bytes=89
+2026-03-13 14:34:22,769 INFO access pid=9672 rid=1e75b496bc8c start GET /pdf/cfe_A325025_20260313_143422_5787dbc1.pdf?t=1773423261792 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-13 14:34:22,785 INFO access pid=9672 rid=1e75b496bc8c end status=200 ms=16 bytes=-
+2026-03-13 17:15:27,518 WARNING waitress.queue pid=9672 Task queue depth is 1

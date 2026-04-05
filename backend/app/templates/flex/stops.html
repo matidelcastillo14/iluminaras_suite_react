@@ -1,0 +1,61 @@
+{% extends "flex/base.html" %}
+
+{% block content %}
+  <div class="fx-card">
+    <div class="fx-row fx-space">
+      <div>
+        <div class="fx-big">Tenés {{ pending_count }} paradas pendientes</div>
+        <a class="fx-link" href="{{ url_for('cadete_flex.route_map', route_id=route.id) }}">Ver mapa</a>
+      </div>
+      <div class="fx-row" style="gap:8px;">
+        {% if (route.state or '') == 'DRAFT' %}
+          <button id="btnBeginRoute" class="fx-btn primary" type="button">Empezar a repartir</button>
+        {% endif %}
+        <button id="btnOptimize" class="fx-btn ghost" type="button">Optimizar ruta</button>
+        <button id="btnFinish" class="fx-btn ghost" type="button">Finalizar ruta</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="fx-list">
+    {% for it in stop_items %}
+      {% set s = it.stop %}
+      <a class="fx-stop" href="{{ url_for('cadete_flex.stop_detail', stop_id=s.id) }}">
+        <div class="fx-stop-main">
+          <div class="fx-stop-addr">{{ s.address_text }}</div>
+          <div class="fx-muted">{{ it.count }} entregas</div>
+        </div>
+        <div class="fx-stop-actions">
+          {% if s.state != 'DONE' %}
+            <button class="fx-btn arriving" data-stop-id="{{ s.id }}">Estoy llegando</button>
+          {% else %}
+            <span class="fx-pill">Finalizada</span>
+          {% endif %}
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+
+  <dialog id="dlgFinishBlocked" class="fx-dialog">
+    <form id="finishForm" method="dialog" class="fx-dialog-form">
+      <div class="fx-dialog-title" id="finishDlgTitle">Pedidos pendientes</div>
+      <div id="finishDlgBody" class="fx-muted" style="margin-bottom:10px;"></div>
+      <div id="finishDlgList"></div>
+      <div id="finishDlgErr" class="fx-msg fx-msg-error" style="display:none"></div>
+      <div class="fx-row">
+        <button class="fx-btn ghost" value="cancel">Cancelar</button>
+        <button id="btnApplyFinish" class="fx-btn primary" value="default">Aplicar y finalizar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <script>
+    window.FLEX_ROUTE_ID = {{ route.id }};
+    window.FLEX_ROUTE_STATE = "{{ (route.state or '') }}";
+  </script>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='flex/flex_api.js') }}"></script>
+  <script src="{{ url_for('static', filename='flex/flex_stops.js') }}"></script>
+{% endblock %}

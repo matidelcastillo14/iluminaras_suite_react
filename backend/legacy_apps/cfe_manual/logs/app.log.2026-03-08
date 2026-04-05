@@ -1,0 +1,4 @@
+2026-03-08 14:48:52,590 INFO access pid=17236 rid=0b300afab105 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-08 14:48:52,598 INFO access pid=17236 rid=0b300afab105 end status=200 ms=8 bytes=12920
+2026-03-08 14:48:52,710 INFO access pid=17236 rid=712f6f321623 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-08 14:48:52,712 INFO access pid=17236 rid=712f6f321623 end status=304 ms=1 bytes=-

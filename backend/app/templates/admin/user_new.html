@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:720px;margin:0 auto;">
+  <h2 style="margin:0 0 10px 0;">Nuevo usuario</h2>
+  <form method="post" action="{{ url_for('admin.users_new_post') }}">
+    <div class="grid">
+      <div>
+        <label>Usuario</label>
+        <input name="username" required />
+      </div>
+      <div>
+        <label>Email</label>
+        <input name="email" type="email" required />
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label>Nombre</label>
+        <input name="first_name" required />
+      </div>
+      <div>
+        <label>Apellido</label>
+        <input name="last_name" required />
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label>Celular</label>
+        <input name="phone" />
+      </div>
+      <div>
+        <label>Cédula de identidad</label>
+        <input name="attendance_ref_code" />
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label>Rol</label>
+        <select name="role">
+          {% for r in roles %}
+            <option value="{{ r }}" {% if r == 'operator' %}selected{% endif %}>{{ r }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <label style="display:flex;gap:8px;align-items:center;">
+        <input type="checkbox" name="home_office_clock_enabled" value="1" />
+        Habilitado para reloj Home Office
+      </label>
+    </div>
+    <div style="margin-top:12px;">
+      <button class="btn primary" type="submit">Crear (contraseña aleatoria + forzar cambio)</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

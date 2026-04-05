@@ -1,0 +1,946 @@
+from __future__ import annotations
+
+from dataclasses import dataclass
+from datetime import datetime
+import re
+import threading
+import xmlrpc.client
+from typing import Any
+
+from flask import current_app
+
+from ..extensions import db
+from ..models import ImportedBatch, BatchOrder
+from . import odoo_readonly
+
+
+BASE_LINK = "https://iluimport.com/odoo/sales/"
+
+# Evita errores xmlrpc en multi-thread (waitress) reutilizando conexiones.
+# xmlrpc.client.ServerProxy NO es thread-safe.
+_ODOO_XMLRPC_LOCK = threading.Lock()
+
+
+def _odoo_models_proxy() -> Any:
+    url = str(current_app.config.get("ODOO_URL") or "").strip()
+    if not url:
+        raise RuntimeError("odoo_not_configured")
+    # Proxy NUEVO por llamada (thread-safe)
+    return xmlrpc.client.ServerProxy(f"{url}/xmlrpc/2/object", allow_none=True)
+
+
+@dataclass
+class PollResult:
+    status: str  # ok | no_new | error | odoo_not_configured
+    imported: bool = False
+    batch_name: str | None = None
+    odoo_batch_id: int | None = None
+    picking_count: int = 0
+    order_count: int = 0
+    message: str | None = None
+
+
+def _digits_only(s: str) -> str:
+    return "".join(ch for ch in (s or "") if ch.isdigit())
+
+
+def _make_invoice_status(n_factura: str, estado_factura: str) -> str:
+    """Regla de negocio:
+
+    - Solo marcar "Facturado" cuando el comprobante está posteado (state='posted')
+      y el número corresponde a un CFE real (prefijos e-TK / e-FC).
+
+    - Los movimientos que vienen como "* 12345" NO se consideran facturados: deben
+      mostrar botón "Ir" (con link que incluye el id numérico).
+    """
+    nf = (n_factura or "").strip()
+    st = (estado_factura or "").strip().lower()
+    if st != "posted":
+        return ""
+    if not nf or nf == "/":
+        return ""
+    if nf.startswith("*"):
+        return ""
+    # Prefijos válidos de facturación final.
+    if nf.lower().startswith("e-tk") or nf.lower().startswith("e-fc"):
+        return "Facturado"
+    return ""
+
+
+def _is_relevant_move(m: dict[str, Any]) -> bool:
+    """Define si un account.move es relevante para resolver un pedido.
+
+    Incluye tanto CFEs reales (e-TK/e-FC) como los movimientos "* 12345"
+    (que NO son facturado, pero sirven para construir el link directo).
+    """
+    if not m:
+        return False
+    st = str(m.get("state") or "").strip().lower()
+    if st != "posted":
+        return False
+    name = str(m.get("name") or "").strip()
+    if not name or name == "/":
+        return False
+    mt = str(m.get("move_type") or "").strip()
+    if mt and mt not in {"out_invoice", "out_receipt", "out_refund"}:
+        return False
+    return True
+
+
+def _pending_invoice_link(so_id: int, n_factura: str) -> str:
+    """Link para el botón Ir.
+
+    - Si n_factura viene como "* 72089", usamos los dígitos como id para completar
+      .../invoicing/<id> (como en el script export_pedidos_por_batch_v2).
+    - En cualquier otro caso, devolvemos el link base .../invoicing/
+    """
+    base = f"{BASE_LINK}{so_id}/invoicing/"
+    nf = (n_factura or "").strip()
+    if nf.startswith("*"):
+        digits = "".join(ch for ch in nf if ch.isdigit())
+        if digits:
+            return base + digits
+    return base
+
+
+def _tokenize_refs(s: str) -> list[str]:
+    """Tokeniza invoice_origin / payment_reference de forma conservadora."""
+    if not s:
+        return []
+    raw = str(s)
+    # separadores típicos: coma, punto y coma, salto de línea
+    parts = re.split(r"[\n\r,;]+", raw)
+    out: list[str] = []
+    for p in parts:
+        t = p.strip()
+        if t:
+            out.append(t)
+    return out
+
+
+def _split_invoice_origin(origin: str) -> list[str]:
+    """invoice_origin puede venir como 'S12345, S12346'."""
+    if not origin:
+        return []
+    return [x.strip() for x in str(origin).split(",") if x.strip()]
+
+
+def _refresh_pending_invoices(models, dbname, uid, key, max_rows: int = 250) -> int:
+    """Actualiza en DB pedidos que aún no tienen factura pero ya fueron facturados en Odoo.
+
+    Retorna cantidad de filas actualizadas.
+    """
+    updated = 0
+
+    # 1) Normalizar: si ya tiene n_factura y está posteada, asegurar estado Facturado.
+    #    Si NO está posteada, no marcar como facturado.
+    fixed = (
+        BatchOrder.query.filter(BatchOrder.n_factura.isnot(None))
+        .filter(BatchOrder.n_factura != "")
+        .limit(max_rows)
+        .all()
+    )
+    for r in fixed:
+        nf = (r.n_factura or "").strip()
+        st = (r.estado_factura or "").strip().lower()
+
+        status = _make_invoice_status(nf, st)
+        if status == "Facturado":
+            desired = "Facturado"
+        elif st == "posted" and nf.startswith("*"):
+            # Movimiento "* 12345": NO es facturado, pero queremos botón Ir con link completo.
+            desired = _pending_invoice_link(int(r.sale_order_id or 0), nf)
+        else:
+            desired = ""
+
+        if (r.link_factura or "") != desired:
+            r.link_factura = desired
+            updated += 1
+
+    # 2) Pendientes reales (sin factura posteada)
+    pending = (
+        BatchOrder.query.filter((BatchOrder.link_factura.is_(None)) | (BatchOrder.link_factura == ""))
+        .order_by(BatchOrder.created_at.desc(), BatchOrder.id.desc())
+        .limit(max_rows)
+        .all()
+    )
+    if not pending:
+        return updated
+
+    # 2.1) Leer sale.order (para usar invoice_ids cuando existan)
+    so_ids = sorted({int(p.sale_order_id) for p in pending if p.sale_order_id})
+    so_rows: list[dict[str, Any]] = []
+    if so_ids:
+        try:
+            so_rows = models.execute_kw(
+                dbname,
+                uid,
+                key,
+                "sale.order",
+                "read",
+                [so_ids],
+                {"fields": ["id", "name", "invoice_ids"]},
+            ) or []
+        except Exception:
+            so_rows = []
+
+    so_by_id = {int(so.get("id") or 0): so for so in so_rows if so.get("id")}
+
+    # 2.2) Cache de moves por id (para invoice_ids)
+    inv_ids_all: set[int] = set()
+    for so in so_rows:
+        inv_ids = so.get("invoice_ids") or []
+        if isinstance(inv_ids, list):
+            for x in inv_ids:
+                try:
+                    inv_ids_all.add(int(x))
+                except Exception:
+                    continue
+
+    moves_by_id: dict[int, dict[str, Any]] = {}
+    if inv_ids_all:
+        try:
+            moves = models.execute_kw(
+                dbname,
+                uid,
+                key,
+                "account.move",
+                "read",
+                [sorted(inv_ids_all)],
+                {"fields": ["id", "name", "state", "move_type", "invoice_origin", "payment_reference"]},
+            ) or []
+            moves_by_id = {int(m.get("id") or 0): m for m in moves if m.get("id")}
+        except Exception:
+            moves_by_id = {}
+
+    # 2.3) Fallback: traer moves posteados y mapear por tokens (invoice_origin / payment_reference)
+    origins = sorted({(p.sale_order_ref or "").strip() for p in pending if (p.sale_order_ref or "").strip()})
+    token_map: dict[str, list[dict[str, Any]]] = {}
+    if origins:
+        try:
+            moves2 = models.execute_kw(
+                dbname,
+                uid,
+                key,
+                "account.move",
+                "search_read",
+                [[("state", "=", "posted"), ("move_type", "in", ["out_invoice", "out_receipt", "out_refund"]), "|", ("invoice_origin", "!=", False), ("payment_reference", "!=", False)]],
+                {"fields": ["id", "name", "state", "move_type", "invoice_origin", "payment_reference"], "limit": 5000, "order": "id desc", "context": {"active_test": False}},
+            ) or []
+        except Exception:
+            moves2 = []
+
+        origin_set = set(origins)
+        for m in moves2:
+            if not _is_relevant_move(m):
+                continue
+            toks = _tokenize_refs(str(m.get("invoice_origin") or "")) + _tokenize_refs(str(m.get("payment_reference") or ""))
+            for t in toks:
+                if t in origin_set:
+                    token_map.setdefault(t, []).append(m)
+
+    # 2.4) Resolver y actualizar
+    for r in pending:
+        so = so_by_id.get(int(r.sale_order_id or 0)) or {"id": r.sale_order_id, "name": r.sale_order_ref or "", "invoice_ids": []}
+        n_factura, estado = _resolve_invoice_for_order(models, dbname, uid, key, so, moves_by_id=moves_by_id)
+
+        # si no resolvió por invoice_ids, intentar por token_map (evita reconsultar 3000 moves por pedido)
+        if not n_factura:
+            rel = token_map.get((r.sale_order_ref or "").strip()) or []
+            n_factura, estado = _pick_best_invoice(rel)
+
+        status = _make_invoice_status(n_factura, estado)
+        if status == "Facturado":
+            r.n_factura = str(n_factura or "")
+            r.estado_factura = str(estado or "")
+            r.link_factura = "Facturado"
+            updated += 1
+        else:
+            # Caso "* 12345": no es facturado, pero queremos link directo con el id.
+            nf = str(n_factura or "").strip()
+            st = str(estado or "").strip().lower()
+            if st == "posted" and nf.startswith("*"):
+                r.n_factura = nf
+                r.estado_factura = st
+                r.link_factura = _pending_invoice_link(int(r.sale_order_id or 0), nf)
+                updated += 1
+
+    return updated
+
+
+def _pick_best_invoice(moves: list[dict[str, Any]]) -> tuple[str, str]:
+    if not moves:
+        return "", ""
+    invs = [m for m in moves if m.get("move_type") == "out_invoice"] or moves
+
+    def score(m: dict[str, Any]) -> int:
+        s = 0
+        if m.get("move_type") == "out_invoice":
+            s += 10
+        if m.get("state") == "posted":
+            s += 10
+        name = (m.get("name") or "").strip()
+        if name and name != "/":
+            s += 5
+        return s
+
+    best = sorted(invs, key=score, reverse=True)[0]
+    return (best.get("name") or "", best.get("state") or "")
+
+
+def _resolve_invoice_for_order(models, dbname: str, uid: int, key: str, so: dict[str, Any], moves_by_id: dict[int, dict[str, Any]] | None = None) -> tuple[str, str]:
+    """Resuelve si una sale.order ya tiene factura, replicando el enfoque de CFE Manual:
+
+    1) Primero por Ventas: sale.order.invoice_ids -> account.move.
+    2) Fallback por Contabilidad: buscar account.move posteados por invoice_origin / payment_reference.
+
+    Devuelve (n_factura, estado_factura). Si no hay factura, ('','').
+    """
+    so_id = int(so.get("id") or 0)
+    so_name = str(so.get("name") or "").strip()
+
+    # --- 1) Ventas: invoice_ids ---
+    rel: list[dict[str, Any]] = []
+    inv_ids = so.get("invoice_ids") or []
+    if isinstance(inv_ids, list):
+        for iid in inv_ids:
+            try:
+                ii = int(iid)
+            except Exception:
+                continue
+            if moves_by_id and ii in moves_by_id:
+                rel.append(moves_by_id[ii])
+    if rel:
+        n, st = _pick_best_invoice(rel)
+        if _is_relevant_move({"name": n, "state": st, "move_type": "out_invoice"}):
+            return (str(n or ""), str(st or ""))
+
+    # --- 2) Contabilidad: invoice_origin / payment_reference ---
+    if not so_name and not so_id:
+        return ("", "")
+
+    # Dominio posteado + tipos permitidos
+    domain: list[Any] = [("state", "=", "posted")]
+    domain.append(("move_type", "in", ["out_invoice", "out_receipt", "out_refund"]))
+    # match por invoice_origin o payment_reference si existen
+    # Usamos search_read amplio y filtramos por tokens, porque invoice_origin puede venir 'SO1, SO2'
+    domain.append("|")
+    domain.append(("invoice_origin", "!=", False))
+    domain.append(("payment_reference", "!=", False))
+
+    try:
+        moves = models.execute_kw(
+            dbname,
+            uid,
+            key,
+            "account.move",
+            "search_read",
+            [domain],
+            {
+                "fields": ["id", "name", "state", "move_type", "invoice_origin", "payment_reference"],
+                "limit": 3000,
+                "order": "id desc",
+                "context": {"active_test": False},
+            },
+        ) or []
+    except Exception:
+        moves = []
+
+    candidates: list[dict[str, Any]] = []
+    for m in moves:
+        if not _is_relevant_move(m):
+            continue
+        # tokenizar origin y payment_ref y chequear si aparece el SO
+        toks = set(_tokenize_refs(str(m.get("invoice_origin") or "")) + _tokenize_refs(str(m.get("payment_reference") or "")))
+        if so_name and so_name in toks:
+            candidates.append(m)
+
+    n, st = _pick_best_invoice(candidates)
+    if n and st:
+        return (str(n), str(st))
+    return ("", "")
+
+
+def _odoo_models():
+    # UID puede ser cacheado, pero el ServerProxy NO (no es thread-safe).
+    _, dbname, uid, key = odoo_readonly._odoo_uid()  # type: ignore[attr-defined]
+    models = _odoo_models_proxy()
+    return models, dbname, uid, key
+
+
+def _import_batch_basic(models, dbname, uid, key, odoo_batch_id: int, batch_name: str, picking_ids: list[int]) -> int:
+    """Importa 1 batch a DB (sin intentar resolver facturas en este paso).
+
+    Motivo: el estado de facturación se refresca aparte y SOLO considera facturas posteadas.
+    """
+    if ImportedBatch.query.filter_by(odoo_batch_id=odoo_batch_id).first():
+        return 0
+
+    ib = ImportedBatch(
+        odoo_batch_id=odoo_batch_id,
+        batch_name=batch_name,
+        imported_at=datetime.utcnow(),
+        picking_count=len(picking_ids or []),
+        order_count=0,
+    )
+    db.session.add(ib)
+    db.session.flush()
+
+    # pickings -> sale orders
+    pickings = []
+    if picking_ids:
+        pickings = models.execute_kw(
+            dbname,
+            uid,
+            key,
+            "stock.picking",
+            "read",
+            [picking_ids],
+            {"fields": ["id", "origin", "sale_id"]},
+        )
+
+    sale_ids: set[int] = set()
+    origins: set[str] = set()
+    for p in pickings or []:
+        sid = (p.get("sale_id") or [None])[0]
+        if sid:
+            sale_ids.add(int(sid))
+        o = p.get("origin")
+        if isinstance(o, str) and o.strip():
+            origins.add(o.strip())
+
+    so_fields = [
+        "id",
+        "name",
+        "x_studio_id_web_pedidos",
+        "x_meli_cart",
+        "x_studio_meli",
+        "partner_id",
+        "partner_shipping_id",
+        "amount_total",
+    ]
+
+    sale_orders: list[dict[str, Any]] = []
+    if sale_ids:
+        sale_orders.extend(models.execute_kw(dbname, uid, key, "sale.order", "read", [sorted(sale_ids)], {"fields": so_fields}))
+
+    loaded_ids = {int(so.get("id") or 0) for so in sale_orders if so.get("id")}
+    for o in sorted(origins):
+        sos = models.execute_kw(
+            dbname,
+            uid,
+            key,
+            "sale.order",
+            "search_read",
+            [[("name", "=", o)]],
+            {"fields": so_fields, "limit": 50, "order": "id desc"},
+        )
+        for so in sos:
+            sid = int(so.get("id") or 0)
+            if sid and sid not in loaded_ids:
+                sale_orders.append(so)
+                loaded_ids.add(sid)
+
+    if not sale_orders:
+        ib.order_count = 0
+        return 0
+
+    # partners
+    partner_ids: set[int] = set()
+    ship_ids: set[int] = set()
+    for so in sale_orders:
+        pid = (so.get("partner_id") or [None])[0]
+        sid = (so.get("partner_shipping_id") or [None])[0]
+        if pid:
+            partner_ids.add(int(pid))
+        if sid:
+            ship_ids.add(int(sid))
+
+    all_partner_ids = sorted(partner_ids | ship_ids)
+    partners: list[dict[str, Any]] = []
+    if all_partner_ids:
+        partners = models.execute_kw(
+            dbname,
+            uid,
+            key,
+            "res.partner",
+            "read",
+            [all_partner_ids],
+            {"fields": ["id", "name", "street", "street2", "city", "state_id", "zip", "country_id"]},
+        )
+    partners_by_id = {int(p["id"]): p for p in partners if p.get("id")}
+
+    def fmt_addr(p: dict[str, Any] | None) -> str:
+        if not p:
+            return ""
+        parts: list[str] = []
+        for k in ("street", "street2", "city", "zip"):
+            v = p.get(k)
+            if v:
+                parts.append(str(v))
+        st = p.get("state_id")
+        if isinstance(st, list) and len(st) >= 2 and st[1]:
+            parts.append(str(st[1]))
+        c = p.get("country_id")
+        if isinstance(c, list) and len(c) >= 2 and c[1]:
+            parts.append(str(c[1]))
+        parts = [re.sub(r"\s+", " ", x).strip() for x in parts if x and str(x).strip()]
+        return ", ".join(parts)
+
+    now = datetime.utcnow()
+    inserted = 0
+    for so in sale_orders:
+        so_id = int(so.get("id") or 0)
+        if not so_id:
+            continue
+
+        cliente = ""
+        if isinstance(so.get("partner_id"), list) and len(so["partner_id"]) >= 2:
+            cliente = str(so["partner_id"][1] or "")
+
+        addr_partner = None
+        ship_id = (so.get("partner_shipping_id") or [None])[0]
+        partner_id = (so.get("partner_id") or [None])[0]
+        if ship_id:
+            addr_partner = partners_by_id.get(int(ship_id))
+        if addr_partner is None and partner_id:
+            addr_partner = partners_by_id.get(int(partner_id))
+        direccion = fmt_addr(addr_partner)
+
+        id_meli = (
+            odoo_readonly._clean_html_text(so.get("x_studio_meli"))
+            if hasattr(odoo_readonly, "_clean_html_text")
+            else str(so.get("x_studio_meli") or "")
+        )
+
+        bo = BatchOrder(
+            imported_batch_id=ib.id,
+            created_at=now,
+            sale_order_id=so_id,
+            sale_order_ref=str(so.get("name") or ""),
+            id_web=str(so.get("x_studio_id_web_pedidos") or ""),
+            id_melicart=str(so.get("x_meli_cart") or ""),
+            id_meli=id_meli,
+            cliente=cliente,
+            direccion=direccion,
+            monto_compra=so.get("amount_total"),
+            n_factura="",
+            estado_factura="",
+            # Si no está facturado, el botón 'Ir' usa este link.
+            link_factura=_pending_invoice_link(so_id, ""),
+        )
+        db.session.add(bo)
+        inserted += 1
+
+    ib.order_count = inserted
+    return inserted
+
+
+def ensure_min_rows(target_rows: int, max_batches: int = 5) -> dict[str, Any]:
+    """Backfill: si en DB hay menos de target_rows pedidos, importa batches anteriores hasta llenar."""
+    try:
+        models, dbname, uid, key = _odoo_models()
+    except Exception as e:
+        return {"ok": False, "error": str(e)}
+
+    imported_batches = 0
+    imported_orders = 0
+
+    try:
+        before_id: int | None = None
+        while BatchOrder.query.count() < target_rows and imported_batches < max_batches:
+            # Traer batches más recientes (y si hace falta, seguir hacia atrás)
+            domain = [] if before_id is None else [("id", "<", before_id)]
+            batch_rows = models.execute_kw(
+                dbname,
+                uid,
+                key,
+                "stock.picking.batch",
+                "search_read",
+                [domain],
+                {"fields": ["id", "name", "picking_ids"], "limit": 50, "order": "id desc"},
+            )
+            if not batch_rows:
+                break
+
+            # preparar siguiente ventana (más viejo)
+            try:
+                before_id = min(int(x.get("id") or 0) for x in batch_rows if x.get("id"))
+            except Exception:
+                before_id = None
+
+            imported_any = False
+            for br in batch_rows:
+                bid = int(br.get("id") or 0)
+                bname = str(br.get("name") or "").strip()
+                pids = br.get("picking_ids") or []
+                if not bid or not bname:
+                    continue
+                if ImportedBatch.query.filter_by(odoo_batch_id=bid).first():
+                    continue
+
+                ins = _import_batch_basic(models, dbname, uid, key, bid, bname, pids)
+                # refrescar facturas posteadas para lo nuevo
+                try:
+                    _refresh_pending_invoices(models, dbname, uid, key)
+                except Exception:
+                    pass
+                db.session.commit()
+                imported_batches += 1
+                imported_any = True
+                imported_orders += int(ins or 0)
+                if BatchOrder.query.count() >= target_rows or imported_batches >= max_batches:
+                    break
+
+            if not imported_any:
+                break
+
+        return {"ok": True, "imported_batches": imported_batches, "imported_orders_hint": imported_orders}
+
+    except Exception as e:
+        try:
+            db.session.rollback()
+        except Exception:
+            pass
+        current_app.logger.exception("batch_backfill_error")
+        return {"ok": False, "error": str(e)}
+
+
+def poll_once() -> dict[str, Any]:
+    """Escanea el último batch de Odoo y lo importa si es nuevo."""
+    try:
+        models, dbname, uid, key = _odoo_models()
+    except Exception as e:
+        if str(e) in ("odoo_not_configured", "odoo_auth_failed"):
+            return PollResult(status=str(e)).__dict__
+        return PollResult(status="error", message=str(e)).__dict__
+
+    try:
+        # 1) último batch
+        batch_rows = models.execute_kw(
+            dbname,
+            uid,
+            key,
+            "stock.picking.batch",
+            "search_read",
+            [[]],
+            {"fields": ["id", "name", "picking_ids"], "limit": 1, "order": "id desc"},
+        )
+        if not batch_rows:
+            return PollResult(status="ok", imported=False, message="no_batches").__dict__
+
+        br = batch_rows[0]
+        odoo_batch_id = int(br.get("id") or 0)
+        batch_name = str(br.get("name") or "").strip()
+        picking_ids = br.get("picking_ids") or []
+        if not odoo_batch_id or not batch_name:
+            return PollResult(status="error", message="invalid_batch").__dict__
+
+        # 2) comparar contra último importado
+        last = ImportedBatch.query.order_by(ImportedBatch.odoo_batch_id.desc()).first()
+        if last and int(last.odoo_batch_id) >= odoo_batch_id:
+            # Aunque no haya batch nuevo, refrescar facturas pendientes
+            try:
+                upd = _refresh_pending_invoices(models, dbname, uid, key)
+                if upd:
+                    db.session.commit()
+            except Exception:
+                db.session.rollback()
+            return PollResult(status="no_new", imported=False, batch_name=batch_name, odoo_batch_id=odoo_batch_id).__dict__
+
+        # 3) crear ImportedBatch
+        ib = ImportedBatch(
+            odoo_batch_id=odoo_batch_id,
+            batch_name=batch_name,
+            imported_at=datetime.utcnow(),
+            picking_count=len(picking_ids),
+            order_count=0,
+        )
+        db.session.add(ib)
+        db.session.flush()  # get ib.id
+
+        # 4) pickings -> sale orders
+        pickings = []
+        if picking_ids:
+            pickings = models.execute_kw(
+                dbname,
+                uid,
+                key,
+                "stock.picking",
+                "read",
+                [picking_ids],
+                {"fields": ["id", "origin", "sale_id"]},
+            )
+
+        sale_ids: set[int] = set()
+        origins: set[str] = set()
+        for p in pickings or []:
+            sid = (p.get("sale_id") or [None])[0]
+            if sid:
+                sale_ids.add(int(sid))
+            o = p.get("origin")
+            if isinstance(o, str) and o.strip():
+                origins.add(o.strip())
+
+        # 5) leer sale orders (por id + fallback por origin)
+        so_fields = [
+            "id",
+            "name",
+            "x_studio_id_web_pedidos",
+            "x_meli_cart",
+            "x_studio_meli",
+            "partner_id",
+            "partner_shipping_id",
+            "amount_total",
+            "invoice_ids",
+        ]
+
+        sale_orders: list[dict[str, Any]] = []
+        if sale_ids:
+            sale_orders.extend(
+                models.execute_kw(dbname, uid, key, "sale.order", "read", [sorted(sale_ids)], {"fields": so_fields})
+            )
+
+        loaded_ids = {int(so.get("id") or 0) for so in sale_orders if so.get("id")}
+        # fallback por origin (solo si no está ya)
+        for o in sorted(origins):
+            sos = models.execute_kw(
+                dbname,
+                uid,
+                key,
+                "sale.order",
+                "search_read",
+                [[("name", "=", o)]],
+                {"fields": so_fields, "limit": 50, "order": "id desc"},
+            )
+            for so in sos:
+                sid = int(so.get("id") or 0)
+                if sid and sid not in loaded_ids:
+                    sale_orders.append(so)
+                    loaded_ids.add(sid)
+
+        # si no hay sale orders, igual guardamos el batch para no re-importar en loop
+        if not sale_orders:
+            ib.order_count = 0
+            db.session.commit()
+            return PollResult(
+                status="ok",
+                imported=True,
+                batch_name=batch_name,
+                odoo_batch_id=odoo_batch_id,
+                picking_count=len(picking_ids),
+                order_count=0,
+                message="no_sale_orders_resolved",
+            ).__dict__
+
+        # 6) partners
+        partner_ids: set[int] = set()
+        ship_ids: set[int] = set()
+        for so in sale_orders:
+            pid = (so.get("partner_id") or [None])[0]
+            sid = (so.get("partner_shipping_id") or [None])[0]
+            if pid:
+                partner_ids.add(int(pid))
+            if sid:
+                ship_ids.add(int(sid))
+
+        all_partner_ids = sorted(partner_ids | ship_ids)
+        partners: list[dict[str, Any]] = []
+        if all_partner_ids:
+            partners = models.execute_kw(
+                dbname,
+                uid,
+                key,
+                "res.partner",
+                "read",
+                [all_partner_ids],
+                {"fields": ["id", "name", "street", "street2", "city", "state_id", "zip", "country_id"]},
+            )
+        partners_by_id = {int(p["id"]): p for p in partners if p.get("id")}
+
+        def fmt_addr(p: dict[str, Any] | None) -> str:
+            if not p:
+                return ""
+            parts: list[str] = []
+            for k in ("street", "street2", "city", "zip"):
+                v = p.get(k)
+                if v:
+                    parts.append(str(v))
+            st = p.get("state_id")
+            if isinstance(st, list) and len(st) >= 2 and st[1]:
+                parts.append(str(st[1]))
+            c = p.get("country_id")
+            if isinstance(c, list) and len(c) >= 2 and c[1]:
+                parts.append(str(c[1]))
+            parts = [re.sub(r"\s+", " ", x).strip() for x in parts if x and str(x).strip()]
+            return ", ".join(parts)
+
+        # 7) facturas (enfoque: Ventas por invoice_ids + Contabilidad por tokens)
+        invoices_by_so_id: dict[int, tuple[str, str]] = {}
+        can_read_moves = True
+        try:
+            # simple permission test
+            models.execute_kw(dbname, uid, key, "account.move", "fields_get", [], {"attributes": ["type"]})
+        except Exception:
+            can_read_moves = False
+
+        moves_by_id: dict[int, dict[str, Any]] = {}
+        token_map: dict[str, list[dict[str, Any]]] = {}
+
+        if can_read_moves:
+            # Cache moves referenciados por invoice_ids
+            inv_ids_all: set[int] = set()
+            for so in sale_orders:
+                inv_ids = so.get("invoice_ids") or []
+                if isinstance(inv_ids, list):
+                    for x in inv_ids:
+                        try:
+                            inv_ids_all.add(int(x))
+                        except Exception:
+                            continue
+            inv_ids_all = {int(x) for x in inv_ids_all if int(x) > 0}
+            if inv_ids_all:
+                try:
+                    moves = models.execute_kw(
+                        dbname,
+                        uid,
+                        key,
+                        "account.move",
+                        "read",
+                        [sorted(inv_ids_all)],
+                        {"fields": ["id", "name", "state", "move_type", "invoice_origin", "payment_reference"]},
+                    ) or []
+                    moves_by_id = {int(m.get("id") or 0): m for m in moves if m.get("id")}
+                except Exception:
+                    moves_by_id = {}
+
+            # Token-map (invoice_origin / payment_reference) para evitar falsos positivos + evitar N consultas
+            origin_set = {str(so.get("name") or "").strip() for so in sale_orders if str(so.get("name") or "").strip()}
+            if origin_set:
+                try:
+                    moves2 = models.execute_kw(
+                        dbname,
+                        uid,
+                        key,
+                        "account.move",
+                        "search_read",
+                        [[("state", "=", "posted"), ("move_type", "in", ["out_invoice", "out_receipt", "out_refund"]), "|", ("invoice_origin", "!=", False), ("payment_reference", "!=", False)]],
+                        {"fields": ["id", "name", "state", "move_type", "invoice_origin", "payment_reference"], "limit": 5000, "order": "id desc", "context": {"active_test": False}},
+                    ) or []
+                except Exception:
+                    moves2 = []
+                for m in moves2:
+                    if not _is_relevant_move(m):
+                        continue
+                    toks = _tokenize_refs(str(m.get("invoice_origin") or "")) + _tokenize_refs(str(m.get("payment_reference") or ""))
+                    for t in toks:
+                        if t in origin_set:
+                            token_map.setdefault(t, []).append(m)
+
+            # Resolver por pedido
+            for so in sale_orders:
+                so_id = int(so.get("id") or 0)
+                so_name = str(so.get("name") or "").strip()
+                n, st = "", ""
+
+                # A) Ventas
+                inv_ids = so.get("invoice_ids") or []
+                rel: list[dict[str, Any]] = []
+                if isinstance(inv_ids, list):
+                    for iid in inv_ids:
+                        try:
+                            ii = int(iid)
+                        except Exception:
+                            continue
+                        if ii in moves_by_id:
+                            rel.append(moves_by_id[ii])
+                if rel:
+                    n, st = _pick_best_invoice(rel)
+
+                # B) Contabilidad (solo si todavía no hay factura válida)
+                if _make_invoice_status(n, st) != "Facturado" and so_name:
+                    rel2 = token_map.get(so_name) or []
+                    n2, st2 = _pick_best_invoice(rel2)
+                    if _make_invoice_status(n2, st2) == "Facturado":
+                        n, st = n2, st2
+
+                invoices_by_so_id[so_id] = (str(n or ""), str(st or ""))
+        else:
+            for so in sale_orders:
+                so_id = int(so.get("id") or 0)
+                invoices_by_so_id[so_id] = ("", "")
+
+        # 8) insertar BatchOrder rows
+        now = datetime.utcnow()
+        inserted = 0
+        for so in sale_orders:
+            so_id = int(so.get("id") or 0)
+            if not so_id:
+                continue
+
+            # cliente
+            cliente = ""
+            if isinstance(so.get("partner_id"), list) and len(so["partner_id"]) >= 2:
+                cliente = str(so["partner_id"][1] or "")
+
+            # direccion (prefer ship)
+            addr_partner = None
+            ship_id = (so.get("partner_shipping_id") or [None])[0]
+            partner_id = (so.get("partner_id") or [None])[0]
+            if ship_id:
+                addr_partner = partners_by_id.get(int(ship_id))
+            if addr_partner is None and partner_id:
+                addr_partner = partners_by_id.get(int(partner_id))
+            direccion = fmt_addr(addr_partner)
+
+            id_meli = odoo_readonly._clean_html_text(so.get("x_studio_meli")) if hasattr(odoo_readonly, "_clean_html_text") else str(so.get("x_studio_meli") or "")  # type: ignore[attr-defined]
+
+            n_factura, estado_factura = invoices_by_so_id.get(so_id, ("", ""))
+            # Si está facturado: texto. Si no: link para abrir la pantalla de facturación.
+            link_factura = _make_invoice_status(n_factura, estado_factura) or _pending_invoice_link(so_id, n_factura)
+
+            bo = BatchOrder(
+                imported_batch_id=ib.id,
+                created_at=now,
+                sale_order_id=so_id,
+                sale_order_ref=str(so.get("name") or ""),
+                id_web=str(so.get("x_studio_id_web_pedidos") or ""),
+                id_melicart=str(so.get("x_meli_cart") or ""),
+                id_meli=id_meli,
+                cliente=cliente,
+                direccion=direccion,
+                monto_compra=so.get("amount_total"),
+                n_factura=str(n_factura or ""),
+                estado_factura=str(estado_factura or ""),
+                link_factura=str(link_factura or ""),
+            )
+            db.session.add(bo)
+            inserted += 1
+
+        ib.order_count = inserted
+
+        # Refrescar facturas de pedidos pendientes (incluye los recién insertados)
+        try:
+            _refresh_pending_invoices(models, dbname, uid, key)
+        except Exception:
+            pass
+
+        db.session.commit()
+
+        return PollResult(
+            status="ok",
+            imported=True,
+            batch_name=batch_name,
+            odoo_batch_id=odoo_batch_id,
+            picking_count=len(picking_ids),
+            order_count=inserted,
+        ).__dict__
+
+    except Exception as e:
+        current_app.logger.exception("batch_poller_error")
+        # rollback this transaction
+        try:
+            db.session.rollback()
+        except Exception:
+            pass
+        return PollResult(status="error", message=str(e)).__dict__

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">CFE Auto</h2>
+  <div style="font-size:13px;color:#444;margin-bottom:12px;">
+    Polling: <strong>{{ "HABILITADO" if poll_enabled else "DESHABILITADO" }}</strong>.
+    {% if not poll_enabled %}<span>Activarlo en Admin → Configuración.</span>{% endif %}
+  </div>
+
+  <div style="display:flex;gap:10px;align-items:center;margin-bottom:12px;">
+    <button class="btn primary" onclick="pollNow()">Poll ahora</button>
+    <button class="btn" onclick="load()">Refrescar</button>
+    <div id="status" style="font-size:13px;color:#555;"></div>
+  </div>
+
+  <div class="card">
+    <div id="table" style="font-size:13px;">Cargando...</div>
+  </div>
+</div>
+
+<script>
+async function load(){
+  const r = await fetch(`{{ url_for('cfe_auto.api_cfes') }}`);
+  const data = await r.json();
+  if(!Array.isArray(data)){ document.getElementById('table').innerHTML='Error.'; return; }
+  let html = '<table><thead><tr><th>Estado</th><th>CFE</th><th>Receptor</th><th>PDF</th><th>Actualizado</th><th>Error</th></tr></thead><tbody>';
+  for(const row of data){
+    const pdf = row.pdf_url ? `<a class="btn" target="_blank" href="${row.pdf_url}">Ticket</a>` : '';
+    const chg = row.change_pdf_url ? ` <a class="btn" target="_blank" href="${row.change_pdf_url}">Cambio</a>` : '';
+    html += `<tr>
+      <td>${row.status}</td>
+      <td>${row.cfe || ''}</td>
+      <td>${row.receptor || ''}</td>
+      <td>${pdf}${chg}</td>
+      <td>${row.updated_at || ''}</td>
+      <td style="max-width:320px;white-space:pre-wrap;">${row.last_error || ''}</td>
+    </tr>`;
+  }
+  html += '</tbody></table>';
+  document.getElementById('table').innerHTML = html;
+}
+
+async function pollNow(){
+  document.getElementById('status').innerText = 'Ejecutando...';
+  const r = await fetch(`{{ url_for('cfe_auto.api_poll_now') }}`, {method:'POST'});
+  const d = await r.json();
+  if(!d.ok){ document.getElementById('status').innerText = 'Error: ' + (d.error || ''); return; }
+  document.getElementById('status').innerText = `OK. created=${d.created||0} updated=${d.updated||0} errors=${d.errors||0}`;
+  await load();
+}
+load();
+</script>
+{% endblock %}

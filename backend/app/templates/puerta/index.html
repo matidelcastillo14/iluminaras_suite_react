@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% block title %}Control puerta y persiana{% endblock %}
+
+{% block content %}
+<div class="container mt-4" style="max-width: 900px;">
+  <h3 class="mb-3">Control puerta y persiana</h3>
+
+  <div class="card mb-3">
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+        <div>
+          <div class="fw-bold">Estado del controlador ESP32</div>
+          <div class="text-muted" style="font-size: 0.95rem;">
+            {% if health and health.ok %}
+              OK · IP {{ health.ip }} · Heap {{ health.free_heap }} · Uptime {{ health.uptime_ms }} ms
+              {% if health.shutter_state %} · Persiana {{ health.shutter_state }}{% endif %}
+            {% else %}
+              No disponible ({{ health_code }}) · {{ health.msg if health and health.msg else '' }}
+            {% endif %}
+          </div>
+        </div>
+
+        <button id="btnOpen" class="btn btn-danger" {% if not (health and health.ok) %}disabled{% endif %}>
+          Abrir puerta
+        </button>
+      </div>
+
+      <hr class="my-3"/>
+
+      <div class="mb-2 fw-bold">Persiana</div>
+      <div class="d-flex flex-wrap gap-2">
+        <button id="btnUp" class="btn btn-success" {% if not (health and health.ok) %}disabled{% endif %}>Mantener para subir</button>
+        <button id="btnDown" class="btn btn-warning text-white" {% if not (health and health.ok) %}disabled{% endif %}>Mantener para bajar</button>
+        <button id="btnStop" class="btn btn-secondary" {% if not (health and health.ok) %}disabled{% endif %}>Detener</button>
+      </div>
+
+      <hr class="my-3"/>
+      <div id="result" class="small text-muted"></div>
+    </div>
+  </div>
+
+  <div class="alert alert-secondary small">
+    Puerta: envía <code>POST /api/open</code>. Persiana: <code>/api/shutter/up</code>, <code>/api/shutter/down</code> y <code>/api/shutter/stop</code>.
+  </div>
+</div>
+
+<script>
+(function () {
+  const btnOpen = document.getElementById('btnOpen');
+  const btnUp = document.getElementById('btnUp');
+  const btnDown = document.getElementById('btnDown');
+  const btnStop = document.getElementById('btnStop');
+  const out = document.getElementById('result');
+  let activeHold = null;
+
+  async function postTo(url) {
+    try {
+      const r = await fetch(url, { method: 'POST' });
+      const txt = await r.text();
+      out.textContent = `HTTP ${r.status} · ${txt}`;
+    } catch (e) {
+      out.textContent = 'Error: ' + (e && e.message ? e.message : e);
+    }
+  }
+
+  if (btnOpen) btnOpen.addEventListener('click', async () => {
+    btnOpen.disabled = true;
+    out.textContent = 'Enviando apertura...';
+    await postTo('{{ url_for("puerta.open_door") }}');
+    setTimeout(() => { btnOpen.disabled = false; }, 1200);
+  });
+
+  function startHold(kind) {
+    if (activeHold) return;
+    activeHold = kind;
+    out.textContent = kind === 'up' ? 'Subiendo...' : 'Bajando...';
+    postTo(kind === 'up' ? '{{ url_for("puerta.shutter_up") }}' : '{{ url_for("puerta.shutter_down") }}');
+  }
+
+  function stopHold() {
+    if (!activeHold) return;
+    activeHold = null;
+    out.textContent = 'Deteniendo persiana...';
+    postTo('{{ url_for("puerta.shutter_stop") }}');
+  }
+
+  function bindHold(btn, kind) {
+    if (!btn) return;
+    btn.addEventListener('mousedown', () => startHold(kind));
+    btn.addEventListener('mouseup', stopHold);
+    btn.addEventListener('mouseleave', stopHold);
+    btn.addEventListener('touchstart', (e) => { e.preventDefault(); startHold(kind); }, { passive: false });
+    btn.addEventListener('touchend', (e) => { e.preventDefault(); stopHold(); }, { passive: false });
+    btn.addEventListener('touchcancel', (e) => { e.preventDefault(); stopHold(); }, { passive: false });
+  }
+
+  bindHold(btnUp, 'up');
+  bindHold(btnDown, 'down');
+  if (btnStop) btnStop.addEventListener('click', stopHold);
+})();
+</script>
+{% endblock %}

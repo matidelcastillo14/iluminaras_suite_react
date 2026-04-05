@@ -1,0 +1,90 @@
+2026-03-17 09:58:48,081 INFO app pid=14720 home_office_mark_queued user_id=35 username=FigueredoT ref=54959780 event_key=ed5d6d33b489fc4a8324aef6dca54ab7076bb53d8464dbe0b7934c592330edfa
+2026-03-17 09:58:48,516 INFO app pid=14720 home_office_mark_queued user_id=35 username=FigueredoT ref=54959780 event_key=ed5d6d33b489fc4a8324aef6dca54ab7076bb53d8464dbe0b7934c592330edfa
+2026-03-17 11:00:35,953 INFO app pid=14720 home_office_mark_queued user_id=35 username=FigueredoT ref=54959780 event_key=9bd73c56b82ef645f2ef30d9f3611de991bc5694d44232fa3fa73bf626d005e9
+2026-03-17 12:20:39,067 INFO access pid=14720 rid=e0ba6083f3ca start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 12:20:39,072 INFO access pid=14720 rid=e0ba6083f3ca end status=200 ms=4 bytes=12920
+2026-03-17 12:20:39,213 INFO access pid=14720 rid=47b59635f837 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 12:20:39,215 INFO access pid=14720 rid=47b59635f837 end status=304 ms=1 bytes=-
+2026-03-17 12:20:41,470 INFO access pid=14720 rid=58c6bdcc844f start GET /api/orders/search?q=174817 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 12:20:43,763 INFO access pid=14720 rid=58c6bdcc844f end status=200 ms=2292 bytes=528
+2026-03-17 12:20:46,336 INFO access pid=14720 rid=c3c45ee687dd start GET /api/orders/89132?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 12:20:47,184 INFO access pid=14720 rid=c3c45ee687dd end status=200 ms=848 bytes=431
+2026-03-17 12:20:48,943 INFO access pid=14720 rid=d25269087407 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 12:20:48,945 INFO app pid=14720 generate_start doc_type=move doc_id=89132
+2026-03-17 12:20:49,389 INFO app pid=14720 pdf_start tipo=e-Factura serie=A nro=22326 total=999.4
+2026-03-17 12:20:49,495 INFO app pid=14720 generate_ok doc_type=move doc_id=89132 pdf=cfe_A22326_20260317_122049_608aca68.pdf
+2026-03-17 12:20:49,499 INFO access pid=14720 rid=d25269087407 end status=200 ms=556 bytes=88
+2026-03-17 12:20:49,593 INFO access pid=14720 rid=dd9020c690a5 start GET /pdf/cfe_A22326_20260317_122049_608aca68.pdf?t=1773760849434 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 12:20:49,611 INFO access pid=14720 rid=dd9020c690a5 end status=200 ms=17 bytes=-
+2026-03-17 13:42:44,987 INFO access pid=14720 rid=d3c79041a21a start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:42:44,994 INFO access pid=14720 rid=d3c79041a21a end status=200 ms=6 bytes=12920
+2026-03-17 13:42:45,159 INFO access pid=14720 rid=0e51b5437d5f start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:42:45,161 INFO access pid=14720 rid=0e51b5437d5f end status=304 ms=2 bytes=-
+2026-03-17 13:42:47,534 INFO access pid=14720 rid=5867071b26d3 start GET /api/orders/search?q=657202 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:42:49,756 INFO access pid=14720 rid=5867071b26d3 end status=200 ms=2221 bytes=209
+2026-03-17 13:42:50,692 INFO access pid=14720 rid=a001e0383f98 start GET /api/orders/90783?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:42:51,955 INFO access pid=14720 rid=a001e0383f98 end status=200 ms=1262 bytes=490
+2026-03-17 13:42:54,651 INFO access pid=14720 rid=347155592395 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:42:54,654 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:42:55,466 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=sale_no_invoices
+2026-03-17 13:42:55,472 INFO access pid=14720 rid=347155592395 end status=409 ms=820 bytes=66
+2026-03-17 13:42:57,814 INFO access pid=14720 rid=fa783c391500 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:42:57,816 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:42:58,652 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=sale_no_invoices
+2026-03-17 13:42:58,656 INFO access pid=14720 rid=fa783c391500 end status=409 ms=842 bytes=66
+2026-03-17 13:43:01,474 INFO access pid=14720 rid=226c5574f9a5 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:43:01,476 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:43:02,304 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=sale_no_invoices
+2026-03-17 13:43:02,307 INFO access pid=14720 rid=226c5574f9a5 end status=409 ms=833 bytes=66
+2026-03-17 13:43:03,231 INFO access pid=14720 rid=a08f02c756ee start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:43:03,234 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:43:04,019 INFO access pid=14720 rid=0bf790bd84e6 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:43:04,021 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:43:04,024 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=Request-sent
+2026-03-17 13:43:04,060 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=sale_no_invoices
+2026-03-17 13:43:04,163 INFO access pid=14720 rid=0bf790bd84e6 end status=409 ms=144 bytes=62
+2026-03-17 13:43:04,167 INFO access pid=14720 rid=a08f02c756ee end status=409 ms=935 bytes=66
+2026-03-17 13:43:06,935 INFO access pid=14720 rid=7213003c0475 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:43:06,937 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:43:07,861 INFO access pid=14720 rid=822e8438d314 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:43:07,864 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:43:07,868 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=Request-sent
+2026-03-17 13:43:07,874 INFO access pid=14720 rid=822e8438d314 end status=409 ms=13 bytes=62
+2026-03-17 13:43:08,467 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=sale_no_invoices
+2026-03-17 13:43:08,472 INFO access pid=14720 rid=7213003c0475 end status=409 ms=1536 bytes=66
+2026-03-17 13:43:11,242 INFO access pid=14720 rid=9eee46318392 start GET /api/orders/search?q=657202 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:43:13,158 INFO access pid=14720 rid=9eee46318392 end status=200 ms=1916 bytes=209
+2026-03-17 13:43:13,273 INFO access pid=14720 rid=511c0a496daf start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:43:13,274 INFO access pid=14720 rid=511c0a496daf end status=200 ms=1 bytes=12920
+2026-03-17 13:43:23,562 INFO access pid=14720 rid=7db0d9b7bafb start GET /api/orders/search?q=657202 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:43:25,062 INFO access pid=14720 rid=7db0d9b7bafb end status=200 ms=1499 bytes=209
+2026-03-17 13:43:26,002 INFO access pid=14720 rid=c1ecafd362fd start GET /api/orders/90783?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:43:27,064 INFO access pid=14720 rid=c1ecafd362fd end status=200 ms=1061 bytes=490
+2026-03-17 13:43:29,238 INFO access pid=14720 rid=f927042c4b85 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:43:29,240 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:43:30,068 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=sale_no_invoices
+2026-03-17 13:43:30,072 INFO access pid=14720 rid=f927042c4b85 end status=409 ms=834 bytes=66
+2026-03-17 13:44:04,932 INFO access pid=14720 rid=4077b3264f91 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:44:04,934 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:44:05,806 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=sale_no_invoices
+2026-03-17 13:44:05,810 INFO access pid=14720 rid=4077b3264f91 end status=409 ms=878 bytes=66
+2026-03-17 13:44:25,802 INFO access pid=14720 rid=68ad3e815103 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:44:25,807 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:44:26,653 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=sale_no_invoices
+2026-03-17 13:44:26,656 INFO access pid=14720 rid=68ad3e815103 end status=409 ms=853 bytes=66
+2026-03-17 13:44:39,618 INFO access pid=14720 rid=84f500a63e0a start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:44:39,620 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:44:40,431 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=sale_no_invoices
+2026-03-17 13:44:40,435 INFO access pid=14720 rid=84f500a63e0a end status=409 ms=816 bytes=66
+2026-03-17 13:44:41,848 INFO access pid=14720 rid=47267338fee7 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:44:41,850 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:44:42,699 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=sale_no_invoices
+2026-03-17 13:44:42,702 INFO access pid=14720 rid=47267338fee7 end status=409 ms=854 bytes=66
+2026-03-17 13:45:27,658 INFO access pid=14720 rid=0be7f024f724 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 13:45:27,660 INFO app pid=14720 generate_start doc_type=sale doc_id=90783
+2026-03-17 13:45:28,481 WARNING app pid=14720 generate_odoo_cfe_error doc_type=sale doc_id=90783 err=sale_no_invoices
+2026-03-17 13:45:28,484 INFO access pid=14720 rid=0be7f024f724 end status=409 ms=826 bytes=66
+2026-03-17 17:27:15,607 INFO access pid=14720 rid=8954a1f81a65 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 17:27:15,608 INFO access pid=14720 rid=8954a1f81a65 end status=200 ms=1 bytes=12920
+2026-03-17 17:27:15,852 INFO access pid=14720 rid=1767b6e62c96 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-17 17:27:15,854 INFO access pid=14720 rid=1767b6e62c96 end status=304 ms=1 bytes=-

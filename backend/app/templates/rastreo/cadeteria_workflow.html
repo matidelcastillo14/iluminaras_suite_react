@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  /* Cadetería: mobile-first */
+  .rw-wrap { max-width: 920px; margin: 0 auto; }
+  .rw-tabs { display:flex; gap:10px; flex-wrap:nowrap; margin-bottom:14px; position:sticky; top:0; background:#fff; padding:10px 0; z-index:5; }
+  .rw-tabs .btn { flex:1; padding:12px 10px; border-radius:14px; font-size:15px; }
+  .rw-note { font-size:13px; color:#444; line-height:1.35; }
+  .rw-actions { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px; }
+  .rw-actions .btn { padding:12px 10px; border-radius:14px; }
+  .rw-actions .btn.primary { box-shadow: 0 6px 18px rgba(0,0,0,.08); }
+  .rw-video { width:100%; background:#000; border:1px solid #eee; border-radius:16px; aspect-ratio: 4 / 3; max-height: 420px; }
+  .rw-list { display:flex; flex-direction:column; gap:10px; }
+  .rw-item { display:flex; gap:10px; align-items:center; justify-content:space-between; padding:12px 12px; border:1px solid #eee; border-radius:16px; background:#fff; }
+  .rw-item-click { cursor:pointer; }
+  .rw-item-click:active { transform: scale(.99); }
+  .rw-item-main { min-width:0; }
+  .rw-item-title { font-weight:700; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .rw-item-sub { font-size:12px; color:#666; margin-top:2px; }
+  .rw-item-meta { font-size:12px; color:#444; display:flex; flex-direction:column; gap:4px; align-items:flex-end; }
+  .rw-tag { font-size:12px; margin-left:6px; }
+  .rw-btn-small { padding:10px 10px; border-radius:12px; font-size:13px; }
+  .rw-selected { border:1px solid #eee; border-radius:16px; padding:12px; background:#fff; }
+  .rw-muted { color:#666; font-size:13px; }
+  .rw-kpi { display:flex; align-items:center; justify-content:space-between; gap:10px; font-size:13px; color:#444; }
+  .rw-kpi strong { font-size:15px; }
+  .rw-divider { margin:16px 0; border:none; border-top:1px solid #eee; }
+
+  @media (min-width: 900px){
+    .rw-tabs { position:static; }
+    .rw-actions { grid-template-columns: repeat(4, auto); justify-content:flex-start; }
+  }
+</style>
+
+<div class="card">
+  <div class="rw-wrap">
+    <h2 style="margin:0 0 10px 0;">{{ title }}</h2>
+
+    <div class="rw-tabs">
+      <button class="btn primary" type="button" id="tab_carga">Carga</button>
+      <button class="btn" type="button" id="tab_reparto">Reparto</button>
+      <a class="btn" href="{{ url_for('rastreo.my_scans') }}">Mis escaneos</a>
+    </div>
+
+  <div id="view_carga" class="card" style="margin-bottom:14px;">
+    <h3 style="margin:0 0 10px 0;">Carga de paquetes</h3>
+    <p id="scan_status_carga" class="rw-note" style="margin:0 0 10px 0;">
+      Escaneá uno tras otro. Se va armando la lista en el orden de escaneo.
+    </p>
+
+    <div class="rw-actions">
+      <button class="btn primary" type="button" id="btn_start_carga">Escanear</button>
+      <button class="btn" type="button" id="btn_stop_carga">Detener</button>
+      <button class="btn" type="button" id="btn_clear_batch">Vaciar</button>
+      <button class="btn primary" type="button" id="btn_start_reparto">Iniciar reparto</button>
+    </div>
+
+    <div style="margin-top:12px;">
+      <video id="qr_video_carga" class="rw-video" playsinline muted></video>
+    </div>
+
+    <div style="margin-top:14px;">
+      <div class="rw-kpi" style="margin-bottom:8px;">
+        <div>Lista (orden de escaneo)</div>
+        <div><strong id="batch_count">0</strong></div>
+      </div>
+      <div id="batch_list" class="rw-list"></div>
+    </div>
+
+    <hr class="rw-divider" />
+
+    <h4 style="margin:0 0 8px 0;">Abrir por código (manual)</h4>
+    <form method="post" action="{{ url_for('rastreo.cadeteria_post') }}">
+      <label>Código de rastreo</label>
+      <input name="code" placeholder="Ej: ABCD1234..." />
+      <button class="btn" type="submit" style="margin-top:10px;">Abrir detalle</button>
+    </form>
+  </div>
+
+  <div id="view_reparto" class="card" style="display:none;">
+    <h3 style="margin:0 0 10px 0;">Reparto</h3>
+    <p id="reparto_status" class="rw-note" style="margin:0 0 10px 0;">
+      Seleccioná un pedido, luego escaneá para validar el paquete correcto.
+    </p>
+
+    <div class="grid" style="grid-template-columns:1fr;gap:14px;">
+      <div class="card">
+        <div class="rw-note" style="margin-bottom:8px;">Pedidos del reparto</div>
+        <div id="reparto_list" class="rw-list"></div>
+      </div>
+
+      <div class="card">
+        <h4 style="margin:0 0 10px 0;">Pedido seleccionado</h4>
+        <div id="selected_box" class="rw-selected">Ninguno seleccionado.</div>
+        <p id="val_status" class="rw-note" style="margin:10px 0 0 0;"></p>
+
+        <div class="rw-actions" style="margin-top:10px; grid-template-columns: 1fr 1fr;">
+          <button class="btn primary" type="button" id="btn_validate_scan" disabled>Escanear para validar</button>
+          <button class="btn" type="button" id="btn_stop_valid">Detener cámara</button>
+          <a class="btn" id="btn_open_detail" href="#" style="display:none;">Abrir detalle</a>
+        </div>
+
+        <div style="margin-top:12px;">
+          <video id="qr_video_valid" class="rw-video" playsinline muted></video>
+        </div>
+
+        <div id="actions_box" style="margin-top:12px;opacity:.55;pointer-events:none;">
+          <h4 style="margin:0 0 10px 0;">Acciones (tras validar)</h4>
+
+          <div class="card" style="margin-bottom:10px;">
+            <h5 style="margin:0 0 8px 0;">Entregado</h5>
+            <div class="grid" style="grid-template-columns:1fr 1fr;gap:10px;">
+              <div style="grid-column: 1 / -1;">
+                <label>Relación (requerido)</label>
+                <select id="del_receiver_relation">
+                  <option value="">Seleccionar...</option>
+                                    <option value="Titular (comprador)">Titular (comprador)</option>
+                  <option value="Cónyuge / pareja">Cónyuge / pareja</option>
+                  <option value="Padre / Madre">Padre / Madre</option>
+                  <option value="Hijo/a">Hijo/a</option>
+                  <option value="Hermano/a">Hermano/a</option>
+                  <option value="Otro familiar">Otro familiar</option>
+                  <option value="Amigo/a">Amigo/a</option>
+                  <option value="Vecino/a">Vecino/a</option>
+                  <option value="Portero / Conserje">Portero / Conserje</option>
+                  <option value="Recepción / Administración">Recepción / Administración</option>
+                  <option value="Guardia de seguridad">Guardia de seguridad</option>
+                  <option value="Empleada doméstica">Empleada doméstica</option>
+                  <option value="Encargado/a">Encargado/a</option>
+                  <option value="Compañero/a de trabajo">Compañero/a de trabajo</option>
+                  <option value="Otro">Otro</option>
+                </select>
+              </div>
+              <div>
+                <label>Nombre (requerido)</label>
+                <input id="del_receiver_name" placeholder="Nombre" />
+              </div>
+              <div>
+                <label>Documento (requerido)</label>
+                <input id="del_receiver_id" placeholder="CI" />
+              </div>
+            </div>
+            <button class="btn primary" type="button" id="btn_mark_delivered" style="margin-top:10px;">Marcar: Entregado</button>
+          </div>
+
+          <div class="card" style="margin-bottom:10px;">
+            <h5 style="margin:0 0 8px 0;">No entregado</h5>
+            <label>Motivo (requerido)</label>
+            <input id="fail_reason" placeholder="Ej: No atienden / Dirección incorrecta" />
+            <label>Detalle (opcional)</label>
+            <input id="fail_detail" placeholder="Detalle" />
+            <button class="btn primary" type="button" id="btn_mark_failed" style="margin-top:10px;">Marcar: No entregado</button>
+          </div>
+
+          <div class="card">
+            <h5 style="margin:0 0 8px 0;">Devuelto</h5>
+            <label>Nota (opcional)</label>
+            <input id="ret_note" placeholder="Ej: Devuelto al depósito" />
+            <button class="btn primary" type="button" id="btn_mark_returned" style="margin-top:10px;">Marcar: Devuelto</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  </div><!-- /rw-wrap -->
+</div>
+
+<script src="{{ url_for('static', filename='rastreo_scanner.js') }}"></script>
+<script src="{{ url_for('static', filename='cadeteria_workflow.js') }}"></script>
+{% endblock %}

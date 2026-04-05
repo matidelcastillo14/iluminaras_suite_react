@@ -1,0 +1,360 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Comprobantes Fiscales - Iluminarás</title>
+  <style>
+    body{ font-family: Arial, Helvetica, sans-serif; margin: 18px; color:#111; }
+    .wrap{ max-width: 860px; margin: 0 auto; }
+    .card{ border:1px solid #e5e5e5; border-radius:12px; padding:14px; }
+    h1{ margin:0 0 10px 0; font-size:18px; }
+    .meta{ font-size:12px; color:#444; margin-bottom:10px; }
+    form{ display:grid; gap:10px; }
+    label{ font-size:12px; color:#333; display:block; margin-bottom:4px; }
+    input, textarea, select{
+      width:100%; box-sizing:border-box; padding:8px 10px;
+      border:1px solid #cfcfcf; border-radius:10px; font-size:14px;
+      background:#fff;
+    }
+    textarea{ min-height:90px; resize:vertical; }
+    .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .btns{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    button{
+      padding:10px 12px; border-radius:10px; border:1px solid #cfcfcf; background:#f6f6f6; cursor:pointer;
+      font-weight:700;
+    }
+    .hint{ font-size:12px; color:#555; }
+    .ok{ font-size:13px; color:#0a5; display:none; }
+    .err{ font-size:13px; color:#b00; display:none; }
+    .logo{ height:22px; vertical-align:middle; }
+    .lookup{ margin: 12px 0 16px 0; }
+    .lookupRow{ display:flex; gap:8px; align-items:center; }
+    .lookupRow input{ flex:1; }
+    .results{ border:1px solid #cfcfcf; border-radius:10px; margin-top:6px; display:none; overflow:hidden; }
+    .item{ padding:9px 10px; cursor:pointer; border-top:1px solid #eee; }
+    .item:first-child{ border-top:0; }
+    .item:hover{ background:#f6f6f6; }
+    .muted{ color:#666; font-size:12px; }
+    .warn{ font-size:12px; color:#b00; display:none; margin-top:6px; }
+
+    .box{ border:1px solid #cfcfcf; border-radius:10px; padding:10px; background:#fff; }
+    .box h2{ margin:0 0 8px 0; font-size:14px; }
+    table{ width:100%; border-collapse:collapse; }
+    th, td{ border-top:1px solid #eee; padding:6px 6px; text-align:left; vertical-align:top; font-size:13px; }
+    th{ border-top:0; font-size:12px; color:#333; }
+    .right{ text-align:right; }
+    .scroll{ max-height: 260px; overflow:auto; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Generador de comprobantes fiscales <img class="logo" src="{{ url_for('static', filename='logo.png') }}" alt="logo"></h1>
+      <div class="meta">
+        Ancho ticket: <b>{{ receipt_width_mm }}mm</b> (configurable con variable de entorno RECEIPT_WIDTH_MM).
+      </div>
+
+      <div class="lookup">
+        <label>Buscar pedido / POS / N° factura / cliente / teléfono / dirección</label>
+        <div class="lookupRow">
+          <input id="search" placeholder="Ej: SO12345 / POS123 / A 12345678 / Juan Pérez / 099..." autocomplete="off" />
+          <button id="searchBtn" type="button">Buscar</button>
+        </div>
+        <div id="results" class="results"></div>
+        <div id="lookupErr" class="warn">Búsqueda no disponible (Odoo no configurado o sin conexión).</div>
+        <div class="muted">Tip: ingresá el dato y presioná <b>Buscar</b>.</div>
+      </div>
+
+      <form id="f">
+        <input type="hidden" name="order_id" />
+        <input type="hidden" name="doc_type" value="sale" />
+
+        <div class="row3">
+          <div>
+            <label>Documento</label>
+            <input name="doc_label" readonly />
+          </div>
+          <div>
+            <label>N° etiqueta</label>
+            <input name="etiqueta" readonly />
+          </div>
+          <div>
+            <label>Fecha documento</label>
+            <input name="fecha_doc" readonly />
+          </div>
+        </div>
+
+        <div class="row2">
+          <div>
+            <label>Cliente</label>
+            <input name="nombre" readonly />
+          </div>
+          <div>
+            <label>Teléfono</label>
+            <input name="telefono" readonly />
+          </div>
+        </div>
+
+        <div>
+          <label>Dirección</label>
+          <input name="direccion" readonly />
+        </div>
+
+        <div class="row2">
+          <div>
+            <label>Referencia</label>
+            <input name="client_order_ref" readonly />
+          </div>
+          <div>
+            <label>Generado</label>
+            <input name="generated_at" readonly />
+          </div>
+        </div>
+
+        <div class="box">
+          <h2>Detalle del pedido</h2>
+          <div id="lines" class="scroll muted">Seleccioná un documento para ver el detalle.</div>
+        </div>
+
+        <div class="btns">
+          <button type="submit">Generar PDF</button>
+          <button type="button" onclick="document.getElementById('f').reset()">Limpiar</button>
+          <span class="hint">Al generar, se abre el PDF en una pestaña nueva.</span>
+        </div>
+
+        <div id="ok" class="ok">PDF generado.</div>
+        <div id="err" class="err">Error generando PDF.</div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_SEARCH = "{{ url_for('api_orders_search') }}";
+    const API_ORDER  = "{{ url_for('api_order_detail', order_id=0) }}"; // replace /0 with /<id>
+    const API_GENERATE = "{{ url_for('generate') }}";
+
+    const form = document.getElementById('f');
+    const ok = document.getElementById('ok');
+    const err = document.getElementById('err');
+
+    // --- Odoo lookup UI ---
+    const search = document.getElementById('search');
+    const results = document.getElementById('results');
+    const lookupErr = document.getElementById('lookupErr');
+    const searchBtn = document.getElementById('searchBtn');
+
+    const linesBox = document.getElementById('lines');
+
+    function hideResults(){
+      results.style.display = 'none';
+      results.innerHTML = '';
+    }
+
+    function fillForm(d){
+      if(!d || typeof d !== 'object') return;
+      const set = (name, val) => {
+        const el = form.querySelector(`[name="${name}"]`);
+        if(!el) return;
+        el.value = (val ?? '').toString();
+      };
+      if(d.doc_label !== undefined) set('doc_label', d.doc_label);
+      if(d.etiqueta !== undefined) set('etiqueta', d.etiqueta);
+      if(d.fecha_doc !== undefined) set('fecha_doc', fmtFecha(d.fecha_doc));
+      if(d.nombre !== undefined) set('nombre', d.nombre);
+      if(d.direccion !== undefined) set('direccion', d.direccion);
+      if(d.telefono !== undefined) set('telefono', d.telefono);
+      if(d.client_order_ref !== undefined) set('client_order_ref', d.client_order_ref);
+      if(d.generated_at !== undefined) set('generated_at', d.generated_at);
+    }
+
+    const esc = (s) => (s ?? '').toString()
+      .replaceAll('&','&amp;')
+      .replaceAll('<','&lt;')
+      .replaceAll('>','&gt;')
+      .replaceAll('"','&quot;')
+      .replaceAll("'",'&#39;');
+
+    function renderLines(lines){
+      if(!linesBox) return;
+      if(!Array.isArray(lines) || lines.length === 0){
+        linesBox.classList.add('muted');
+        linesBox.innerHTML = 'Sin detalle.';
+        return;
+      }
+      const rows = [];
+      let total = 0;
+      for(const ln of lines){
+        const desc = esc(ln.descripcion || ln.name || '');
+        const qty = Number(ln.cantidad ?? ln.qty ?? 0) || 0;
+        const pu  = Number(ln.precio_unitario ?? ln.price_unit ?? 0) || 0;
+        const sub = Number(ln.subtotal ?? ln.price_subtotal ?? (qty * pu)) || 0;
+        total += sub;
+        rows.push(`<tr>
+          <td>${desc}</td>
+          <td class="right">${qty.toLocaleString('es-UY')}</td>
+          <td class="right">${pu.toLocaleString('es-UY')}</td>
+          <td class="right">${sub.toLocaleString('es-UY')}</td>
+        </tr>`);
+      }
+      linesBox.classList.remove('muted');
+      linesBox.innerHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th class="right">Cant.</th>
+              <th class="right">P.Unit</th>
+              <th class="right">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${rows.join('')}
+            <tr>
+              <td colspan="3" class="right"><b>Total</b></td>
+              <td class="right"><b>${total.toLocaleString('es-UY')}</b></td>
+            </tr>
+          </tbody>
+        </table>
+      `;
+    }
+
+    async function loadOrder(id, docType){
+      try{
+        const r = await fetch(`${API_ORDER.replace('/0', `/${id}`)}?type=${encodeURIComponent(docType || 'sale')}`);
+        if(!r.ok){
+          lookupErr.style.display = 'block';
+          return;
+        }
+        const d = await r.json();
+        if(d && d.error){
+          lookupErr.style.display = 'block';
+          return;
+        }
+        fillForm(d);
+        renderLines(d.lines || []);
+        // store selected sale.order id for PDF generation
+        const hid = form.querySelector('input[name="order_id"]');
+        if(hid) hid.value = (id ?? '').toString();
+        
+        const htype = form.querySelector('input[name="doc_type"]');
+        if(htype) htype.value = (docType || 'sale').toString();
+
+        lookupErr.style.display = 'none';
+        hideResults();
+      }catch(e){
+        lookupErr.style.display = 'block';
+      }
+    }
+
+    function fmtFecha(s){
+      const v = (s || '').toString().trim();
+      if(!v) return '';
+      // Common Odoo format: YYYY-MM-DD HH:MM:SS
+      const m = v.match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})(?::\d{2})?$/);
+      if(m){
+        const [_, Y, Mo, D, H, Mi] = m;
+        return `${D}/${Mo}/${Y} ${H}:${Mi}`;
+      }
+      return v;
+    }
+
+    async function runSearch(){
+      const q = (search.value || '').trim();
+      if(q.length < 2){
+        hideResults();
+        return;
+      }
+
+      try{
+        const r = await fetch(API_SEARCH + '?q=' + encodeURIComponent(q));
+        const data = await r.json();
+
+        if(!r.ok || (data && data.error)){
+          lookupErr.style.display = 'block';
+          hideResults();
+          return;
+        }
+        lookupErr.style.display = 'none';
+
+        if(!Array.isArray(data) || data.length === 0){
+          hideResults();
+          return;
+        }
+
+        results.innerHTML = data.map(x => {
+          const pedido = (x.pedido || '').toString();
+          const cliente = (x.cliente || '').toString();
+          const ref = (x.ref || '').toString();
+          const codigo = (x.codigo_envio || '').toString();
+          const estado = (x.estado || '').toString();
+          const fecha = fmtFecha(x.fecha);
+          const metaParts = [];
+          if(fecha) metaParts.push('Fecha: ' + fecha);
+          if(ref) metaParts.push('Ref: ' + ref);
+          const factura = (x.factura || '').toString();
+           if(factura) metaParts.push('Factura: ' + factura);
+           if(codigo) metaParts.push('Cód. envío: ' + codigo);
+          if(estado) metaParts.push(estado);
+          const meta = metaParts.join(' · ');
+          const typ = (x.doc_type || 'sale').toString();
+          const tag = (typ === 'pos') ? '[POS] ' : ((typ === 'move') ? '[FAC] ' : '');
+          return `<div class="item" data-id="${x.id}" data-type="${typ}">
+            <div><b>${tag}${pedido}</b> — ${cliente}</div>
+            <div class="muted">${meta}</div>
+          </div>`;
+        }).join('');
+
+        [...results.querySelectorAll('.item[data-id]')].forEach(el => {
+          el.onclick = () => loadOrder(el.getAttribute('data-id'), el.getAttribute('data-type'));
+        });
+
+        results.style.display = 'block';
+      }catch(e){
+        lookupErr.style.display = 'block';
+        hideResults();
+      }
+    }
+
+    searchBtn.addEventListener('click', () => runSearch());
+    search.addEventListener('keydown', (ev) => {
+      if(ev.key === 'Enter'){
+        ev.preventDefault();
+        runSearch();
+      }
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      ok.style.display = 'none';
+      err.style.display = 'none';
+
+      const fd = new FormData(form);
+      if(!(fd.get('order_id') || '').toString().trim()){
+        err.textContent = 'Seleccioná un pedido / POS / factura de la lista antes de generar.';
+        err.style.display = 'block';
+        return;
+      }
+      try{
+        const res = await fetch(API_GENERATE, { method:'POST', body: fd });
+        const data = await res.json();
+        if(!data.ok) throw new Error('not ok');
+        ok.style.display = 'block';
+
+        // Timestamp on UI (interface only)
+        const ts = new Date();
+        const gen = form.querySelector('[name="generated_at"]');
+        if(gen) gen.value = ts.toLocaleString('es-UY');
+
+        // Open PDF in a new tab
+        const url = data.pdf_url + '?t=' + Date.now();
+        window.open(url, '_blank');
+      }catch(ex){
+        err.textContent = 'Error generando PDF.';
+        err.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,16 @@
+2026-04-03 04:32:54,806 INFO access pid=7220 rid=6e406d85d3fe start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-03 04:32:54,866 INFO access pid=7220 rid=6e406d85d3fe end status=200 ms=59 bytes=12920
+2026-04-03 04:32:54,945 INFO access pid=7220 rid=6f0c8fa70eae start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-03 04:32:54,946 INFO access pid=7220 rid=6f0c8fa70eae end status=304 ms=0 bytes=-
+2026-04-03 04:33:33,500 INFO access pid=7220 rid=a428a1c79e79 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-03 04:33:33,501 INFO access pid=7220 rid=a428a1c79e79 end status=200 ms=0 bytes=12920
+2026-04-03 04:33:38,513 INFO access pid=7220 rid=47ca21e87928 start GET /api/orders/search?q=S329163 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-03 04:33:43,236 INFO access pid=7220 rid=47ca21e87928 end status=200 ms=4723 bytes=3
+2026-04-03 04:33:57,789 INFO access pid=7220 rid=83e1e324df6f start GET /api/orders/search?q=329163 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-03 04:33:59,357 INFO access pid=7220 rid=83e1e324df6f end status=200 ms=1567 bytes=259
+2026-04-03 04:34:17,452 INFO access pid=7220 rid=e49866069d82 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-03 04:34:17,452 INFO access pid=7220 rid=e49866069d82 end status=200 ms=0 bytes=12920
+2026-04-03 04:34:20,459 INFO access pid=7220 rid=c6d5c9f37482 start GET /api/orders/search?q=329163 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-03 04:34:22,040 INFO access pid=7220 rid=c6d5c9f37482 end status=200 ms=1581 bytes=259
+2026-04-03 04:34:23,319 INFO access pid=7220 rid=b0026d089dae start GET /api/orders/97539?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-03 04:34:24,404 INFO access pid=7220 rid=b0026d089dae end status=200 ms=1084 bytes=469

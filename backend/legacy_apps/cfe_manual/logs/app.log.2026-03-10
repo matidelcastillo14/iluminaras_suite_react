@@ -1,0 +1,188 @@
+2026-03-10 11:37:14,752 ERROR legacy_apps.etiquetas.app pid=8012 tracking_error: (psycopg2.errors.UniqueViolation) llave duplicada viola restricción de unicidad «ix_tracking_shipments_odoo_order_id»
+DETAIL:  Ya existe la llave (odoo_order_id)=(87935).
+
+[SQL: INSERT INTO tracking_shipments (odoo_order_id, order_name, id_web, tracking_code, status, created_at, updated_at, warehouse_user_id, warehouse_started_at, courier_user_id, courier_assigned_at) VALUES (%(odoo_order_id)s, %(order_name)s, %(id_web)s, %(tracking_code)s, %(status)s, %(created_at)s, %(updated_at)s, %(warehouse_user_id)s, %(warehouse_started_at)s, %(courier_user_id)s, %(courier_assigned_at)s) RETURNING tracking_shipments.id]
+[parameters: {'odoo_order_id': 87935, 'order_name': 'S87964', 'id_web': '174590', 'tracking_code': 'K4RPHRFWMFXYHAWV2I', 'status': 'READY_FOR_DISPATCH', 'created_at': datetime.datetime(2026, 3, 10, 14, 37, 14, 742500), 'updated_at': datetime.datetime(2026, 3, 10, 14, 37, 14, 742502), 'warehouse_user_id': None, 'warehouse_started_at': None, 'courier_user_id': None, 'courier_assigned_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+Traceback (most recent call last):
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+psycopg2.errors.UniqueViolation: llave duplicada viola restricción de unicidad «ix_tracking_shipments_odoo_order_id»
+DETAIL:  Ya existe la llave (odoo_order_id)=(87935).
+
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Servidor\iluminaras_suite2\legacy_apps\etiquetas\app.py", line 1485, in generate
+    tracking_code = ensure_tracking_for_order(
+        odoo_order_id=odoo_order_id,
+        order_name=str(pedido or ""),
+        id_web=str(id_web or ""),
+    )
+  File "C:\Servidor\iluminaras_suite2\app\services\tracking_service.py", line 220, in ensure_tracking_for_order
+    db.session.flush()
+    ~~~~~~~~~~~~~~~~^^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\orm\scoping.py", line 924, in flush
+    return self._proxied.flush(objects=objects)
+           ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4331, in flush
+    self._flush(objects)
+    ~~~~~~~~~~~^^^^^^^^^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4466, in _flush
+    with util.safe_reraise():
+         ~~~~~~~~~~~~~~~~~^^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\util\langhelpers.py", line 224, in __exit__
+    raise exc_value.with_traceback(exc_tb)
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\orm\session.py", line 4427, in _flush
+    flush_context.execute()
+    ~~~~~~~~~~~~~~~~~~~~~^^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 466, in execute
+    rec.execute(self)
+    ~~~~~~~~~~~^^^^^^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\orm\unitofwork.py", line 642, in execute
+    util.preloaded.orm_persistence.save_obj(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self.mapper,
+        ^^^^^^^^^^^^
+        uow.states_for_mapper_hierarchy(self.mapper, False, False),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        uow,
+        ^^^^
+    )
+    ^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 93, in save_obj
+    _emit_insert_statements(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        base_mapper,
+        ^^^^^^^^^^^^
+    ...<3 lines>...
+        insert,
+        ^^^^^^^
+    )
+    ^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\orm\persistence.py", line 1233, in _emit_insert_statements
+    result = connection.execute(
+        statement,
+        params,
+        execution_options=execution_options,
+    )
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1419, in execute
+    return meth(
+        self,
+        distilled_parameters,
+        execution_options or NO_OPTIONS,
+    )
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\sql\elements.py", line 527, in _execute_on_connection
+    return connection._execute_clauseelement(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        self, distilled_params, execution_options
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1641, in _execute_clauseelement
+    ret = self._execute_context(
+        dialect,
+    ...<8 lines>...
+        cache_hit=cache_hit,
+    )
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1846, in _execute_context
+    return self._exec_single_context(
+           ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        dialect, context, statement, parameters
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1986, in _exec_single_context
+    self._handle_dbapi_exception(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        e, str_statement, effective_parameters, cursor, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 2363, in _handle_dbapi_exception
+    raise sqlalchemy_exception.with_traceback(exc_info[2]) from e
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\engine\base.py", line 1967, in _exec_single_context
+    self.dialect.do_execute(
+    ~~~~~~~~~~~~~~~~~~~~~~~^
+        cursor, str_statement, effective_parameters, context
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\sqlalchemy\engine\default.py", line 952, in do_execute
+    cursor.execute(statement, parameters)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+sqlalchemy.exc.IntegrityError: (psycopg2.errors.UniqueViolation) llave duplicada viola restricción de unicidad «ix_tracking_shipments_odoo_order_id»
+DETAIL:  Ya existe la llave (odoo_order_id)=(87935).
+
+[SQL: INSERT INTO tracking_shipments (odoo_order_id, order_name, id_web, tracking_code, status, created_at, updated_at, warehouse_user_id, warehouse_started_at, courier_user_id, courier_assigned_at) VALUES (%(odoo_order_id)s, %(order_name)s, %(id_web)s, %(tracking_code)s, %(status)s, %(created_at)s, %(updated_at)s, %(warehouse_user_id)s, %(warehouse_started_at)s, %(courier_user_id)s, %(courier_assigned_at)s) RETURNING tracking_shipments.id]
+[parameters: {'odoo_order_id': 87935, 'order_name': 'S87964', 'id_web': '174590', 'tracking_code': 'K4RPHRFWMFXYHAWV2I', 'status': 'READY_FOR_DISPATCH', 'created_at': datetime.datetime(2026, 3, 10, 14, 37, 14, 742500), 'updated_at': datetime.datetime(2026, 3, 10, 14, 37, 14, 742502), 'warehouse_user_id': None, 'warehouse_started_at': None, 'courier_user_id': None, 'courier_assigned_at': None}]
+(Background on this error at: https://sqlalche.me/e/20/gkpj)
+2026-03-10 12:13:41,955 INFO access pid=8012 rid=dff8050deb2a start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 12:13:41,978 INFO access pid=8012 rid=dff8050deb2a end status=200 ms=22 bytes=12920
+2026-03-10 12:13:42,034 INFO access pid=8012 rid=64179e3c8cf6 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 12:13:42,035 INFO access pid=8012 rid=64179e3c8cf6 end status=200 ms=1 bytes=-
+2026-03-10 12:13:45,699 INFO access pid=8012 rid=fde0c9136192 start GET /api/orders/search?q=324395 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 12:13:48,161 INFO access pid=8012 rid=fde0c9136192 end status=200 ms=2461 bytes=265
+2026-03-10 12:14:00,697 INFO access pid=8012 rid=bf3b0d251c69 start GET /api/orders/85558?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 12:14:01,587 INFO access pid=8012 rid=bf3b0d251c69 end status=200 ms=889 bytes=412
+2026-03-10 12:14:12,871 INFO access pid=8012 rid=1f33f9ba92f7 start GET /api/orders/search?q=324395 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 12:14:14,482 INFO access pid=8012 rid=1f33f9ba92f7 end status=200 ms=1610 bytes=265
+2026-03-10 12:14:22,135 INFO access pid=8012 rid=4e422a207ae0 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 12:14:22,137 INFO app pid=8012 generate_start doc_type=move doc_id=85558
+2026-03-10 12:14:23,059 INFO app pid=8012 pdf_start tipo=e-Ticket serie=A nro=324395 total=877.5
+2026-03-10 12:14:23,145 INFO app pid=8012 generate_ok doc_type=move doc_id=85558 pdf=cfe_A324395_20260310_121423_aeb88358.pdf
+2026-03-10 12:14:23,147 INFO access pid=8012 rid=4e422a207ae0 end status=200 ms=1012 bytes=89
+2026-03-10 12:14:23,243 INFO access pid=8012 rid=202bd20f6c34 start GET /pdf/cfe_A324395_20260310_121423_aeb88358.pdf?t=1773155667244 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 12:14:23,252 INFO access pid=8012 rid=202bd20f6c34 end status=200 ms=8 bytes=-
+2026-03-10 16:28:14,941 INFO access pid=8012 rid=3b34e0a6055f start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:28:14,953 INFO access pid=8012 rid=3b34e0a6055f end status=200 ms=11 bytes=12920
+2026-03-10 16:28:15,032 INFO access pid=8012 rid=862e5345253a start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:28:15,035 INFO access pid=8012 rid=862e5345253a end status=304 ms=3 bytes=-
+2026-03-10 16:28:16,931 INFO access pid=8012 rid=2653e0a5401a start GET /api/orders/search?q=325031 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:28:19,243 INFO access pid=8012 rid=2653e0a5401a end status=200 ms=2311 bytes=505
+2026-03-10 16:28:19,295 INFO access pid=8012 rid=8c7a31f9f988 start GET /api/orders/search?q=325031 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:28:20,866 INFO access pid=8012 rid=8c7a31f9f988 end status=200 ms=1571 bytes=505
+2026-03-10 16:28:23,469 INFO access pid=8012 rid=9c01479ac011 start GET /api/orders/87013?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:28:24,372 INFO access pid=8012 rid=9c01479ac011 end status=200 ms=902 bytes=435
+2026-03-10 16:28:26,791 INFO access pid=8012 rid=4ec883d7008a start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:28:26,793 INFO app pid=8012 generate_start doc_type=move doc_id=87013
+2026-03-10 16:28:27,296 INFO app pid=8012 pdf_start tipo=e-Ticket serie=A nro=325031 total=515.0
+2026-03-10 16:28:27,365 INFO app pid=8012 generate_ok doc_type=move doc_id=87013 pdf=cfe_A325031_20260310_162827_38024df8.pdf
+2026-03-10 16:28:27,367 INFO access pid=8012 rid=4ec883d7008a end status=200 ms=575 bytes=89
+2026-03-10 16:28:27,469 INFO access pid=8012 rid=1861ab935f55 start GET /pdf/cfe_A325031_20260310_162827_38024df8.pdf?t=1773170912271 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:28:27,489 INFO access pid=8012 rid=1861ab935f55 end status=200 ms=20 bytes=-
+2026-03-10 16:31:32,084 INFO access pid=8012 rid=1ef8b1ec9640 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:31:32,086 INFO app pid=8012 generate_start doc_type=move doc_id=87013
+2026-03-10 16:31:33,224 INFO app pid=8012 pdf_start tipo=e-Ticket serie=A nro=325031 total=515.0
+2026-03-10 16:31:33,360 INFO app pid=8012 generate_ok doc_type=move doc_id=87013 pdf=cfe_A325031_20260310_163133_0143456f.pdf
+2026-03-10 16:31:33,362 INFO access pid=8012 rid=1ef8b1ec9640 end status=200 ms=1278 bytes=89
+2026-03-10 16:31:33,467 INFO access pid=8012 rid=bc15a9533c79 start GET /pdf/cfe_A325031_20260310_163133_0143456f.pdf?t=1773171098265 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:31:33,493 INFO access pid=8012 rid=bc15a9533c79 end status=200 ms=26 bytes=-
+2026-03-10 16:38:00,488 INFO access pid=8012 rid=a92b682ce050 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:38:00,490 INFO access pid=8012 rid=a92b682ce050 end status=200 ms=1 bytes=12920
+2026-03-10 16:38:02,452 INFO access pid=8012 rid=6cd0aa695c99 start GET /api/orders/search?q=2000011957403687 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:38:04,824 INFO access pid=8012 rid=6cd0aa695c99 end status=200 ms=2372 bytes=257
+2026-03-10 16:38:04,882 INFO access pid=8012 rid=1c9bf63e224e start GET /api/orders/search?q=2000011957403687 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:38:05,648 INFO access pid=8012 rid=b6bcf1c66193 start GET /api/orders/89695?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:38:05,649 INFO access pid=8012 rid=b6bcf1c66193 end status=503 ms=1 bytes=47
+2026-03-10 16:38:06,884 INFO access pid=8012 rid=f6a4eae7e8a3 start GET /api/orders/89695?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:38:06,885 INFO access pid=8012 rid=f6a4eae7e8a3 end status=503 ms=1 bytes=47
+2026-03-10 16:38:06,898 INFO access pid=8012 rid=1c9bf63e224e end status=200 ms=2016 bytes=257
+2026-03-10 16:38:08,010 INFO access pid=8012 rid=d8447b9ceed7 start GET /api/orders/89695?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:38:09,515 INFO access pid=8012 rid=d8447b9ceed7 end status=200 ms=1504 bytes=543
+2026-03-10 16:38:11,103 INFO access pid=8012 rid=b1929d6caee0 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:38:11,106 INFO app pid=8012 generate_start doc_type=sale doc_id=89695
+2026-03-10 16:38:12,154 INFO app pid=8012 pdf_start tipo=e-Ticket serie=A nro=325045 total=962.46
+2026-03-10 16:38:12,269 INFO app pid=8012 generate_ok doc_type=sale doc_id=89695 pdf=cfe_A325045_20260310_163812_45b015eb.pdf
+2026-03-10 16:38:12,271 INFO access pid=8012 rid=b1929d6caee0 end status=200 ms=1167 bytes=89
+2026-03-10 16:38:12,403 INFO access pid=8012 rid=851174efd8c8 start GET /pdf/cfe_A325045_20260310_163812_45b015eb.pdf?t=1773171497206 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-10 16:38:12,425 INFO access pid=8012 rid=851174efd8c8 end status=200 ms=22 bytes=-

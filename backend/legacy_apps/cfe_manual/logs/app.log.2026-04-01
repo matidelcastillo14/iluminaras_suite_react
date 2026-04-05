@@ -1,0 +1,186 @@
+2026-04-01 00:21:50,752 WARNING waitress.queue pid=10080 Task queue depth is 1
+2026-04-01 00:21:55,746 WARNING waitress.queue pid=10080 Task queue depth is 2
+2026-04-01 00:22:00,751 WARNING waitress.queue pid=10080 Task queue depth is 3
+2026-04-01 00:22:05,742 WARNING waitress.queue pid=10080 Task queue depth is 4
+2026-04-01 00:31:00,753 WARNING waitress.queue pid=10080 Task queue depth is 1
+2026-04-01 00:31:05,748 WARNING waitress.queue pid=10080 Task queue depth is 2
+2026-04-01 00:31:10,754 WARNING waitress.queue pid=10080 Task queue depth is 3
+2026-04-01 10:48:49,191 WARNING waitress.queue pid=10080 Task queue depth is 1
+2026-04-01 10:48:53,183 WARNING waitress.queue pid=10080 Task queue depth is 2
+2026-04-01 11:04:43,537 INFO access pid=10080 rid=83585af53c3e start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:04:43,539 INFO access pid=10080 rid=83585af53c3e end status=200 ms=1 bytes=12920
+2026-04-01 11:04:43,598 INFO access pid=10080 rid=e11127ef183b start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:04:43,600 INFO access pid=10080 rid=e11127ef183b end status=304 ms=2 bytes=-
+2026-04-01 11:04:48,265 INFO access pid=10080 rid=fe33ad96f521 start GET /api/orders/search?q=328600 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:04:50,196 INFO access pid=10080 rid=fe33ad96f521 end status=200 ms=1931 bytes=249
+2026-04-01 11:04:51,013 INFO access pid=10080 rid=4f248c685569 start GET /api/orders/96237?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:04:51,859 INFO access pid=10080 rid=4f248c685569 end status=200 ms=845 bytes=374
+2026-04-01 11:04:54,263 INFO access pid=10080 rid=736dc6797c3c start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:04:54,264 INFO app pid=10080 generate_start doc_type=move doc_id=96237
+2026-04-01 11:04:54,739 INFO app pid=10080 pdf_start tipo=e-Ticket serie=A nro=328600 total=1982.2
+2026-04-01 11:04:54,844 INFO app pid=10080 generate_ok doc_type=move doc_id=96237 pdf=cfe_A328600_20260401_110454_52dc8c35.pdf
+2026-04-01 11:04:54,844 INFO access pid=10080 rid=736dc6797c3c end status=200 ms=581 bytes=89
+2026-04-01 11:04:54,930 INFO access pid=10080 rid=436d2c4d5f23 start GET /pdf/cfe_A328600_20260401_110454_52dc8c35.pdf?t=1775052294813 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:04:54,947 INFO access pid=10080 rid=436d2c4d5f23 end status=200 ms=17 bytes=-
+2026-04-01 11:46:09,869 INFO access pid=10080 rid=1db27bc6416e start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:46:09,869 INFO access pid=10080 rid=1db27bc6416e end status=200 ms=0 bytes=12920
+2026-04-01 11:46:09,921 INFO access pid=10080 rid=d85e3b53bad6 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:46:09,922 INFO access pid=10080 rid=d85e3b53bad6 end status=304 ms=0 bytes=-
+2026-04-01 11:46:13,051 INFO access pid=10080 rid=5bb43992f621 start GET /api/orders/search?q=325619 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:46:15,196 INFO access pid=10080 rid=5bb43992f621 end status=200 ms=2144 bytes=241
+2026-04-01 11:46:16,312 INFO access pid=10080 rid=6662520be2bf start GET /api/orders/88381?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:46:17,136 INFO access pid=10080 rid=6662520be2bf end status=200 ms=824 bytes=372
+2026-04-01 11:46:21,089 INFO access pid=10080 rid=f6081c172a19 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:46:21,089 INFO app pid=10080 generate_start doc_type=move doc_id=88381
+2026-04-01 11:46:21,510 INFO app pid=10080 pdf_start tipo=e-Ticket serie=A nro=325619 total=2379.98
+2026-04-01 11:46:21,616 INFO app pid=10080 generate_ok doc_type=move doc_id=88381 pdf=cfe_A325619_20260401_114621_c400e8f4.pdf
+2026-04-01 11:46:21,616 INFO access pid=10080 rid=f6081c172a19 end status=200 ms=527 bytes=89
+2026-04-01 11:46:21,785 INFO access pid=10080 rid=46cd1fa9f4fc start GET /pdf/cfe_A325619_20260401_114621_c400e8f4.pdf?t=1775054779914 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:46:21,798 INFO access pid=10080 rid=46cd1fa9f4fc end status=200 ms=13 bytes=-
+2026-04-01 11:49:33,520 INFO access pid=10080 rid=43f421083a18 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 11:49:33,521 INFO access pid=10080 rid=43f421083a18 end status=200 ms=0 bytes=12920
+2026-04-01 12:00:12,346 INFO access pid=10080 rid=e97ce36c5cd1 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 12:00:12,347 INFO access pid=10080 rid=e97ce36c5cd1 end status=200 ms=0 bytes=12920
+2026-04-01 12:00:17,054 INFO access pid=10080 rid=58c95a6407ab start GET /api/orders/search?q=328825 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 12:00:19,562 INFO access pid=10080 rid=58c95a6407ab end status=200 ms=2507 bytes=1281
+2026-04-01 12:00:19,638 INFO access pid=10080 rid=85cc359f8aa2 start GET /api/orders/search?q=328825 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 12:00:21,195 INFO access pid=10080 rid=85cc359f8aa2 end status=200 ms=1556 bytes=1281
+2026-04-01 12:00:27,053 INFO access pid=10080 rid=dac4fc200248 start GET /api/orders/96153?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 12:00:27,963 INFO access pid=10080 rid=dac4fc200248 end status=200 ms=910 bytes=433
+2026-04-01 12:00:29,236 INFO access pid=10080 rid=8aa82686042c start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 12:00:29,238 INFO app pid=10080 generate_start doc_type=move doc_id=96153
+2026-04-01 12:00:29,682 INFO app pid=10080 pdf_start tipo=e-Ticket serie=A nro=328825 total=339.15
+2026-04-01 12:00:29,796 INFO app pid=10080 generate_ok doc_type=move doc_id=96153 pdf=cfe_A328825_20260401_120029_931ad3f1.pdf
+2026-04-01 12:00:29,797 INFO access pid=10080 rid=8aa82686042c end status=200 ms=560 bytes=89
+2026-04-01 12:00:29,883 INFO access pid=10080 rid=62cf7203f6d5 start GET /pdf/cfe_A328825_20260401_120029_931ad3f1.pdf?t=1775055629746 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 12:00:29,896 INFO access pid=10080 rid=62cf7203f6d5 end status=200 ms=13 bytes=-
+2026-04-01 13:02:44,526 INFO access pid=10080 rid=effd04102e39 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:02:44,526 INFO access pid=10080 rid=effd04102e39 end status=200 ms=0 bytes=12920
+2026-04-01 13:02:52,328 INFO access pid=10080 rid=1a0c20c601dc start GET /api/orders/search?q=328824 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:02:56,193 INFO access pid=10080 rid=1a0c20c601dc end status=200 ms=3865 bytes=741
+2026-04-01 13:02:58,517 INFO access pid=10080 rid=453038bd1018 start GET /api/orders/96173?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:02:59,727 INFO access pid=10080 rid=453038bd1018 end status=200 ms=1210 bytes=402
+2026-04-01 13:03:00,968 INFO access pid=10080 rid=bc353748fe3a start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:03:00,969 INFO app pid=10080 generate_start doc_type=move doc_id=96173
+2026-04-01 13:03:01,420 INFO app pid=10080 pdf_start tipo=e-Ticket serie=A nro=328824 total=313.5
+2026-04-01 13:03:01,544 INFO app pid=10080 generate_ok doc_type=move doc_id=96173 pdf=cfe_A328824_20260401_130301_7f2c4d29.pdf
+2026-04-01 13:03:01,544 INFO access pid=10080 rid=bc353748fe3a end status=200 ms=576 bytes=89
+2026-04-01 13:03:01,630 INFO access pid=10080 rid=2e597b7d661b start GET /pdf/cfe_A328824_20260401_130301_7f2c4d29.pdf?t=1775059381472 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:03:01,646 INFO access pid=10080 rid=2e597b7d661b end status=200 ms=16 bytes=-
+2026-04-01 13:04:06,585 INFO access pid=10080 rid=3386363c07b6 start GET /api/orders/search?q=328819 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:04:08,789 INFO access pid=10080 rid=3386363c07b6 end status=200 ms=2203 bytes=279
+2026-04-01 13:04:09,542 INFO access pid=10080 rid=907a257e0ee7 start GET /api/orders/96295?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:04:10,354 INFO access pid=10080 rid=907a257e0ee7 end status=200 ms=812 bytes=447
+2026-04-01 13:04:11,996 INFO access pid=10080 rid=d2109f6cc1d6 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:04:11,997 INFO app pid=10080 generate_start doc_type=move doc_id=96295
+2026-04-01 13:04:12,409 INFO app pid=10080 pdf_start tipo=e-Ticket serie=A nro=328819 total=253.17
+2026-04-01 13:04:12,528 INFO app pid=10080 generate_ok doc_type=move doc_id=96295 pdf=cfe_A328819_20260401_130412_cb8895e5.pdf
+2026-04-01 13:04:12,528 INFO access pid=10080 rid=d2109f6cc1d6 end status=200 ms=532 bytes=89
+2026-04-01 13:04:12,627 INFO access pid=10080 rid=edbf095270e1 start GET /pdf/cfe_A328819_20260401_130412_cb8895e5.pdf?t=1775059452465 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:04:12,649 INFO access pid=10080 rid=edbf095270e1 end status=200 ms=22 bytes=-
+2026-04-01 13:13:09,081 INFO access pid=10080 rid=e0a7fe4b222d start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:13:09,081 INFO access pid=10080 rid=e0a7fe4b222d end status=200 ms=0 bytes=12920
+2026-04-01 13:13:14,490 INFO access pid=10080 rid=f7390c860957 start GET /api/orders/search?q=328826 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:13:17,016 INFO access pid=10080 rid=f7390c860957 end status=200 ms=2525 bytes=253
+2026-04-01 13:13:17,841 INFO access pid=10080 rid=0736d5fff280 start GET /api/orders/96127?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:13:18,652 INFO access pid=10080 rid=0736d5fff280 end status=200 ms=811 bytes=413
+2026-04-01 13:13:19,900 INFO access pid=10080 rid=762cf6364377 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:13:19,900 INFO app pid=10080 generate_start doc_type=move doc_id=96127
+2026-04-01 13:13:20,313 INFO app pid=10080 pdf_start tipo=e-Ticket serie=A nro=328826 total=264.0
+2026-04-01 13:13:20,424 INFO app pid=10080 generate_ok doc_type=move doc_id=96127 pdf=cfe_A328826_20260401_131320_e96c624b.pdf
+2026-04-01 13:13:20,424 INFO access pid=10080 rid=762cf6364377 end status=200 ms=524 bytes=89
+2026-04-01 13:13:20,497 INFO access pid=10080 rid=85ff1daa6f62 start GET /pdf/cfe_A328826_20260401_131320_e96c624b.pdf?t=1775060000349 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:13:20,510 INFO access pid=10080 rid=85ff1daa6f62 end status=200 ms=12 bytes=-
+2026-04-01 13:23:20,811 INFO access pid=10080 rid=095cbc9d0710 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:23:20,812 INFO access pid=10080 rid=095cbc9d0710 end status=200 ms=0 bytes=12920
+2026-04-01 13:23:22,693 INFO access pid=10080 rid=0d4ac43c0801 start GET /api/orders/search?q=2000012264165909 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:23:25,040 INFO access pid=10080 rid=0d4ac43c0801 end status=200 ms=2346 bytes=251
+2026-04-01 13:23:25,694 INFO access pid=10080 rid=7c5c6f280d17 start GET /api/orders/93924?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:23:26,512 INFO access pid=10080 rid=7c5c6f280d17 end status=200 ms=817 bytes=648
+2026-04-01 13:23:28,020 INFO access pid=10080 rid=ef1fed5c5b62 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:23:28,020 INFO app pid=10080 generate_start doc_type=sale doc_id=93924
+2026-04-01 13:23:28,847 INFO app pid=10080 pdf_start tipo=e-Ticket serie=A nro=328381 total=1071.0
+2026-04-01 13:23:28,909 INFO app pid=10080 generate_ok doc_type=sale doc_id=93924 pdf=cfe_A328381_20260401_132328_c3a1084a.pdf
+2026-04-01 13:23:28,909 INFO access pid=10080 rid=ef1fed5c5b62 end status=200 ms=889 bytes=89
+2026-04-01 13:23:28,987 INFO access pid=10080 rid=e2756076cea8 start GET /pdf/cfe_A328381_20260401_132328_c3a1084a.pdf?t=1775060608830 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:23:28,999 INFO access pid=10080 rid=e2756076cea8 end status=200 ms=12 bytes=-
+2026-04-01 13:45:47,169 INFO access pid=10080 rid=d8d3f5417cd0 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:45:47,170 INFO access pid=10080 rid=d8d3f5417cd0 end status=200 ms=0 bytes=12920
+2026-04-01 13:45:47,246 INFO access pid=10080 rid=3bc5c273d025 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:45:47,247 INFO access pid=10080 rid=3bc5c273d025 end status=304 ms=0 bytes=-
+2026-04-01 13:45:49,173 INFO access pid=10080 rid=78d5884faaac start GET /api/orders/search?q=328597 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:45:52,114 INFO access pid=10080 rid=78d5884faaac end status=200 ms=2940 bytes=504
+2026-04-01 13:45:54,835 INFO access pid=10080 rid=958ff56b9a2c start GET /api/orders/96548?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:45:55,671 INFO access pid=10080 rid=958ff56b9a2c end status=200 ms=835 bytes=403
+2026-04-01 13:46:02,750 INFO access pid=10080 rid=dd2f46169a8a start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:46:02,751 INFO app pid=10080 generate_start doc_type=move doc_id=96548
+2026-04-01 13:46:03,510 INFO app pid=10080 pdf_start tipo=Nota de Crédito de e-Ticket serie=A nro=35824 total=207.0
+2026-04-01 13:46:03,607 INFO app pid=10080 generate_ok doc_type=move doc_id=96548 pdf=cfe_A35824_20260401_134603_40d8c484.pdf
+2026-04-01 13:46:03,607 INFO access pid=10080 rid=dd2f46169a8a end status=200 ms=857 bytes=88
+2026-04-01 13:46:03,716 INFO access pid=10080 rid=122f141e44d5 start GET /pdf/cfe_A35824_20260401_134603_40d8c484.pdf?t=1775061963854 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 13:46:03,733 INFO access pid=10080 rid=122f141e44d5 end status=200 ms=17 bytes=-
+2026-04-01 14:58:46,428 INFO access pid=10080 rid=b26657dded86 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 14:58:46,429 INFO access pid=10080 rid=b26657dded86 end status=200 ms=0 bytes=12920
+2026-04-01 14:58:50,938 INFO access pid=10080 rid=80665984c3aa start GET /api/orders/search?q=328600 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 14:58:53,441 INFO access pid=10080 rid=80665984c3aa end status=200 ms=2502 bytes=249
+2026-04-01 14:58:54,726 INFO access pid=10080 rid=3ef202b70205 start GET /api/orders/96237?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 14:58:55,595 INFO access pid=10080 rid=3ef202b70205 end status=200 ms=869 bytes=374
+2026-04-01 14:58:57,329 INFO access pid=10080 rid=b9e40caee1e5 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 14:58:57,330 INFO app pid=10080 generate_start doc_type=move doc_id=96237
+2026-04-01 14:58:57,781 INFO app pid=10080 pdf_start tipo=e-Ticket serie=A nro=328600 total=1982.2
+2026-04-01 14:58:57,914 INFO app pid=10080 generate_ok doc_type=move doc_id=96237 pdf=cfe_A328600_20260401_145857_3777df05.pdf
+2026-04-01 14:58:57,914 INFO access pid=10080 rid=b9e40caee1e5 end status=200 ms=585 bytes=89
+2026-04-01 14:58:58,025 INFO access pid=10080 rid=b1d2f9fde3db start GET /pdf/cfe_A328600_20260401_145857_3777df05.pdf?t=1775066337820 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 14:58:58,042 INFO access pid=10080 rid=b1d2f9fde3db end status=200 ms=17 bytes=-
+2026-04-01 15:23:40,326 INFO access pid=10080 rid=2fbd23379529 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 15:23:40,326 INFO access pid=10080 rid=2fbd23379529 end status=200 ms=0 bytes=12920
+2026-04-01 15:23:40,414 INFO access pid=10080 rid=400c16af83ab start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 15:23:40,414 INFO access pid=10080 rid=400c16af83ab end status=304 ms=0 bytes=-
+2026-04-01 16:25:07,933 INFO access pid=10080 rid=87477dca0199 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 16:25:07,934 INFO access pid=10080 rid=87477dca0199 end status=200 ms=0 bytes=12920
+2026-04-01 16:25:07,981 INFO access pid=10080 rid=13af503c0715 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 16:25:07,982 INFO access pid=10080 rid=13af503c0715 end status=304 ms=0 bytes=-
+2026-04-01 16:25:13,051 INFO access pid=10080 rid=d2bbef0de103 start GET /api/orders/search?q=del%20castillo ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 16:25:15,309 INFO access pid=10080 rid=d2bbef0de103 end status=200 ms=2257 bytes=13167
+2026-04-01 16:25:16,627 INFO access pid=10080 rid=ad124b28b3ef start GET /api/orders/93245?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 16:25:17,739 INFO access pid=10080 rid=ad124b28b3ef end status=200 ms=1111 bytes=726
+2026-04-01 16:25:25,589 INFO access pid=10080 rid=59988f45b45a start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 16:25:25,590 INFO app pid=10080 generate_start doc_type=sale doc_id=93245
+2026-04-01 16:25:26,467 WARNING app pid=10080 generate_odoo_cfe_error doc_type=sale doc_id=93245 err=sale_no_invoices
+2026-04-01 16:25:26,467 INFO access pid=10080 rid=59988f45b45a end status=409 ms=878 bytes=66
+2026-04-01 16:37:57,893 INFO access pid=10080 rid=dd597c530891 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 16:37:57,893 INFO access pid=10080 rid=dd597c530891 end status=200 ms=0 bytes=12920
+2026-04-01 16:38:04,602 WARNING waitress.queue pid=10080 Task queue depth is 1
+2026-04-01 16:38:09,614 WARNING waitress.queue pid=10080 Task queue depth is 2
+2026-04-01 16:38:14,607 WARNING waitress.queue pid=10080 Task queue depth is 3
+2026-04-01 16:38:19,609 WARNING waitress.queue pid=10080 Task queue depth is 4
+2026-04-01 16:38:20,662 WARNING waitress.queue pid=10080 Task queue depth is 5
+2026-04-01 16:38:24,618 WARNING waitress.queue pid=10080 Task queue depth is 6
+2026-04-01 17:05:17,034 INFO access pid=10080 rid=25bee841b606 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 17:05:17,034 INFO access pid=10080 rid=25bee841b606 end status=200 ms=0 bytes=12920
+2026-04-01 17:05:24,412 INFO access pid=10080 rid=b02796cda6c8 start GET /api/orders/search?q=328794 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 17:05:26,612 INFO access pid=10080 rid=b02796cda6c8 end status=200 ms=2199 bytes=251
+2026-04-01 17:05:28,470 INFO access pid=10080 rid=02183d285884 start GET /api/orders/95332?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 17:05:29,313 INFO access pid=10080 rid=02183d285884 end status=200 ms=843 bytes=411
+2026-04-01 17:05:30,718 INFO access pid=10080 rid=87e283069e37 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 17:05:30,718 INFO app pid=10080 generate_start doc_type=move doc_id=95332
+2026-04-01 17:05:31,190 INFO app pid=10080 pdf_start tipo=e-Ticket serie=A nro=328794 total=2382.79
+2026-04-01 17:05:31,292 INFO app pid=10080 generate_ok doc_type=move doc_id=95332 pdf=cfe_A328794_20260401_170531_84700592.pdf
+2026-04-01 17:05:31,292 INFO access pid=10080 rid=87e283069e37 end status=200 ms=574 bytes=89
+2026-04-01 17:05:31,434 INFO access pid=10080 rid=88244fe459b4 start GET /pdf/cfe_A328794_20260401_170531_84700592.pdf?t=1775073931309 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 17:05:31,448 INFO access pid=10080 rid=88244fe459b4 end status=200 ms=13 bytes=-
+2026-04-01 23:33:41,049 INFO access pid=10080 rid=d4c995d14b52 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 23:33:41,053 INFO access pid=10080 rid=d4c995d14b52 end status=200 ms=4 bytes=12920
+2026-04-01 23:33:41,169 INFO access pid=10080 rid=7435e8e1da7d start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 23:33:41,170 INFO access pid=10080 rid=7435e8e1da7d end status=304 ms=1 bytes=-
+2026-04-01 23:33:45,298 INFO access pid=10080 rid=c93ad5257655 start GET /api/orders/search?q=del%20castillo ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 23:33:49,060 INFO access pid=10080 rid=c93ad5257655 end status=200 ms=3762 bytes=13167
+2026-04-01 23:33:54,670 INFO access pid=10080 rid=a2c7ad9478c4 start GET /api/orders/94199?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 23:33:56,582 INFO access pid=10080 rid=a2c7ad9478c4 end status=200 ms=1912 bytes=447
+2026-04-01 23:34:00,408 INFO access pid=10080 rid=e55fc758f155 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 23:34:00,408 INFO app pid=10080 generate_start doc_type=move doc_id=94199
+2026-04-01 23:34:00,877 INFO app pid=10080 pdf_start tipo=e-Ticket serie=A nro=327793 total=2025.0
+2026-04-01 23:34:00,984 INFO app pid=10080 generate_ok doc_type=move doc_id=94199 pdf=cfe_A327793_20260401_233400_5abbc285.pdf
+2026-04-01 23:34:00,984 INFO access pid=10080 rid=e55fc758f155 end status=200 ms=576 bytes=89
+2026-04-01 23:34:01,418 INFO access pid=10080 rid=d0247ab68e80 start GET /pdf/cfe_A327793_20260401_233400_5abbc285.pdf?t=1775097239562 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-01 23:34:01,436 INFO access pid=10080 rid=d0247ab68e80 end status=200 ms=18 bytes=-

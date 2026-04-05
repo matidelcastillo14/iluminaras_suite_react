@@ -1,0 +1,65 @@
+2026-03-21 10:03:40,693 INFO access pid=14720 rid=52114dcebf29 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 10:03:40,716 INFO access pid=14720 rid=52114dcebf29 end status=200 ms=23 bytes=12920
+2026-03-21 10:03:40,784 INFO access pid=14720 rid=2c8e81185976 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 10:03:40,786 INFO access pid=14720 rid=2c8e81185976 end status=304 ms=1 bytes=-
+2026-03-21 10:03:44,624 INFO access pid=14720 rid=c7d0ea63be00 start GET /api/orders/search?q=326078 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 10:03:47,408 INFO access pid=14720 rid=c7d0ea63be00 end status=200 ms=2784 bytes=291
+2026-03-21 10:03:47,445 INFO access pid=14720 rid=6f4fbb06faaa start GET /api/orders/search?q=326078 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 10:03:48,991 INFO access pid=14720 rid=6f4fbb06faaa end status=200 ms=1546 bytes=291
+2026-03-21 10:03:52,491 INFO access pid=14720 rid=bd3e54255ef7 start GET /api/orders/89691?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 10:03:53,360 INFO access pid=14720 rid=bd3e54255ef7 end status=200 ms=868 bytes=436
+2026-03-21 10:03:55,380 INFO access pid=14720 rid=f7c98fb19ab0 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 10:03:55,383 INFO app pid=14720 generate_start doc_type=move doc_id=89691
+2026-03-21 10:03:55,857 INFO app pid=14720 pdf_start tipo=e-Ticket serie=A nro=326078 total=1131.0
+2026-03-21 10:03:55,961 INFO app pid=14720 generate_ok doc_type=move doc_id=89691 pdf=cfe_A326078_20260321_100355_72ef07b0.pdf
+2026-03-21 10:03:55,963 INFO access pid=14720 rid=f7c98fb19ab0 end status=200 ms=582 bytes=89
+2026-03-21 10:03:56,127 INFO access pid=14720 rid=534e661bfb91 start GET /pdf/cfe_A326078_20260321_100355_72ef07b0.pdf?t=1774098234170 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 10:03:56,146 INFO access pid=14720 rid=534e661bfb91 end status=200 ms=19 bytes=-
+2026-03-21 11:20:20,508 INFO access pid=14720 rid=c4e4fc4511be start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:20:20,509 INFO access pid=14720 rid=c4e4fc4511be end status=200 ms=1 bytes=12920
+2026-03-21 11:20:26,840 INFO access pid=14720 rid=5c1f13063367 start GET /api/orders/search?q=326572 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:20:29,182 INFO access pid=14720 rid=5c1f13063367 end status=200 ms=2342 bytes=266
+2026-03-21 11:20:30,138 INFO access pid=14720 rid=8c4b31a03ea5 start GET /api/orders/91160?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:20:31,043 INFO access pid=14720 rid=8c4b31a03ea5 end status=200 ms=905 bytes=454
+2026-03-21 11:20:32,601 INFO access pid=14720 rid=26eea9857c46 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:20:32,603 INFO app pid=14720 generate_start doc_type=move doc_id=91160
+2026-03-21 11:20:33,056 INFO app pid=14720 pdf_start tipo=e-Ticket serie=A nro=326572 total=1560.99
+2026-03-21 11:20:33,162 INFO app pid=14720 generate_ok doc_type=move doc_id=91160 pdf=cfe_A326572_20260321_112033_fe4a0d8b.pdf
+2026-03-21 11:20:33,165 INFO access pid=14720 rid=26eea9857c46 end status=200 ms=563 bytes=89
+2026-03-21 11:20:33,240 INFO access pid=14720 rid=67d447b51686 start GET /pdf/cfe_A326572_20260321_112033_fe4a0d8b.pdf?t=1774102831348 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:20:33,253 INFO access pid=14720 rid=67d447b51686 end status=200 ms=12 bytes=-
+2026-03-21 11:20:39,265 INFO access pid=14720 rid=41c54204c1e8 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:20:39,266 INFO access pid=14720 rid=41c54204c1e8 end status=200 ms=1 bytes=12920
+2026-03-21 11:20:50,631 INFO access pid=14720 rid=b39f7777f7ca start GET /api/orders/search?q=326752 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:20:52,169 INFO access pid=14720 rid=b39f7777f7ca end status=200 ms=1538 bytes=255
+2026-03-21 11:20:52,984 INFO access pid=14720 rid=57942431d917 start GET /api/orders/91606?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:20:53,868 INFO access pid=14720 rid=57942431d917 end status=200 ms=884 bytes=443
+2026-03-21 11:20:55,162 INFO access pid=14720 rid=e64ede6ea9cd start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:20:55,164 INFO app pid=14720 generate_start doc_type=move doc_id=91606
+2026-03-21 11:20:55,606 INFO app pid=14720 pdf_start tipo=e-Ticket serie=A nro=326752 total=1857.01
+2026-03-21 11:20:55,714 INFO app pid=14720 generate_ok doc_type=move doc_id=91606 pdf=cfe_A326752_20260321_112055_d67559c0.pdf
+2026-03-21 11:20:55,717 INFO access pid=14720 rid=e64ede6ea9cd end status=200 ms=554 bytes=89
+2026-03-21 11:20:55,785 INFO access pid=14720 rid=bfacdbc49954 start GET /pdf/cfe_A326752_20260321_112055_d67559c0.pdf?t=1774102853900 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:20:55,805 INFO access pid=14720 rid=bfacdbc49954 end status=200 ms=19 bytes=-
+2026-03-21 11:39:49,779 INFO access pid=14720 rid=d7fb0f9ed526 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:39:49,781 INFO access pid=14720 rid=d7fb0f9ed526 end status=200 ms=1 bytes=12920
+2026-03-21 11:39:59,334 INFO access pid=14720 rid=da581fd3c1a6 start GET /api/orders/search?q=326746 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:40:01,518 INFO access pid=14720 rid=da581fd3c1a6 end status=200 ms=2184 bytes=250
+2026-03-21 11:40:07,278 INFO access pid=14720 rid=be01b4958f4f start GET /api/orders/91634?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:40:08,145 INFO access pid=14720 rid=be01b4958f4f end status=200 ms=866 bytes=396
+2026-03-21 11:40:21,622 INFO access pid=14720 rid=99565f42b24d start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:40:21,623 INFO app pid=14720 generate_start doc_type=move doc_id=91634
+2026-03-21 11:40:22,050 INFO app pid=14720 pdf_start tipo=e-Ticket serie=A nro=326746 total=385.41
+2026-03-21 11:40:22,157 INFO app pid=14720 generate_ok doc_type=move doc_id=91634 pdf=cfe_A326746_20260321_114022_e75411d1.pdf
+2026-03-21 11:40:22,160 INFO access pid=14720 rid=99565f42b24d end status=200 ms=538 bytes=89
+2026-03-21 11:40:22,232 INFO access pid=14720 rid=4be6f8be9fec start GET /pdf/cfe_A326746_20260321_114022_e75411d1.pdf?t=1774104020337 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-21 11:40:22,247 INFO access pid=14720 rid=4be6f8be9fec end status=200 ms=15 bytes=-
+2026-03-21 17:03:07,324 WARNING legacy_apps.cfe_auto.app pid=6464 LOG_TEST: app.logger is working (startup)
+2026-03-21 17:03:07,382 WARNING legacy_apps.cfe_auto.app pid=6464 LOG_TEST: app.logger is working (startup)
+2026-03-21 17:03:07,392 INFO waitress pid=6464 Serving on http://0.0.0.0:5800
+2026-03-21 17:29:11,295 WARNING legacy_apps.cfe_auto.app pid=3208 LOG_TEST: app.logger is working (startup)
+2026-03-21 17:29:11,508 WARNING legacy_apps.cfe_auto.app pid=3208 LOG_TEST: app.logger is working (startup)
+2026-03-21 17:29:11,591 INFO waitress pid=3208 Serving on http://0.0.0.0:5800
+2026-03-21 23:49:49,334 WARNING legacy_apps.cfe_auto.app pid=10520 LOG_TEST: app.logger is working (startup)
+2026-03-21 23:49:49,396 WARNING legacy_apps.cfe_auto.app pid=10520 LOG_TEST: app.logger is working (startup)
+2026-03-21 23:49:49,422 INFO waitress pid=10520 Serving on http://0.0.0.0:5800

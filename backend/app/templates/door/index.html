@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Puerta</h1>
+
+<div style="display:flex; gap:16px; align-items:flex-start; flex-wrap:wrap;">
+  <div class="card" style="min-width:320px;">
+    <h3>Acción</h3>
+    <form method="post" action="{{ url_for('door.open_door') }}">
+      <button class="btn" type="submit" style="font-size:18px; padding:12px 18px;">Abrir puerta</button>
+    </form>
+    <p style="margin-top:10px; opacity:0.9;">
+      Envía un pulso al ESP8266 por red local.
+    </p>
+  </div>
+
+  <div class="card" style="min-width:320px;">
+    <h3>Estado ESP</h3>
+    <p><b>HTTP:</b> {{ esp_status }}</p>
+    <pre style="white-space:pre-wrap;">{{ esp_info | tojson(indent=2) }}</pre>
+    <p style="opacity:0.8;">Si no responde, revisá IP/Red/Key.</p>
+  </div>
+</div>
+{% endblock %}

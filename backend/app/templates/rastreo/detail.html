@@ -1,0 +1,271 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">{{ title }}</h2>
+
+  <div class="card" style="margin-bottom:14px;">
+    <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;">
+      <div>
+        <div style="font-size:13px;color:#444;">Código de rastreo</div>
+        <div style="font-size:20px;font-weight:bold;">{{ shipment.tracking_code }}</div>
+        <div style="font-size:12px;color:#666;">Estado: <strong>{{ label_status(shipment.status) }}</strong> <span style="color:#888;">(<code>{{ shipment.status }}</code>)</span></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <a class="btn" href="{{ url_for('rastreo.pedido_view', tracking_code=shipment.tracking_code) }}">Ver pedido</a>
+        {% if mode == 'cadeteria' %}
+          <a class="btn" href="{{ url_for('rastreo.my_scans') }}">Mis escaneos</a>
+        {% endif %}
+        {% if mode == 'deposito' %}
+          <a class="btn" href="{{ url_for('rastreo.deposito') }}">Escanear otro</a>
+        {% elif mode == 'cadeteria' %}
+          <a class="btn" href="{{ url_for('rastreo.cadeteria') }}">Escanear otro</a>
+        {% elif mode == 'ventas' %}
+          <a class="btn" href="{{ url_for('rastreo.ventas') }}">Volver</a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="grid" style="grid-template-columns:1fr;gap:14px;">
+    <div class="card">
+      <h3 style="margin:0 0 10px 0;">Pedido</h3>
+      <table>
+        <tr><th style="width:160px;">Pedido</th><td>{{ order.pedido or order.get('pedido') or shipment.order_name }}</td></tr>
+        <tr><th>Cliente</th><td>{{ order.nombre }}</td></tr>
+        <tr><th>Dirección</th><td>{{ order.direccion }}</td></tr>
+        <tr><th>Teléfono</th><td>{{ order.telefono }}</td></tr>
+        <tr><th>ID Web</th><td>{{ order.id_web or shipment.id_web }}</td></tr>
+      </table>
+    </div>
+
+    {% if mode in ['deposito','cadeteria'] %}
+      <div class="card">
+        <h3 style="margin:0 0 10px 0;">Acciones</h3>
+
+        {% if mode == 'deposito' %}
+          {% if shipment.status == 'LABEL_CREATED' %}
+            <form method="post" action="{{ url_for('rastreo.deposito_event', tracking_code=shipment.tracking_code) }}" style="margin-bottom:10px;">
+              <input type="hidden" name="event_type" value="PICKING_STARTED" />
+              <label>Nota (opcional)</label>
+              <input name="note" placeholder="Ej: Inicia armado" />
+              <button class="btn primary" type="submit" style="margin-top:8px;">Marcar: Inicio de armado</button>
+            </form>
+          {% elif shipment.status in ['PICKING_STARTED','STOCK_RESOLVED'] %}
+            <form method="post" action="{{ url_for('rastreo.deposito_event', tracking_code=shipment.tracking_code) }}" style="margin-bottom:10px;">
+              <input type="hidden" name="event_type" value="STOCK_MISSING" />
+              <label>Productos faltantes (requerido)</label>
+              {% if order.lines and order.lines|length > 0 %}
+                <select name="missing_items" multiple size="6" required>
+                  {% for ln in order.lines %}
+                    {% set label = (ln.product or ln.name) ~ (" x" ~ (ln.qty|int) if ln.qty else "") %}
+                    <option value="{{ ln.product or ln.name }}">{{ label }}</option>
+                  {% endfor %}
+                </select>
+                <div style="font-size:12px;color:#666;margin-top:6px;">Podés seleccionar múltiples (Ctrl/Cmd + click). Si falta un item que no aparece, ingresalo manualmente:</div>
+                <input name="missing_item_extra" placeholder="Otro producto / SKU (opcional)" />
+              {% else %}
+                <input name="missing_item" required placeholder="Ej: Lámpara X / SKU" />
+                <input name="missing_item_extra" placeholder="Otro producto / SKU (opcional)" />
+              {% endif %}
+              <label>Observación (opcional)</label>
+              <input name="note" placeholder="Ej: No hay en estantería / revisar" />
+              <button class="btn primary" type="submit" style="margin-top:8px;">Notificar falta de stock (Ventas)</button>
+            </form>
+
+            <form method="post" action="{{ url_for('rastreo.deposito_event', tracking_code=shipment.tracking_code) }}" style="margin-bottom:10px;">
+              <input type="hidden" name="event_type" value="READY_FOR_DISPATCH" />
+              <label>Nota (opcional)</label>
+              <input name="note" placeholder="Ej: Armado finalizado" />
+              <button class="btn primary" type="submit" style="margin-top:8px;">Marcar: Listo para despacho</button>
+            </form>
+          {% elif shipment.status == 'STOCK_MISSING' %}
+            <div style="font-size:13px;color:#444;">Pedido en <strong>Falta de stock</strong>. Esperando decisión de Ventas.</div>
+          {% elif shipment.status == 'RETURNED' %}
+            <div style="font-size:13px;color:#444;margin-bottom:10px;">Pedido <strong>Devuelto</strong> al depósito. Podés reiniciar el armado o marcar listo para despacho.</div>
+            <form method="post" action="{{ url_for('rastreo.deposito_event', tracking_code=shipment.tracking_code) }}" style="margin-bottom:10px;">
+              <input type="hidden" name="event_type" value="PICKING_STARTED" />
+              <label>Nota (opcional)</label>
+              <input name="note" placeholder="Ej: Re-arma después de devolución" />
+              <button class="btn primary" type="submit" style="margin-top:8px;">Marcar: Inicio de armado</button>
+            </form>
+            <form method="post" action="{{ url_for('rastreo.deposito_event', tracking_code=shipment.tracking_code) }}" style="margin-bottom:10px;">
+              <input type="hidden" name="event_type" value="READY_FOR_DISPATCH" />
+              <label>Nota (opcional)</label>
+              <input name="note" placeholder="Ej: Re-empaquetado / listo" />
+              <button class="btn primary" type="submit" style="margin-top:8px;">Marcar: Listo para despacho</button>
+            </form>
+          {% else %}
+            <div style="font-size:13px;color:#444;">Sin acciones disponibles para este estado.</div>
+          {% endif %}
+        {% endif %}
+
+        {% if mode == 'cadeteria' %}
+          {% if shipment.status in ['READY_FOR_DISPATCH','IN_TRANSIT'] %}
+            <form method="post" action="{{ url_for('rastreo.cadeteria_event', tracking_code=shipment.tracking_code) }}">
+              <input type="hidden" name="event_type" value="OUT_FOR_DELIVERY" />
+              <label>Nota (opcional)</label>
+              <input name="note" placeholder="Ej: Inicia reparto" />
+              <button class="btn primary" type="submit" style="margin-top:8px;">Marcar en reparto / Iniciar reparto</button>
+            </form>
+          {% elif shipment.status in ['OUT_FOR_DELIVERY','ON_ROUTE_TO_DELIVERY'] %}
+            <form method="post" action="{{ url_for('rastreo.cadeteria_event', tracking_code=shipment.tracking_code) }}" style="margin-bottom:10px;">
+              <input type="hidden" name="event_type" value="DELIVERED" />
+              <label>Relación (requerido)</label>
+              <select name="receiver_relation" required>
+                <option value="">Seleccionar...</option>
+                <option value="Titular (comprador)">Titular (comprador)</option>
+                <option value="Cónyuge / pareja">Cónyuge / pareja</option>
+                <option value="Padre / Madre">Padre / Madre</option>
+                <option value="Hijo/a">Hijo/a</option>
+                <option value="Hermano/a">Hermano/a</option>
+                <option value="Otro familiar">Otro familiar</option>
+                <option value="Amigo/a">Amigo/a</option>
+                <option value="Vecino/a">Vecino/a</option>
+                <option value="Portero / Conserje">Portero / Conserje</option>
+                <option value="Recepción / Administración">Recepción / Administración</option>
+                <option value="Guardia de seguridad">Guardia de seguridad</option>
+                <option value="Empleada doméstica">Empleada doméstica</option>
+                <option value="Encargado/a">Encargado/a</option>
+                <option value="Compañero/a de trabajo">Compañero/a de trabajo</option>
+                <option value="Otro">Otro</option>
+              </select>
+              <label>Nombre (requerido)</label>
+              <input name="receiver_name" required placeholder="Nombre" />
+              <label>Documento (requerido)</label>
+              <input name="receiver_id" required placeholder="CI" />
+              <label>Nota (opcional)</label>
+              <input name="note" placeholder="Ej: Portería" />
+              <button class="btn primary" type="submit" style="margin-top:8px;">Marcar: Entregado</button>
+            </form>
+
+            <form method="post" enctype="multipart/form-data" action="{{ url_for('rastreo.cadeteria_event', tracking_code=shipment.tracking_code) }}" style="margin-bottom:10px;">
+              <input type="hidden" name="event_type" value="DELIVERY_FAILED" />
+              <label>Motivo (requerido)</label>
+              <input name="note" required placeholder="Ej: No atienden / Dirección incorrecta" />
+              <label>Foto (opcional)</label>
+              <input type="file" name="photo" accept="image/*" capture="environment" />
+              <button class="btn primary" type="submit" style="margin-top:8px;">Marcar: No entregado</button>
+            </form>
+
+            <form method="post" action="{{ url_for('rastreo.cadeteria_event', tracking_code=shipment.tracking_code) }}">
+              <input type="hidden" name="event_type" value="RETURNED" />
+              <label>Nota (opcional)</label>
+              <input name="note" placeholder="Ej: Devuelto al depósito" />
+              <button class="btn primary" type="submit" style="margin-top:8px;">Marcar: Devuelto</button>
+            </form>
+          {% elif shipment.status == 'DELIVERY_FAILED' %}
+            <form method="post" action="{{ url_for('rastreo.cadeteria_event', tracking_code=shipment.tracking_code) }}" style="margin-bottom:10px;">
+              <input type="hidden" name="event_type" value="OUT_FOR_DELIVERY" />
+              <label>Nota (opcional)</label>
+              <input name="note" placeholder="Ej: Reintento de entrega" />
+              <button class="btn primary" type="submit" style="margin-top:8px;">Marcar en reparto / Reintentar</button>
+            </form>
+            <form method="post" action="{{ url_for('rastreo.cadeteria_event', tracking_code=shipment.tracking_code) }}">
+              <input type="hidden" name="event_type" value="RETURNED" />
+              <label>Nota (opcional)</label>
+              <input name="note" placeholder="Ej: Devuelto al depósito" />
+              <button class="btn primary" type="submit" style="margin-top:8px;">Marcar: Devuelto</button>
+            </form>
+          {% else %}
+            <div style="font-size:13px;color:#444;">Sin acciones disponibles para este estado.</div>
+          {% endif %}
+        {% endif %}
+      </div>
+    {% endif %}
+
+    {% if mode == 'ventas' %}
+      <div class="card">
+        <h3 style="margin:0 0 10px 0;">Acciones Ventas</h3>
+        <p style="margin:0 0 10px 0;font-size:13px;color:#444;">Usar cuando Depósito notificó falta de stock.</p>
+        <form method="post" action="{{ url_for('rastreo.ventas_decision', tracking_code=shipment.tracking_code) }}">
+          <label>Decisión</label>
+          <select name="decision" required>
+            <option value="CONTINUE">Continuar (reemplazar / sin faltante)</option>
+            <option value="HOLD">Pausar / esperar stock</option>
+            <option value="CANCEL">Cancelar / devolver</option>
+          </select>
+          <label>Nota (opcional)</label>
+          <input name="note" placeholder="Detalle de lo acordado con el cliente" />
+          <button class="btn primary" type="submit" style="margin-top:8px;">Guardar decisión</button>
+        </form>
+
+        <hr style="margin:14px 0;border:none;border-top:1px solid #eee;" />
+
+        <h4 style="margin:0 0 8px 0;">Restablecer / Reset</h4>
+        <p style="margin:0 0 10px 0;font-size:13px;color:#444;">
+          Disponible solo en Ventas. Útil cuando el pedido quedó en <strong>Entregado</strong> o hay que destrabar estados.
+        </p>
+
+        <form method="post" action="{{ url_for('rastreo.ventas_override', tracking_code=shipment.tracking_code) }}" style="margin-bottom:10px;">
+          <label>Nuevo estado</label>
+          <select name="new_status" required>
+            {% for st in (override_statuses or []) %}
+              <option value="{{ st }}">{{ label_status(st) }} ({{ st }})</option>
+            {% endfor %}
+          </select>
+          <label>Nota (opcional)</label>
+          <input name="note" placeholder="Motivo del cambio" />
+          <button class="btn primary" type="submit" style="margin-top:8px;">Aplicar cambio de estado</button>
+        </form>
+
+        <form method="post" action="{{ url_for('rastreo.ventas_reset', tracking_code=shipment.tracking_code) }}">
+          <label>Nota (opcional)</label>
+          <input name="note" placeholder="Motivo del reset" />
+          <button class="btn" type="submit" style="margin-top:8px;">Volverlo a cero (reset)</button>
+        </form>
+      </div>
+    {% endif %}
+
+    <div class="card">
+      <h3 style="margin:0 0 10px 0;">Historial</h3>
+      <table>
+        <thead><tr><th style="width:180px;">Fecha</th><th style="width:160px;">Evento</th><th>Detalle</th></tr></thead>
+        <tbody>
+          {% for e in events %}
+            <tr>
+              <td>{{ format_dt(e.created_at) }}</td>
+              <td><strong>{{ label_event(e.event_type) }}</strong> <span style="color:#888;">(<code>{{ e.event_type }}</code>)</span></td>
+              <td>
+                {{ e.note or '' }}
+                {# Mostrar información de payload en formato amigable #}
+                {% if e.payload %}
+                  <div style="margin-top:6px;font-size:12px;color:#444;">
+                    {# Productos faltantes: aceptar lista o campo único #}
+                    {% if e.payload.missing_items %}
+                      <div><strong>Faltantes:</strong> {{ ", ".join(e.payload.missing_items) }}</div>
+                    {% elif e.payload.missing_item %}
+                      <div><strong>Faltante:</strong> {{ e.payload.missing_item }}</div>
+                    {% endif %}
+                    {% if e.payload.decision %}
+                      <div><strong>Decisión ventas:</strong> {{ e.payload.decision }}</div>
+                    {% endif %}
+
+                    {% if e.payload.receiver_relation or e.payload.receiver_name or e.payload.receiver_id %}
+                      <div style="font-size:12px;color:#666;margin-top:4px;">
+                        <strong>Receptor:</strong>
+                        {% if e.payload.receiver_relation %}{{ e.payload.receiver_relation }} · {% endif %}
+                        {% if e.payload.receiver_name %}{{ e.payload.receiver_name }}{% endif %}
+                        {% if e.payload.receiver_id %} (CI {{ e.payload.receiver_id }}){% endif %}
+                      </div>
+                    {% endif %}
+                  </div>
+                {% endif %}
+
+                {# Imagen asociada #}
+                {% if e.image_path %}
+                  <div style="margin-top:6px;"><a class="btn" href="{{ url_for('rastreo.show_photo', p=e.image_path) }}" target="_blank">Ver foto</a></div>
+                {% endif %}
+
+                {# Mostrar usuario que generó el evento, si está disponible #}
+                {% if e.created_by %}
+                  <div style="margin-top:6px;font-size:11px;color:#666;">Registrado por {{ e.created_by.name or e.created_by.username or ('Usuario #' ~ e.created_by.id) }}</div>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+{% endblock %}

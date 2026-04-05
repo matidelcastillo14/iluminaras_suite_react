@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ title or 'Rastreo' }}</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='public_tracking.css') }}{% if static_v %}?v={{ static_v }}{% endif %}" />
+    <style>
+      .pt-logo { height: 84px; width: auto; }
+      .pt-logo-link { display: inline-flex; align-items: center; cursor: pointer; text-decoration: none; }
+    </style>
+    {% block head %}{% endblock %}
+  </head>
+  <body>
+    <header class="pt-header">
+      <div class="pt-header-inner">
+        {% block header_brand %}
+          <a class="pt-logo-link" href="https://www.iluminaras.com" target="_blank" rel="noopener">
+            <img class="pt-logo" src="{{ url_for('static', filename='logo_public_tracking_web.png') }}" alt="ILUMINARÁS" />
+          </a>
+        {% endblock %}
+      </div>
+    </header>
+
+    <main class="pt-main">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block content %}
+{% set labels = {
+  'APP_TIMEZONE': 'Zona horaria',
+
+  'DEFAULT_ADENDA_LUMINARAS': 'Adenda Iluminarás',
+  'DEFAULT_ADENDA_ESTILO_HOME': 'Adenda Estilo Home',
+  'DEFAULT_ADENDA_MAYORISTAS_URUGUAY': 'Adenda Mayoristas Uruguay',
+  'DEFAULT_ADENDA': 'Adenda (fallback)',
+
+  'LOGO_LUMINARAS_PATH': 'Logo Iluminarás (ruta archivo)',
+  'LOGO_ESTILO_HOME_PATH': 'Logo Estilo Home (ruta archivo)',
+  'LOGO_MAYORISTAS_URUGUAY_PATH': 'Logo Mayoristas Uruguay (ruta archivo)',
+  'LOGO_PATH': 'Logo (legacy / fallback)',
+
+  'CHANGE_TICKET_POLICY_URL': 'Link políticas (global)',
+  'CHANGE_TICKET_POLICY_URL_LUMINARAS': 'Link políticas Iluminarás',
+  'CHANGE_TICKET_POLICY_URL_ESTILO_HOME': 'Link políticas Estilo Home',
+  'CHANGE_TICKET_POLICY_URL_MAYORISTAS_URUGUAY': 'Link políticas Mayoristas Uruguay'
+} %}
+
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">Configuración</h2>
+  <form method="post" action="{{ url_for('admin.settings_post') }}">
+    <div class="grid">
+      {% for k in keys %}
+      <div class="card">
+        <label>{{ labels.get(k, k) }}</label>
+
+        {% if k == 'APP_TIMEZONE' %}
+          <select name="{{ k }}">
+            {% for tz in timezones %}
+              <option value="{{ tz }}" {% if values[k] == tz %}selected{% endif %}>{{ tz }}</option>
+            {% endfor %}
+          </select>
+
+        {% elif k == 'POSTULACIONES_HERO_IMAGE' %}
+          <select name="{{ k }}">
+            <option value="" {% if not values[k] %}selected{% endif %}>(default)</option>
+            {% for img in static_images %}
+              <option value="{{ img }}" {% if values[k] == img %}selected{% endif %}>{{ img }}</option>
+            {% endfor %}
+          </select>
+
+        {% elif "PASSWORD" in k or "API_KEY" in k %}
+          <input name="{{ k }}" value="{{ values[k] }}" />
+
+        {% elif k in ["DEFAULT_ADENDA_LUMINARAS","DEFAULT_ADENDA_ESTILO_HOME","DEFAULT_ADENDA_MAYORISTAS_URUGUAY","DEFAULT_ADENDA"] %}
+          <textarea name="{{ k }}" rows="4">{{ values[k] }}</textarea>
+
+        {% elif k.endswith('_URL') or k.endswith('_POLICY_URL') or 'POLICY_URL' in k %}
+          <input type="url" name="{{ k }}" value="{{ values[k] }}" placeholder="https://..." />
+
+        {% else %}
+          <input name="{{ k }}" value="{{ values[k] }}" />
+        {% endif %}
+
+        {% if k.endswith('_PATH') %}
+          <div style="margin-top:6px;font-size:12px;color:#666;">
+            Tip: ruta absoluta o relativa al root del proyecto Suite (ej: app/static/mi_logo.png).
+          </div>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+    <div style="margin-top:12px;">
+      <button class="btn primary" type="submit">Guardar</button>
+    </div>
+  </form>
+  <div style="margin-top:12px;font-size:13px;color:#444;">
+    Nota: las variables en DB no reemplazan automáticamente el .env en caliente. Guardá y reiniciá el servicio.
+  </div>
+</div>
+{% endblock %}

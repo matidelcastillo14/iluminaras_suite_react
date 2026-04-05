@@ -1,0 +1,85 @@
+2026-03-23 04:31:10,342 WARNING legacy_apps.cfe_auto.app pid=18524 LOG_TEST: app.logger is working (startup)
+2026-03-23 04:31:10,439 WARNING legacy_apps.cfe_auto.app pid=18524 LOG_TEST: app.logger is working (startup)
+2026-03-23 04:31:10,449 INFO waitress pid=18524 Serving on http://0.0.0.0:5800
+2026-03-23 04:32:11,800 INFO access pid=18524 rid=71a4c320feb2 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36"
+2026-03-23 04:32:11,943 INFO access pid=18524 rid=71a4c320feb2 end status=200 ms=143 bytes=12920
+2026-03-23 04:32:12,052 INFO access pid=18524 rid=f8f44080c0ac start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Mobile Safari/537.36"
+2026-03-23 04:32:12,068 INFO access pid=18524 rid=f8f44080c0ac end status=304 ms=15 bytes=-
+2026-03-23 05:11:17,551 WARNING legacy_apps.cfe_auto.app pid=15536 LOG_TEST: app.logger is working (startup)
+2026-03-23 05:11:17,614 WARNING legacy_apps.cfe_auto.app pid=15536 LOG_TEST: app.logger is working (startup)
+2026-03-23 05:11:17,622 INFO waitress pid=15536 Serving on http://0.0.0.0:5800
+2026-03-23 05:24:54,856 WARNING legacy_apps.cfe_auto.app pid=5880 LOG_TEST: app.logger is working (startup)
+2026-03-23 05:24:54,891 WARNING legacy_apps.cfe_auto.app pid=5880 LOG_TEST: app.logger is working (startup)
+2026-03-23 05:24:54,897 INFO waitress pid=5880 Serving on http://0.0.0.0:5800
+2026-03-23 11:03:02,132 WARNING waitress.queue pid=5880 Task queue depth is 1
+2026-03-23 11:03:02,144 WARNING waitress.queue pid=5880 Task queue depth is 2
+2026-03-23 11:03:02,148 WARNING waitress.queue pid=5880 Task queue depth is 3
+2026-03-23 11:03:02,161 WARNING waitress.queue pid=5880 Task queue depth is 4
+2026-03-23 12:43:12,593 INFO access pid=5880 rid=0099b8dfe5e2 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 12:43:12,601 INFO access pid=5880 rid=0099b8dfe5e2 end status=200 ms=7 bytes=12920
+2026-03-23 12:43:12,652 INFO access pid=5880 rid=6a88601d07bf start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 12:43:12,654 INFO access pid=5880 rid=6a88601d07bf end status=304 ms=1 bytes=-
+2026-03-23 12:43:17,946 INFO access pid=5880 rid=849216b42050 start GET /api/orders/search?q=327088 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 12:43:29,417 INFO access pid=5880 rid=358f1e83fed1 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 12:43:29,419 INFO access pid=5880 rid=358f1e83fed1 end status=200 ms=1 bytes=12920
+2026-03-23 12:43:41,636 INFO access pid=5880 rid=849216b42050 end status=200 ms=23689 bytes=508
+2026-03-23 12:43:41,669 INFO access pid=5880 rid=e30df9994ca4 start GET /api/orders/search?q=327088 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 12:43:47,400 INFO access pid=5880 rid=e30df9994ca4 end status=200 ms=5730 bytes=508
+2026-03-23 12:43:55,379 INFO access pid=5880 rid=5f10ebc06319 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 12:43:55,380 INFO access pid=5880 rid=5f10ebc06319 end status=200 ms=1 bytes=12920
+2026-03-23 12:44:16,535 INFO access pid=5880 rid=396a4c36e99b start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 12:44:16,537 INFO access pid=5880 rid=396a4c36e99b end status=200 ms=1 bytes=12920
+2026-03-23 12:44:18,408 INFO access pid=5880 rid=a6d22b53fb1c start GET /api/orders/search?q=2000015665301496 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 12:44:20,409 INFO access pid=5880 rid=a6d22b53fb1c end status=200 ms=2000 bytes=511
+2026-03-23 12:44:23,293 INFO access pid=5880 rid=3c0e92c67d67 start GET /api/orders/92853?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 12:44:24,451 INFO access pid=5880 rid=3c0e92c67d67 end status=200 ms=1157 bytes=421
+2026-03-23 12:44:26,056 INFO access pid=5880 rid=354b670cf57c start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 12:44:26,058 INFO app pid=5880 generate_start doc_type=move doc_id=92853
+2026-03-23 12:44:26,498 INFO app pid=5880 pdf_start tipo=e-Ticket serie=A nro=327088 total=322.19
+2026-03-23 12:44:26,566 INFO app pid=5880 generate_ok doc_type=move doc_id=92853 pdf=cfe_A327088_20260323_124426_c95cadc6.pdf
+2026-03-23 12:44:26,567 INFO access pid=5880 rid=354b670cf57c end status=200 ms=511 bytes=89
+2026-03-23 12:44:26,653 INFO access pid=5880 rid=3a4ad3a5f92e start GET /pdf/cfe_A327088_20260323_124426_c95cadc6.pdf?t=1774280666528 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 12:44:26,662 INFO access pid=5880 rid=3a4ad3a5f92e end status=200 ms=9 bytes=-
+2026-03-23 13:07:42,630 INFO access pid=5880 rid=ce1dfc0e33d4 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 13:07:42,631 INFO access pid=5880 rid=ce1dfc0e33d4 end status=200 ms=1 bytes=12920
+2026-03-23 13:07:42,758 INFO access pid=5880 rid=0f832dae4fce start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 13:07:42,759 INFO access pid=5880 rid=0f832dae4fce end status=304 ms=1 bytes=-
+2026-03-23 13:07:46,584 INFO access pid=5880 rid=356a4b155ce9 start GET /api/orders/search?q=41928 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 13:07:48,848 INFO access pid=5880 rid=356a4b155ce9 end status=200 ms=2263 bytes=4432
+2026-03-23 13:07:50,531 INFO access pid=5880 rid=bc973c791f2c start GET /api/orders/92551?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 13:07:51,421 INFO access pid=5880 rid=bc973c791f2c end status=200 ms=889 bytes=401
+2026-03-23 13:07:52,567 INFO access pid=5880 rid=bd973a651e74 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 13:07:52,568 INFO app pid=5880 generate_start doc_type=move doc_id=92551
+2026-03-23 13:07:53,443 INFO app pid=5880 pdf_start tipo=e-Factura serie=A nro=41928 total=836.8
+2026-03-23 13:07:53,543 INFO app pid=5880 generate_ok doc_type=move doc_id=92551 pdf=cfe_A41928_20260323_130753_7f84e22c.pdf
+2026-03-23 13:07:53,546 INFO access pid=5880 rid=bd973a651e74 end status=200 ms=978 bytes=88
+2026-03-23 13:07:53,718 INFO access pid=5880 rid=802eb263e24a start GET /pdf/cfe_A41928_20260323_130753_7f84e22c.pdf?t=1774282073723 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 13:07:53,733 INFO access pid=5880 rid=802eb263e24a end status=200 ms=15 bytes=-
+2026-03-23 14:29:55,800 INFO access pid=5880 rid=201732b71699 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 14:29:55,805 INFO access pid=5880 rid=201732b71699 end status=200 ms=4 bytes=12920
+2026-03-23 14:30:01,313 INFO access pid=5880 rid=a5d45e4818f2 start GET /api/orders/search?q=326196 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 14:30:03,637 INFO access pid=5880 rid=a5d45e4818f2 end status=200 ms=2324 bytes=316
+2026-03-23 14:30:04,902 INFO access pid=5880 rid=3e0b60568a9e start GET /api/orders/90301?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 14:30:05,775 INFO access pid=5880 rid=3e0b60568a9e end status=200 ms=873 bytes=472
+2026-03-23 14:30:07,035 INFO access pid=5880 rid=46ab4408299b start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 14:30:07,038 INFO app pid=5880 generate_start doc_type=move doc_id=90301
+2026-03-23 14:30:07,474 INFO app pid=5880 pdf_start tipo=e-Ticket serie=A nro=326196 total=642.0
+2026-03-23 14:30:07,578 INFO app pid=5880 generate_ok doc_type=move doc_id=90301 pdf=cfe_A326196_20260323_143007_221a3cf2.pdf
+2026-03-23 14:30:07,581 INFO access pid=5880 rid=46ab4408299b end status=200 ms=545 bytes=89
+2026-03-23 14:30:07,671 INFO access pid=5880 rid=a0d206ddc050 start GET /pdf/cfe_A326196_20260323_143007_221a3cf2.pdf?t=1774287007516 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 14:30:07,692 INFO access pid=5880 rid=a0d206ddc050 end status=200 ms=21 bytes=-
+2026-03-23 15:09:07,139 INFO access pid=5880 rid=f715892c046f start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 15:09:07,141 INFO access pid=5880 rid=f715892c046f end status=200 ms=1 bytes=12920
+2026-03-23 15:09:07,201 INFO access pid=5880 rid=9b09f396286a start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 15:09:07,203 INFO access pid=5880 rid=9b09f396286a end status=304 ms=2 bytes=-
+2026-03-23 17:48:10,795 INFO access pid=5880 rid=7f580ac48dc5 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 17:48:10,799 INFO access pid=5880 rid=7f580ac48dc5 end status=200 ms=4 bytes=12920
+2026-03-23 18:38:36,485 INFO access pid=5880 rid=75051225ad93 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 18:38:36,487 INFO access pid=5880 rid=75051225ad93 end status=200 ms=2 bytes=12920
+2026-03-23 18:44:23,029 INFO access pid=5880 rid=c682bea8beec start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 18:44:23,030 INFO access pid=5880 rid=c682bea8beec end status=200 ms=1 bytes=12920
+2026-03-23 18:44:23,251 INFO access pid=5880 rid=c31b40c5affd start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-23 18:44:23,252 INFO access pid=5880 rid=c31b40c5affd end status=200 ms=1 bytes=-
+2026-03-23 23:52:39,806 WARNING legacy_apps.cfe_auto.app pid=16012 LOG_TEST: app.logger is working (startup)
+2026-03-23 23:52:39,906 WARNING legacy_apps.cfe_auto.app pid=16012 LOG_TEST: app.logger is working (startup)
+2026-03-23 23:52:39,912 INFO waitress pid=16012 Serving on http://0.0.0.0:5800

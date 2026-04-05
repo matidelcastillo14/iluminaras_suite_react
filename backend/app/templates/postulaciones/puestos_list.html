@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+      <h2 style="margin:0">Puestos (Postulaciones)</h2>
+      <a class="btn" href="{{ url_for('postulaciones_admin.list_applications') }}">Volver</a>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3 style="margin:0 0 8px">Crear puesto</h3>
+      <form method="post" action="{{ url_for('postulaciones_admin.puestos_new') }}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+        <div style="min-width:240px;flex:1">
+          <label for="name">Nombre</label>
+          <input id="name" name="name" placeholder="Ej: Depósito" required />
+        </div>
+        <div style="width:140px">
+          <label for="sort_order">Orden</label>
+          <input id="sort_order" name="sort_order" type="number" value="0" />
+        </div>
+        <div>
+          <button class="btn primary" type="submit">Crear</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card" style="margin-top:12px">
+      <h3 style="margin:0 0 8px">Listado</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Orden</th>
+            <th>Nombre</th>
+            <th>Activo</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in rows %}
+            <tr>
+              <td>{{ p.sort_order }}</td>
+              <td>
+                <form method="post" action="{{ url_for('postulaciones_admin.puestos_edit', pid=p.id) }}" style="display:flex;gap:8px;align-items:center">
+                  <input name="name" value="{{ p.name }}" style="max-width:360px" />
+                  <input name="sort_order" type="number" value="{{ p.sort_order }}" style="width:90px" />
+                  <button class="btn" type="submit">Guardar</button>
+                </form>
+              </td>
+              <td>
+                <form method="post" action="{{ url_for('postulaciones_admin.puestos_toggle', pid=p.id) }}">
+                  <button class="btn" type="submit">{{ 'Sí' if p.is_active else 'No' }}</button>
+                </form>
+              </td>
+              <td>
+                <form method="post" action="{{ url_for('postulaciones_admin.puestos_delete', pid=p.id) }}" onsubmit="return confirm('¿Eliminar puesto?');">
+                  <button class="btn" type="submit">Eliminar</button>
+                </form>
+              </td>
+            </tr>
+          {% endfor %}
+          {% if not rows %}
+            <tr><td colspan="4" style="opacity:.7">Sin puestos.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

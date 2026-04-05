@@ -1,0 +1,57 @@
+2026-04-04 09:44:09,606 INFO access pid=7220 rid=6f49f6a249dd start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 09:44:09,622 INFO access pid=7220 rid=6f49f6a249dd end status=200 ms=16 bytes=12920
+2026-04-04 09:44:09,773 INFO access pid=7220 rid=abaaa35a9404 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 09:44:09,774 INFO access pid=7220 rid=abaaa35a9404 end status=304 ms=1 bytes=-
+2026-04-04 09:44:14,355 INFO access pid=7220 rid=8e10c7b9fae3 start GET /api/orders/search?q=41997 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 09:44:16,658 INFO access pid=7220 rid=8e10c7b9fae3 end status=200 ms=2303 bytes=2396
+2026-04-04 09:44:18,261 INFO access pid=7220 rid=53f5029cf64e start GET /api/orders/95831?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 09:44:19,147 INFO access pid=7220 rid=53f5029cf64e end status=200 ms=886 bytes=381
+2026-04-04 09:44:20,450 INFO access pid=7220 rid=fa3f23b3f3d4 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 09:44:20,451 INFO app pid=7220 generate_start doc_type=move doc_id=95831
+2026-04-04 09:44:20,942 INFO app pid=7220 pdf_start tipo=e-Factura serie=A nro=41997 total=1012.01
+2026-04-04 09:44:21,064 INFO app pid=7220 generate_ok doc_type=move doc_id=95831 pdf=cfe_A41997_20260404_094420_960f5a1e.pdf
+2026-04-04 09:44:21,064 INFO access pid=7220 rid=fa3f23b3f3d4 end status=200 ms=614 bytes=88
+2026-04-04 09:44:21,156 INFO access pid=7220 rid=eb0f2f9353a7 start GET /pdf/cfe_A41997_20260404_094420_960f5a1e.pdf?t=1775306661091 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 09:44:21,168 INFO access pid=7220 rid=eb0f2f9353a7 end status=200 ms=12 bytes=-
+2026-04-04 09:46:29,555 INFO app pid=7220 home_office_mark_queued user_id=36 username=CoutoV ref=47556406 event_key=0db3194d56d2a2631e5a9b58b037697f723f776a68e993ee24dd4cb11ee939da
+2026-04-04 09:51:45,367 INFO access pid=7220 rid=48ec03dcbb4d start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 09:51:45,367 INFO access pid=7220 rid=48ec03dcbb4d end status=200 ms=0 bytes=12920
+2026-04-04 09:51:50,116 INFO access pid=7220 rid=7222b6f7ced5 start GET /api/orders/search?q=328401 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 09:51:52,369 INFO access pid=7220 rid=7222b6f7ced5 end status=200 ms=2253 bytes=262
+2026-04-04 09:51:53,149 INFO access pid=7220 rid=cd64cc17a304 start GET /api/orders/95130?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 09:51:54,016 INFO access pid=7220 rid=cd64cc17a304 end status=200 ms=866 bytes=424
+2026-04-04 09:51:55,573 INFO access pid=7220 rid=b2a1c0fb433b start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 09:51:55,574 INFO app pid=7220 generate_start doc_type=move doc_id=95130
+2026-04-04 09:51:56,022 INFO app pid=7220 pdf_start tipo=e-Ticket serie=A nro=328401 total=1359.01
+2026-04-04 09:51:56,128 INFO app pid=7220 generate_ok doc_type=move doc_id=95130 pdf=cfe_A328401_20260404_095156_63237c9a.pdf
+2026-04-04 09:51:56,129 INFO access pid=7220 rid=b2a1c0fb433b end status=200 ms=555 bytes=89
+2026-04-04 09:51:56,214 INFO access pid=7220 rid=b73b1aee7273 start GET /pdf/cfe_A328401_20260404_095156_63237c9a.pdf?t=1775307116144 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 09:51:56,248 INFO access pid=7220 rid=b73b1aee7273 end status=200 ms=34 bytes=-
+2026-04-04 10:02:35,644 INFO access pid=7220 rid=c48d153150e1 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:02:35,645 INFO access pid=7220 rid=c48d153150e1 end status=200 ms=0 bytes=12920
+2026-04-04 10:02:37,861 INFO access pid=7220 rid=8f20382b76f9 start GET /api/orders/search?q=2000012104646027 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:02:40,177 INFO access pid=7220 rid=8f20382b76f9 end status=200 ms=2316 bytes=253
+2026-04-04 10:02:41,471 INFO access pid=7220 rid=ac98b5a01013 start GET /api/orders/91813?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:02:42,539 INFO access pid=7220 rid=ac98b5a01013 end status=200 ms=1068 bytes=592
+2026-04-04 10:03:42,285 INFO access pid=7220 rid=a54143cd4ec1 start GET /api/orders/search?q=326724 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:03:43,873 INFO access pid=7220 rid=a54143cd4ec1 end status=200 ms=1588 bytes=258
+2026-04-04 10:03:45,269 INFO access pid=7220 rid=ede447a9e53b start GET /api/orders/91532?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:03:46,137 INFO access pid=7220 rid=ede447a9e53b end status=200 ms=868 bytes=445
+2026-04-04 10:03:52,510 INFO access pid=7220 rid=2541b6a7058a start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:03:52,511 INFO app pid=7220 generate_start doc_type=move doc_id=91532
+2026-04-04 10:03:52,951 INFO app pid=7220 pdf_start tipo=e-Ticket serie=A nro=326724 total=1175.27
+2026-04-04 10:03:53,062 INFO app pid=7220 generate_ok doc_type=move doc_id=91532 pdf=cfe_A326724_20260404_100352_d69e926a.pdf
+2026-04-04 10:03:53,063 INFO access pid=7220 rid=2541b6a7058a end status=200 ms=553 bytes=89
+2026-04-04 10:03:53,144 INFO access pid=7220 rid=ad75c40466e0 start GET /pdf/cfe_A326724_20260404_100352_d69e926a.pdf?t=1775307833073 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:03:53,161 INFO access pid=7220 rid=ad75c40466e0 end status=200 ms=17 bytes=-
+2026-04-04 10:09:38,980 INFO access pid=7220 rid=ee49e17fb1a0 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:09:38,981 INFO access pid=7220 rid=ee49e17fb1a0 end status=200 ms=1 bytes=12920
+2026-04-04 10:09:41,191 INFO access pid=7220 rid=4949b7f04bb5 start GET /api/orders/search?q=2000012232619485 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:09:43,572 INFO access pid=7220 rid=4949b7f04bb5 end status=200 ms=2380 bytes=259
+2026-04-04 10:09:44,261 INFO access pid=7220 rid=567de189db0a start GET /api/orders/93487?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:09:45,122 INFO access pid=7220 rid=567de189db0a end status=200 ms=861 bytes=811
+2026-04-04 10:25:51,049 INFO access pid=7220 rid=8f840e130bac start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:25:51,050 INFO access pid=7220 rid=8f840e130bac end status=200 ms=0 bytes=12920
+2026-04-04 10:25:52,848 INFO access pid=7220 rid=dca36dbef54d start GET /api/orders/search?q=2000015787409202 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-04-04 10:25:55,242 INFO access pid=7220 rid=dca36dbef54d end status=200 ms=2393 bytes=481
+2026-04-04 13:45:08,790 INFO app pid=7220 home_office_mark_queued user_id=36 username=CoutoV ref=47556406 event_key=edc01b44fe9a093b981a84e539768a2bfa02fd9608de9586991a31a1cafa2a1f

@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>{{ title or "Iluminaras Suite" }}</title>
+  <style>
+    body{ font-family: Arial, Helvetica, sans-serif; margin:0; color:#111; background:#f7f7f7; }
+    header{ background:#111; color:#fff; padding:10px 14px; display:flex; align-items:center; justify-content:space-between; }
+    header a{ color:#fff; text-decoration:none; margin-right:12px; font-size:14px; }
+    .wrap{ max-width: 1100px; margin: 16px auto; padding: 0 14px; }
+    .card{ background:#fff; border:1px solid #e6e6e6; border-radius:12px; padding:14px; }
+    .grid{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; }
+    @media (max-width: 900px){ .grid{ grid-template-columns:1fr; } }
+    .btn{ display:inline-block; padding:8px 10px; border-radius:10px; border:1px solid #cfcfcf; background:#f6f6f6; cursor:pointer; text-decoration:none; color:#111; }
+    .btn.primary{ background:#111; color:#fff; border-color:#111; }
+    input, select, textarea{ width:100%; box-sizing:border-box; padding:8px 10px; border:1px solid #cfcfcf; border-radius:10px; font-size:14px; background:#fff; }
+    label{ font-size:12px; color:#333; display:block; margin: 10px 0 4px; }
+    .msg{ padding:10px 12px; border-radius:10px; margin:10px 0; }
+    .msg.error{ background:#ffe9e9; border:1px solid #ffb6b6; }
+    .msg.info{ background:#e9f1ff; border:1px solid #b6d0ff; }
+    table{ width:100%; border-collapse:collapse; }
+    th, td{ padding:8px; border-bottom:1px solid #eee; font-size:13px; text-align:left; vertical-align:top; }
+    code{ background:#f2f2f2; padding:2px 4px; border-radius:6px; }
+  </style>
+</head>
+<body>
+<header>
+  <div>
+    <a href="{{ url_for('main.home') }}"><strong>Iluminaras Suite</strong></a>
+    {% if current_user.is_authenticated and can_view('cfe_manual') %}
+      <a href="{{ url_for('cfe_manual.index') }}">CFE Manual</a>
+    {% endif %}
+    {% if current_user.is_authenticated and can_view('cfe_auto') %}
+      <a href="{{ url_for('cfe_auto.index') }}">CFE Auto</a>
+    {% endif %}
+    {% if current_user.is_authenticated and can_view('etiquetas') %}
+      <a href="{{ url_for('etiquetas.index') }}">Etiquetas</a>
+    {% endif %}
+    {% if current_user.is_authenticated and can_view('rastreo_deposito') %}
+      <a href="{{ url_for('rastreo.deposito') }}">Rastreo Depósito</a>
+{% endif %}
+    {% if current_user.is_authenticated and can_view('batch_pedidos') %}
+      <a href="{{ url_for('batch_pedidos.index') }}">Pedidos por Batch</a>
+    {% endif %}
+    {% if current_user.is_authenticated and can_view('cadete_flex') %}
+      <a href="{{ url_for('cadete_flex.home') }}">Cadete Flex</a>
+    {% endif %}
+    {% if current_user.is_authenticated and can_view('rastreo_ventas') %}
+      <a href="{{ url_for('rastreo.ventas') }}">Administración de Tracking</a>
+    {% endif %}
+
+{% if current_user.is_authenticated and can_view('puerta') %}
+  <a href="{{ url_for('puerta.index') }}">Apertura de Puerta</a>
+{% endif %}
+
+    {% if current_user.is_authenticated and can_view('reloj_home_office') %}
+      <a href="{{ url_for('reloj_home_office.index') }}">Reloj Home Office</a>
+    {% endif %}
+
+    {% if current_user.is_authenticated and can_view('admin_postulaciones') %}
+      <a href="{{ url_for('postulaciones_admin.list_applications') }}">Postulaciones</a>
+    {% endif %}
+    {% if current_user.is_authenticated and current_user.role == 'admin' %}
+      <a href="{{ url_for('admin.dashboard') }}">Admin</a>
+    {% endif %}
+  </div>
+  <div>
+    {% if current_user.is_authenticated %}
+      <span style="font-size:13px;opacity:.9">{{ current_user.full_name }} ({{ current_user.username }})</span>
+      <a class="btn" style="margin-left:10px" href="{{ url_for('auth.logout') }}">Salir</a>
+    {% else %}
+      <a class="btn" href="{{ url_for('auth.login') }}">Entrar</a>
+    {% endif %}
+  </div>
+</header>
+
+<div class="wrap">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for cat, msg in messages %}
+        <div class="msg {{ cat }}">{{ msg }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+</div>
+</body>
+</html>

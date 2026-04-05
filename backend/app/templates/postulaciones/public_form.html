@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Postulaciones - Iluminarás</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='postulaciones.css') }}{% if static_v %}?v={{ static_v }}{% endif %}" />
+    {% if recaptcha_render and recaptcha_sitekey %}
+      <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {% endif %}
+  </head>
+  <body>
+    <header class="po-header">
+      <div class="po-header-inner">
+        <img class="po-brand" src="{{ url_for('static', filename='logo_public_tracking_web.png') }}" alt="ILUMINARÁS" />
+      </div>
+    </header>
+
+    <main class="po-main">
+      <section class="po-card">
+        <div class="po-card-left">
+          <img class="po-hero" src="{{ url_for('static', filename=hero_image) }}" alt="Iluminarás" />
+        </div>
+
+        <div class="po-card-right">
+          <h1 class="po-title">Postulaciones</h1>
+          <p class="po-subtitle">Completá el formulario y adjuntá tu CV.</p>
+
+          {% if error %}
+            <div class="po-alert" role="alert">{{ error }}</div>
+          {% endif %}
+
+          <form class="po-form" method="post" action="{{ url_for('postulaciones_public.submit') }}" enctype="multipart/form-data">
+            <label class="po-label" for="first_name">Nombre</label>
+            <input class="po-input" id="first_name" name="first_name" type="text" autocomplete="given-name" required />
+
+            <label class="po-label" for="last_name">Apellido</label>
+            <input class="po-input" id="last_name" name="last_name" type="text" autocomplete="family-name" required />
+
+            <label class="po-label" for="email">Email</label>
+            <input class="po-input" id="email" name="email" type="email" autocomplete="email" required />
+
+            <label class="po-label" for="phone">Teléfono</label>
+            <input class="po-input" id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="Ej: 099123456" required />
+
+            <label class="po-label" for="position_id">Puesto</label>
+            <select class="po-input" id="position_id" name="position_id" required>
+              <option value="" selected disabled>Seleccionar...</option>
+              {% for p in puestos %}
+                <option value="{{ p.id }}">{{ p.name }}</option>
+              {% endfor %}
+            </select>
+
+            <div class="po-files">
+              <label class="po-btn" for="files">CARGAR CV</label>
+              <input id="files" name="files" type="file" multiple hidden />
+              <div class="po-files-hint">Podés adjuntar varios archivos (PDF/DOC/DOCX/JPG/PNG).</div>
+              <div id="po-files-list" class="po-files-list"></div>
+            </div>
+
+            {% if recaptcha_render and recaptcha_sitekey %}
+              <div class="po-turnstile">
+                <div class="g-recaptcha" data-sitekey="{{ recaptcha_sitekey }}"></div>
+              </div>
+            {% endif %}
+
+            <button class="po-submit" type="submit">POSTULARSE</button>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      (function(){
+        var input = document.getElementById('files');
+        var list = document.getElementById('po-files-list');
+        if (!input || !list) return;
+        input.addEventListener('change', function(){
+          var files = Array.from(input.files || []);
+          list.innerHTML = '';
+          if (!files.length) return;
+          files.slice(0, 30).forEach(function(f){
+            var div = document.createElement('div');
+            div.className = 'po-file-item';
+            div.textContent = f.name;
+            list.appendChild(div);
+          });
+        });
+      })();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:920px;margin:0 auto;">
+  <h2 style="margin:0 0 10px 0;">{{ order.get('pedido') or shipment.order_name }}</h2>
+  <div style="font-size:13px;color:#444;">
+    <div><strong>Código:</strong> {{ shipment.tracking_code }}</div>
+    <div><strong>Estado:</strong> {{ status_label }}</div>
+  </div>
+
+  <hr style="margin:14px 0;border:none;border-top:1px solid #eee;" />
+
+  <div class="grid" style="grid-template-columns:1fr;gap:10px;">
+    <div class="card">
+      <h4 style="margin:0 0 8px 0;">Cliente</h4>
+      <div><strong>{{ order.get('nombre') or '' }}</strong></div>
+      <div style="margin-top:6px;">{{ order.get('direccion') or '' }}</div>
+      {% if order.get('telefono') %}
+        <div style="margin-top:6px;"><a class="btn" href="tel:{{ order.get('telefono') }}">Llamar {{ order.get('telefono') }}</a></div>
+      {% endif %}
+      {% if order.get('observaciones') %}
+        <div style="margin-top:10px;font-size:13px;color:#444;"><strong>Obs:</strong> {{ order.get('observaciones') }}</div>
+      {% endif %}
+    </div>
+
+    <div class="card">
+      <h4 style="margin:0 0 8px 0;">Eventos recientes</h4>
+      <table>
+        <thead><tr><th>Fecha</th><th>Evento</th><th>Nota</th></tr></thead>
+        <tbody>
+        {% for ev in events %}
+          <tr>
+            <td>{{ ev.created_at }}</td>
+            <td><code>{{ ev.event_type }}</code></td>
+            <td>{{ ev.note or '' }}</td>
+          </tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div style="margin-top:12px;display:flex;gap:10px;flex-wrap:wrap;">
+    <a class="btn" href="{{ url_for('tracking_cadeteria.index') }}">Volver</a>
+    {% if order.get('direccion') %}
+      <a class="btn primary" target="_blank" rel="noreferrer" href="https://www.google.com/maps/search/?api=1&query={{ order.get('direccion')|urlencode }}">Abrir en Maps</a>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

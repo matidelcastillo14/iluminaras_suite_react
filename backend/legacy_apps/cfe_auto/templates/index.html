@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CFEs recientes - Iluminarás</title>
+  <style>
+    body{ font-family: Arial, Helvetica, sans-serif; margin: 18px; color:#111; }
+    .wrap{ max-width: 980px; margin: 0 auto; }
+    .top{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .brand{ display:flex; align-items:center; gap:10px; }
+    .brand img{ width:44px; height:auto; }
+    h1{ margin:0; font-size:18px; }
+    .meta{ font-size:12px; color:#444; }
+    .card{ border:1px solid #e5e5e5; border-radius:12px; padding:14px; margin-top:12px; }
+    table{ width:100%; border-collapse:collapse; }
+    th, td{ text-align:left; padding:10px 8px; border-bottom:1px solid #eee; font-size:13px; }
+    th{ font-size:12px; color:#333; background:#fafafa; position:sticky; top:0; }
+    .btn{ display:inline-block; border:1px solid #d0d0d0; background:#fff; border-radius:10px; padding:8px 10px; cursor:pointer; font-size:13px; }
+    .btn.primary{ border-color:#1f6feb; }
+    .btn:disabled{ opacity:.5; cursor:not-allowed; }
+    .badge{ display:inline-block; padding:3px 8px; border-radius:999px; font-size:12px; border:1px solid #ddd; }
+    .ok{ border-color:#1a7f37; }
+    .pending{ border-color:#9a6700; }
+    .err{ border-color:#cf222e; }
+    .muted{ color:#666; font-size:12px; }
+    .rowlink{ color:#0969da; text-decoration:none; }
+    .rowlink:hover{ text-decoration:underline; }
+    .controls{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .toast{ display:none; margin-top:10px; padding:10px 12px; border-radius:10px; border:1px solid #e5e5e5; background:#fff; font-size:13px; }
+    .toast.show{ display:block; }
+  
+    /* Filtros tipo Excel */
+    .thcell{ display:flex; align-items:center; justify-content:space-between; gap:6px; }
+    .fbtn{
+      border:1px solid #d0d0d0;
+      background:#fff;
+      border-radius:8px;
+      padding:2px 8px;
+      line-height:16px;
+      font-size:12px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .fbtn.active{ border-color:#1f6feb; }
+    .fmenu{
+      position:fixed;
+      min-width:260px;
+      max-width:360px;
+      /* En vez de recortar el footer cuando hay muchas opciones:
+         hacemos layout en columna y dejamos scroll SOLO en la lista. */
+      max-height:min(70vh, 420px);
+      display:none;
+      flex-direction:column;
+      overflow:hidden;
+
+      background:#fff;
+      border:1px solid #d0d0d0;
+      border-radius:12px;
+      box-shadow:0 12px 30px rgba(0,0,0,.12);
+      z-index:9999;
+    }
+    .fmenu.show{ display:flex; }
+    .fmenu .hdr{ padding:10px 10px 8px; border-bottom:1px solid #eee; }
+    .fmenu .title{ font-size:12px; color:#333; margin:0 0 8px; }
+    .fmenu input[type="text"]{
+      width:100%;
+      box-sizing:border-box;
+      padding:8px 10px;
+      border:1px solid #ddd;
+      border-radius:10px;
+      font-size:12px;
+    }
+    .fmenu .list{
+      overflow:auto;
+      flex:1 1 auto;
+      min-height:120px;
+      padding:8px 10px;
+    }
+    .fmenu label{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      font-size:12px;
+      padding:4px 0;
+      cursor:pointer;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .fmenu .footer{
+      display:flex;
+      gap:8px;
+      justify-content:flex-end;
+      padding:10px;
+      border-top:1px solid #eee;
+      background:#fafafa;
+      border-bottom-left-radius:12px;
+      border-bottom-right-radius:12px;
+
+      position:sticky;
+      bottom:0;
+      z-index:1;
+    }
+    .fmenu .smallbtn{
+      border:1px solid #d0d0d0;
+      background:#fff;
+      border-radius:10px;
+      padding:7px 10px;
+      cursor:pointer;
+      font-size:12px;
+    }
+    .fmenu .smallbtn.primary{ border-color:#1f6feb; }
+    .fmenu .tools{ display:flex; gap:8px; padding:8px 10px 0; }
+    .fmenu .tools .smallbtn{ padding:5px 8px; }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Iluminarás" />
+        <div>
+          <h1>CFEs recientes</h1>
+          <div class="meta">
+            Actualiza cada <b id="sec">{{ poll_seconds|int }}</b>s · muestra últimos <b>{{ list_limit }}</b>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn primary" id="btnPoll">Actualizar ahora</button>
+        <span class="muted" id="lastUpdate">—</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="muted" style="margin-bottom:10px;">
+        Click en <b>Abrir</b> para abrir la factura, o en <b>Cambio</b> para abrir el ticket de cambio en una pestaña nueva (desde ahí imprimís).
+      </div>
+      <div style="overflow:auto; max-height:70vh;">
+        <table>
+          <thead>
+            <tr>
+              <th><div class="thcell"><span>Fecha</span><button class="fbtn" type="button" data-col="fecha" aria-label="Filtrar Fecha">▾</button></div></th>
+              <th><div class="thcell"><span>Tipo</span><button class="fbtn" type="button" data-col="tipo" aria-label="Filtrar Tipo">▾</button></div></th>
+              <th><div class="thcell"><span>Serie</span><button class="fbtn" type="button" data-col="serie" aria-label="Filtrar Serie">▾</button></div></th>
+              <th><div class="thcell"><span>Número</span><button class="fbtn" type="button" data-col="numero" aria-label="Filtrar Número">▾</button></div></th>
+              <th><div class="thcell"><span>Receptor</span><button class="fbtn" type="button" data-col="receptor" aria-label="Filtrar Receptor">▾</button></div></th>
+              <th>Cambio</th>
+              <th><div class="thcell"><span>Estado</span><button class="fbtn" type="button" data-col="estado" aria-label="Filtrar Estado">▾</button></div></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="8" class="muted">Cargando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+
+<script>
+    const API_CFES = "{{ url_for('api_cfes') }}";
+    const API_POLL_NOW = "{{ url_for('api_cfes_poll_now') }}";
+
+  const POLL_SECONDS = Number({{ poll_seconds|int }}) || 5;
+
+  const tbody = document.getElementById('tbody');
+  const toast = document.getElementById('toast');
+  const lastUpdate = document.getElementById('lastUpdate');
+  const btnPoll = document.getElementById('btnPoll');
+
+  function badge(status){
+    const s = (status || 'pending').toLowerCase();
+    let cls = 'badge pending', txt = 'Pendiente';
+    if(s === 'ok'){ cls = 'badge ok'; txt = 'OK'; }
+    if(s === 'error'){ cls = 'badge err'; txt = 'Error'; }
+    return {cls, txt};
+  }
+
+  function esc(s){
+    return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+  }
+
+  function fmtDate(s){
+    if(!s) return '';
+    // Odoo suele devolver "YYYY-MM-DD HH:MM:SS"
+    return s.replace('T',' ').slice(0,19);
+  }
+
+  // =====================
+  // Filtros tipo Excel (lista desplegable con búsqueda)
+  // =====================
+  let allItems = [];
+  const activeFilters = {
+    fecha: null,   // Set de valores o null (sin filtro)
+    tipo: null,
+    serie: null,
+    numero: null,
+    receptor: null,
+    estado: null
+  };
+
+  const COLS = {
+    fecha:   { title:'Fecha',    value: (it)=> fmtDate(it.create_date || it.fecha_em || '') },
+    tipo:    { title:'Tipo',     value: (it)=> (it.tipo_texto || '') },
+    serie:   { title:'Serie',    value: (it)=> (it.serie || '') },
+    numero:  { title:'Número',   value: (it)=> (it.numero || '') },
+    receptor:{ title:'Receptor', value: (it)=> (it.receptor || '') },
+    estado:  { title:'Estado',   value: (it)=> (it.status || 'pending').toLowerCase() }
+  };
+
+  function norm(s){ return String(s || '').toLowerCase().trim(); }
+
+  function estadoLabel(v){
+    const s = (v || 'pending').toLowerCase();
+    if(s === 'ok') return 'OK';
+    if(s === 'error') return 'Error';
+    return 'Pendiente';
+  }
+
+  function passesAllFilters(it, excludeCol=null){
+    for(const col of Object.keys(activeFilters)){
+      if(col === excludeCol) continue;
+      const set = activeFilters[col];
+      if(!set) continue; // sin filtro en esa columna
+      const v = String(COLS[col].value(it) ?? '');
+      if(!set.has(v)) return false;
+    }
+    return true;
+  }
+
+  function getFilteredItems(){
+    return (allItems || []).filter(it => passesAllFilters(it, null));
+  }
+
+  function updateFilterButtonStates(){
+    document.querySelectorAll('.fbtn').forEach(btn=>{
+      const col = btn.dataset.col;
+      btn.classList.toggle('active', !!activeFilters[col]);
+    });
+  }
+
+  // Menú flotante reutilizable
+  const fmenu = document.createElement('div');
+  fmenu.id = 'filterMenu';
+  fmenu.className = 'fmenu';
+  fmenu.innerHTML = `
+    <div class="hdr">
+      <div class="title" id="fmenuTitle"></div>
+      <input type="text" id="fmenuSearch" placeholder="Buscar..." />
+      <div class="tools">
+        <button type="button" class="smallbtn" id="fmenuSelectAll">Seleccionar todo</button>
+        <button type="button" class="smallbtn" id="fmenuClear">Limpiar</button>
+      </div>
+    </div>
+    <div class="list" id="fmenuList"></div>
+    <div class="footer">
+      <button type="button" class="smallbtn" id="fmenuCancel">Cancelar</button>
+      <button type="button" class="smallbtn primary" id="fmenuApply">Aplicar</button>
+    </div>
+  `;
+  document.body.appendChild(fmenu);
+
+  const fmenuTitle = fmenu.querySelector('#fmenuTitle');
+  const fmenuSearch = fmenu.querySelector('#fmenuSearch');
+  const fmenuList = fmenu.querySelector('#fmenuList');
+  const fmenuSelectAll = fmenu.querySelector('#fmenuSelectAll');
+  const fmenuClear = fmenu.querySelector('#fmenuClear');
+  const fmenuCancel = fmenu.querySelector('#fmenuCancel');
+  const fmenuApply = fmenu.querySelector('#fmenuApply');
+
+  let currentCol = null;
+  let currentValues = [];
+  let draftSelection = null; // {value: boolean} selección en el menú antes de aplicar
+
+  function closeMenu(){
+    fmenu.classList.remove('show');
+    currentCol = null;
+    currentValues = [];
+    draftSelection = null;
+    fmenuSearch.value = '';
+    fmenuList.innerHTML = '';
+  }
+
+  function positionMenu(anchor){
+    const r = anchor.getBoundingClientRect();
+    const margin = 6;
+    let left = Math.min(r.left, window.innerWidth - 340);
+    let top = r.bottom + margin;
+
+    // si se sale por abajo, abrir hacia arriba
+    const menuH = Math.min(Math.round(window.innerHeight * 0.70), 420);
+    if(top + menuH > window.innerHeight){
+      top = Math.max(margin, r.top - menuH - margin);
+    }
+
+    fmenu.style.left = `${Math.max(margin,left)}px`;
+    fmenu.style.top = `${Math.max(margin,top)}px`;
+  }
+
+  function buildValueList(col){
+    // Excel-like: valores basados en los filtros actuales de otras columnas
+    const base = (allItems || []).filter(it => passesAllFilters(it, col));
+    const uniq = new Set();
+    for(const it of base){
+      const v = String(COLS[col].value(it) ?? '');
+      uniq.add(v);
+    }
+    const arr = Array.from(uniq);
+    arr.sort((a,b)=> a.localeCompare(b, 'es', {numeric:true, sensitivity:'base'}));
+    return arr;
+  }
+
+  function renderMenuList(){
+    const q = norm(fmenuSearch.value);
+
+    fmenuList.innerHTML = '';
+    for(const v of currentValues){
+      const label = (currentCol === 'estado') ? estadoLabel(v) : (v || '(vacío)');
+      if(q && !norm(label).includes(q) && !norm(v).includes(q)) continue;
+
+      const row = document.createElement('label');
+      const cb = document.createElement('input');
+      cb.type = 'checkbox';
+      cb.dataset.value = v;
+      // estado del borrador (no se pierde al buscar)
+      cb.checked = !!(draftSelection && draftSelection[v]);
+
+      const span = document.createElement('span');
+      span.textContent = label;
+
+      row.appendChild(cb);
+      row.appendChild(span);
+      fmenuList.appendChild(row);
+    }
+  }
+
+  function openMenu(col, anchorBtn){
+    currentCol = col;
+    currentValues = buildValueList(col);
+
+    // Inicializar borrador con el filtro actual
+    const set = activeFilters[col];
+    draftSelection = {};
+    if(!set){
+      // sin filtro => todo seleccionado
+      for(const v of currentValues) draftSelection[v] = true;
+    }else{
+      for(const v of currentValues) draftSelection[v] = set.has(v);
+    }
+
+    fmenuTitle.textContent = `Filtrar: ${COLS[col].title}`;
+    positionMenu(anchorBtn);
+    fmenu.classList.add('show');
+    renderMenuList();
+    fmenuSearch.focus();
+  }
+
+  // Cerrar al click afuera
+  document.addEventListener('click', (ev)=>{
+    if(!fmenu.classList.contains('show')) return;
+    const t = ev.target;
+    if(fmenu.contains(t)) return;
+    if(t && t.classList && t.classList.contains('fbtn')) return;
+    closeMenu();
+  });
+
+  // ESC cierra
+  document.addEventListener('keydown', (ev)=>{
+    if(ev.key === 'Escape' && fmenu.classList.contains('show')){
+      closeMenu();
+    }
+  });
+
+  fmenuSearch.addEventListener('input', renderMenuList);
+
+  // Persistir cambios aunque se use búsqueda
+  fmenuList.addEventListener('change', (ev)=>{
+    const t = ev.target;
+    if(!t || t.type !== 'checkbox') return;
+    if(!draftSelection) draftSelection = {};
+    draftSelection[t.dataset.value] = t.checked;
+  });
+
+  fmenuSelectAll.addEventListener('click', ()=>{
+    if(!draftSelection) draftSelection = {};
+    for(const v of currentValues) draftSelection[v] = true;
+    renderMenuList();
+  });
+
+  fmenuClear.addEventListener('click', ()=>{
+    if(!draftSelection) draftSelection = {};
+    for(const v of currentValues) draftSelection[v] = false;
+    renderMenuList();
+  });
+
+  fmenuCancel.addEventListener('click', closeMenu);
+
+  fmenuApply.addEventListener('click', ()=>{
+    if(!currentCol) return;
+
+    const checked = currentValues.filter(v => draftSelection && draftSelection[v]);
+
+    if(checked.length === 0){
+      // Filtro que deja 0 resultados (válido)
+      activeFilters[currentCol] = new Set([]);
+    }else if(checked.length === currentValues.length){
+      // Todo seleccionado => sin filtro
+      activeFilters[currentCol] = null;
+    }else{
+      activeFilters[currentCol] = new Set(checked);
+    }
+
+    updateFilterButtonStates();
+    renderTable();
+    closeMenu();
+  });
+
+  // Enlazar botones de filtro en el header
+  document.querySelectorAll('.fbtn').forEach(btn=>{
+    btn.addEventListener('click', (ev)=>{
+      ev.stopPropagation();
+      const col = btn.dataset.col;
+      if(fmenu.classList.contains('show') && currentCol === col){
+        closeMenu();
+        return;
+      }
+      openMenu(col, btn);
+    });
+  });
+
+  function renderTable(){
+    const items = getFilteredItems();
+
+    if(items.length === 0){
+      tbody.innerHTML = '<tr><td colspan="8" class="muted">Sin resultados.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = items.map(it => {
+      const b = badge(it.status);
+      const openDisabled = !it.pdf_url;
+      const changeDisabled = !it.change_pdf_url;
+      const btnCambio = changeDisabled
+        ? '<button class="btn" disabled>Cambio</button>'
+        : `<a class="btn rowlink" href="${it.change_pdf_url}?t=${Date.now()}" target="_blank" rel="noopener">Cambio</a>`;
+      const btn = openDisabled
+        ? '<button class="btn" disabled>Abrir</button>'
+        : `<a class="btn rowlink" href="${it.pdf_url}?t=${Date.now()}" target="_blank" rel="noopener">Abrir</a>`;
+
+      const tipo = esc(it.tipo_texto || '');
+      const receptor = esc(it.receptor || '');
+      const serie = esc(it.serie || '');
+      const numero = esc(it.numero || '');
+      const fecha = esc(fmtDate(it.create_date || it.fecha_em || ''));
+
+      const err = it.error ? ` title="${esc(it.error)}"` : '';
+      return `<tr${err}>
+        <td>${fecha}</td>
+        <td>${tipo}</td>
+        <td>${serie}</td>
+        <td>${numero}</td>
+        <td>${receptor}</td>
+        <td style="text-align:center;">${btnCambio}</td>
+        <td><span class="${b.cls}">${b.txt}</span></td>
+        <td style="text-align:right;">${btn}</td>
+      </tr>`;
+    }).join('');
+  }
+
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 2500);
+  }
+
+  async function loadList(){
+    try{
+      const r = await fetch(API_CFES, {cache:'no-store'});
+      const data = await r.json();
+      if(!data.ok) throw new Error(data.error || 'not ok');
+
+      allItems = data.items || [];
+      updateFilterButtonStates();
+      renderTable();
+
+      lastUpdate.textContent = 'Actualizado: ' + new Date().toLocaleTimeString();
+    }catch(ex){
+      tbody.innerHTML = '<tr><td colspan="8" class="muted">Error consultando /api/cfes.</td></tr>';
+    }
+  }
+
+  async function pollNow(){
+    btnPoll.disabled = true;
+    try{
+      const r = await fetch(API_POLL_NOW, {method:'POST'});
+      const data = await r.json();
+      if(!data.ok) throw new Error(data.error || 'poll error');
+      showToast('Listo.');
+      await loadList();
+    }catch(ex){
+      showToast('Error al actualizar.');
+    }finally{
+      btnPoll.disabled = false;
+    }
+  }
+
+  btnPoll.addEventListener('click', pollNow);
+
+  loadList();
+  setInterval(loadList, POLL_SECONDS * 1000);
+</script>
+</body>
+</html>

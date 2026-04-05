@@ -1,0 +1,20 @@
+{% for sh in rows %}
+  <tr>
+    <td data-val="{{ format_dt(sh.updated_at, '%Y-%m-%d') }}">{{ format_dt(sh.updated_at, '%Y-%m-%d') }}</td>
+    <td data-val="{{ format_dt(sh.updated_at, '%H:%M:%S') }}">{{ format_dt(sh.updated_at, '%H:%M:%S') }}</td>
+    <td data-val="{{ sh.tracking_code }}"><code>{{ sh.tracking_code }}</code></td>
+    <td data-val="{{ (sh.order_name or '') ~ (' ' ~ sh.id_web if sh.id_web else '') }}">{{ sh.order_name }}{% if sh.id_web %} <span style="color:#666;">(id_web {{ sh.id_web }})</span>{% endif %}</td>
+    {# Cliente y dirección desde batch_orders si existe #}
+    {% set _cliente = (cliente_map.get(sh.id) if cliente_map else None) %}
+    {% set _dir = (direccion_map.get(sh.id) if direccion_map else None) %}
+    <td data-val="{{ _cliente or '' }}">{% if _cliente %}{{ _cliente }}{% else %}<span style="color:#888;">-</span>{% endif %}</td>
+    <td data-val="{{ _dir or '' }}">{% if _dir %}{{ _dir }}{% else %}<span style="color:#888;">-</span>{% endif %}</td>
+    <td data-val="{% if sh.courier_user %}{{ sh.courier_user.full_name }}{% elif delivered_by_map and delivered_by_map.get(sh.id) %}{{ delivered_by_map.get(sh.id) }}{% else %}{% endif %}">{% if sh.courier_user %}{{ sh.courier_user.full_name }}{% elif delivered_by_map and delivered_by_map.get(sh.id) %}{{ delivered_by_map.get(sh.id) }}{% else %}<span style="color:#888;">-</span>{% endif %}</td>
+    <td data-val="{{ sh.status }}">{{ label_status(sh.status) }} <span style="color:#888;">(<code>{{ sh.status }}</code>)</span></td>
+    <td><button class="btn copy-track-link" type="button" data-code="{{ sh.tracking_code }}">Copiar link</button></td>
+    <td><a class="btn" href="{{ url_for('rastreo.ventas_detail', tracking_code=sh.tracking_code) }}">Abrir</a></td>
+  </tr>
+{% endfor %}
+{% if not rows %}
+  <tr><td colspan="10" style="color:#666;">Sin resultados.</td></tr>
+{% endif %}

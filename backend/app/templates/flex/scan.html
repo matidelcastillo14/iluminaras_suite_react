@@ -1,0 +1,68 @@
+{% extends "flex/base.html" %}
+
+{% block head %}
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+{% endblock %}
+
+{% block content %}
+  <div class="fx-scan-wrap">
+    <video id="fxVideo" class="fx-video" autoplay muted playsinline></video>
+    <canvas id="fxCanvas" class="fx-canvas" width="640" height="480" hidden></canvas>
+
+    <div class="fx-brackets">
+      <div class="fx-bracket tl"></div>
+      <div class="fx-bracket tr"></div>
+      <div class="fx-bracket bl"></div>
+      <div class="fx-bracket br"></div>
+    </div>
+
+    <div class="fx-scan-actions">
+      <button id="btnStartCam" class="fx-btn">Activar cámara</button>
+      <button id="btnManual" class="fx-btn ghost">Ingreso manual</button>
+    </div>
+  </div>
+
+  <div class="fx-sheet" id="fxSheet">
+    <div class="fx-sheet-handle"></div>
+    <div class="fx-sheet-row">
+      <div>
+        {% if flex_active_route %}
+          <div class="fx-sheet-title">Ruta activa · escaneá para agregar pedidos</div>
+          <div class="fx-muted">Los pedidos escaneados se agregarán a la ruta en curso.</div>
+        {% else %}
+          <div class="fx-sheet-title"><span id="cartCount">0</span> entregas</div>
+          <div class="fx-muted">Deslizá arriba para ver las entregas.</div>
+        {% endif %}
+      </div>
+      <a class="fx-link" href="{{ url_for('cadete_flex.communities') }}">Cambiar</a>
+    </div>
+
+    <div class="fx-cart" id="fxCart"></div>
+
+    {% if not flex_active_route %}
+      <button id="btnStartRoute" class="fx-btn primary" disabled>Empezar a repartir</button>
+    {% endif %}
+  </div>
+
+  <dialog id="dlgManual" class="fx-dialog">
+    <form method="dialog" class="fx-dialog-form">
+      <div class="fx-dialog-title">Ingreso manual</div>
+      <input id="manualCode" placeholder="Código" />
+      <div class="fx-row">
+        <button class="fx-btn ghost" value="cancel">Cancelar</button>
+        <button id="btnManualOk" class="fx-btn primary" value="default">Agregar</button>
+      </div>
+      <div id="manualErr" class="fx-msg fx-msg-error" style="display:none"></div>
+    </form>
+  </dialog>
+
+  <script>
+    window.FLEX_COMMUNITY_ID = {{ community.id if community else 'null' }};
+    window.FLEX_ACTIVE_ROUTE_ID = {{ flex_active_route.id if flex_active_route else 'null' }};
+  </script>
+{% endblock %}
+
+{% block scripts %}
+  <script src="{{ url_for('static', filename='flex/flex_api.js') }}"></script>
+  <script src="{{ url_for('static', filename='flex/flex_scan.js') }}"></script>
+{% endblock %}

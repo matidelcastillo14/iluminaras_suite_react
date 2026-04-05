@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  /* TrackingCadetería: mobile-first, estilo tipo Flex */
+  .tc-wrap{ max-width: 920px; margin: 0 auto; }
+  .tc-header{ display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:10px; }
+  .tc-title{ font-size:18px; font-weight:800; margin:0; }
+  .tc-pill{ font-size:12px; padding:6px 10px; border:1px solid #e6e6e6; border-radius:999px; background:#fff; color:#333; }
+  .tc-tabs{ display:flex; gap:10px; position:sticky; top:0; background:#f7f7f7; padding:10px 0; z-index:5; }
+  .tc-tabs .btn{ flex:1; padding:12px 10px; border-radius:14px; font-size:15px; }
+  .tc-card{ background:#fff; border:1px solid #e6e6e6; border-radius:16px; padding:14px; }
+  .tc-note{ font-size:13px; color:#444; line-height:1.35; margin:0; }
+  .tc-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:12px; }
+  .tc-actions .btn{ padding:12px 12px; border-radius:14px; }
+  .tc-video{ width:100%; background:#000; border:1px solid #eee; border-radius:16px; aspect-ratio: 4 / 3; max-height: 420px; }
+  .tc-kpis{ display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+  .tc-kpi{ flex:1; min-width:120px; border:1px solid #eee; border-radius:14px; padding:10px 12px; background:#fff; }
+  .tc-kpi .n{ font-weight:800; font-size:18px; }
+  .tc-kpi .l{ font-size:12px; color:#666; margin-top:2px; }
+
+  .tc-list{ display:flex; flex-direction:column; gap:10px; margin-top:12px; }
+  .tc-item{ display:flex; gap:10px; align-items:flex-start; justify-content:space-between; padding:12px 12px; border:1px solid #eee; border-radius:16px; background:#fff; }
+  .tc-item:active{ transform: scale(.99); }
+  .tc-item-main{ min-width:0; flex:1; }
+  .tc-item-title{ font-weight:800; font-size:15px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .tc-item-sub{ font-size:12px; color:#666; margin-top:2px; }
+  .tc-badges{ display:flex; flex-direction:column; gap:6px; align-items:flex-end; }
+  .tc-badge{ font-size:12px; padding:4px 8px; border-radius:999px; border:1px solid #e6e6e6; background:#fff; color:#333; white-space:nowrap; }
+  .tc-badge.active{ border-color:#111; background:#111; color:#fff; }
+  .tc-badge.done{ border-color:#0a7; color:#0a7; }
+  .tc-badge.fail{ border-color:#c60; color:#c60; }
+  .tc-badge.ret{ border-color:#06c; color:#06c; }
+
+  .tc-rowbtn{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
+  .tc-rowbtn .btn{ padding:10px 12px; border-radius:14px; font-size:13px; }
+
+  .tc-sheet-backdrop{ position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; z-index:50; }
+  .tc-sheet{ position:fixed; left:0; right:0; bottom:0; background:#fff; border-top-left-radius:18px; border-top-right-radius:18px; border:1px solid #e6e6e6; padding:14px; display:none; z-index:51; max-height: 85vh; overflow:auto; }
+  .tc-sheet h3{ margin:0 0 10px 0; }
+  .tc-sheet .tc-note{ margin-top:6px; }
+  .tc-sheet .tc-actions{ margin-top:12px; }
+  .tc-mini{ font-size:12px; color:#666; }
+
+  .tc-validate{ border:1px solid #eee; border-radius:16px; padding:12px; background:#fafafa; margin-top:12px; }
+  .tc-validate .btn{ width:100%; }
+</style>
+
+<div class="tc-wrap">
+  <div class="tc-header">
+    <h2 class="tc-title">{{ title }}</h2>
+    <span class="tc-pill" id="tc_today"></span>
+  </div>
+
+  <div class="tc-tabs">
+    <button class="btn primary" type="button" id="tab_scan">Escanear</button>
+    <button class="btn" type="button" id="tab_route">Reparto</button>
+    <a class="btn" href="{{ url_for('rastreo.my_scans') }}">Historial</a>
+  </div>
+
+  <!-- ESCANEO -->
+  <div id="view_scan" class="tc-card" style="margin-bottom:14px;">
+    <p class="tc-note" id="scan_status">
+      Escaneá todas las etiquetas QR antes de salir. Se agregan en el orden que las cargás.
+    </p>
+
+    <div class="tc-actions">
+      <button class="btn primary" type="button" id="btn_scan_start">Empezar a escanear</button>
+      <button class="btn" type="button" id="btn_scan_stop">Detener</button>
+      <button class="btn" type="button" id="btn_batch_clear">Vaciar lista</button>
+      <button class="btn primary" type="button" id="btn_start_route">Empezar a repartir</button>
+    </div>
+
+    <div style="margin-top:12px;">
+      <video id="qr_video_scan" class="tc-video" playsinline muted></video>
+    </div>
+
+    <div class="tc-kpis">
+      <div class="tc-kpi"><div class="n" id="kpi_total">0</div><div class="l">Paquetes</div></div>
+      <div class="tc-kpi"><div class="n" id="kpi_ready">0</div><div class="l">Listos</div></div>
+      <div class="tc-kpi"><div class="n" id="kpi_problem">0</div><div class="l">Con problema</div></div>
+    </div>
+
+    <div class="tc-list" id="batch_list"></div>
+
+    <hr style="margin:16px 0;border:none;border-top:1px solid #eee;" />
+
+    <h4 style="margin:0 0 8px 0;">Abrir por código (manual)</h4>
+    <form method="post" action="{{ url_for('rastreo.cadeteria_post') }}">
+      <label>Código de rastreo</label>
+      <input name="code" placeholder="Ej: ABCD1234..." />
+      <button class="btn" type="submit" style="margin-top:10px;">Abrir detalle (clásico)</button>
+    </form>
+  </div>
+
+  <!-- REPARTO -->
+  <div id="view_route" class="tc-card" style="display:none;">
+    <p class="tc-note" id="route_status">
+      Elegí un pedido y tocá <strong>Voy para allá</strong>. Al llegar, validá el paquete escaneando el QR.
+    </p>
+
+    <div class="tc-actions" id="route_actions" style="display:none;">
+      <button class="btn primary" type="button" id="btn_start_route_route">Iniciar reparto</button>
+    </div>
+
+    <div class="tc-kpis">
+      <div class="tc-kpi"><div class="n" id="kpi_done">0</div><div class="l">Entregados</div></div>
+      <div class="tc-kpi"><div class="n" id="kpi_pending">0</div><div class="l">Pendientes</div></div>
+      <div class="tc-kpi"><div class="n" id="kpi_failed">0</div><div class="l">No entregados</div></div>
+    </div>
+
+    <div class="tc-note" style="margin-top:10px;">
+      Orden manual (arrastrar) se guarda solo en este celular.
+    </div>
+
+    <div class="tc-list" id="route_list"></div>
+
+    <div class="tc-validate" id="validate_box" style="display:none;">
+      <div class="tc-note" id="validate_status" style="margin-bottom:10px;"></div>
+      <button class="btn primary" type="button" id="btn_validate_start">Escanear para validar</button>
+      <button class="btn" type="button" id="btn_validate_stop" style="margin-top:10px;">Detener cámara</button>
+      <div style="margin-top:12px;">
+        <video id="qr_video_validate" class="tc-video" playsinline muted></video>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Bottom sheet -->
+<div class="tc-sheet-backdrop" id="sheet_backdrop"></div>
+<div class="tc-sheet" id="sheet">
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;">
+    <div>
+      <div class="tc-mini" id="sheet_sub"></div>
+      <h3 id="sheet_title" style="margin:2px 0 0 0;"></h3>
+    </div>
+    <button class="btn" type="button" id="sheet_close">Cerrar</button>
+  </div>
+
+  <div id="sheet_body" style="margin-top:12px;"></div>
+
+  <div class="tc-actions">
+    <a class="btn" id="sheet_open_detail" href="#" style="display:none;">Abrir detalle</a>
+    <a class="btn" id="sheet_maps" href="#" target="_blank" rel="noreferrer" style="display:none;">Abrir en Maps</a>
+    <a class="btn" id="sheet_call" href="#" style="display:none;">Llamar</a>
+  </div>
+
+  <hr style="margin:14px 0;border:none;border-top:1px solid #eee;" />
+
+  <div id="sheet_actions"></div>
+</div>
+
+<script src="{{ url_for('static', filename='rastreo_scanner.js') }}"></script>
+<script src="{{ url_for('static', filename='tracking_cadeteria.js') }}"></script>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;gap:10px;align-items:center">
+      <h2 style="margin:0">Postulación #{{ row.id }}</h2>
+      <a class="btn" href="{{ url_for('postulaciones_admin.list_applications') }}">Volver</a>
+    </div>
+
+    <div class="grid" style="margin-top:10px">
+      <div class="card">
+        <h3 style="margin:0 0 8px">Datos</h3>
+        <div><strong>Nombre:</strong> {{ row.first_name }} {{ row.last_name }}</div>
+        <div><strong>Email:</strong> {{ row.email }}</div>
+        <div><strong>Teléfono:</strong> {{ row.phone or '' }}</div>
+        <div><strong>Puesto:</strong> {{ row.position.name if row.position else '' }}</div>
+        <div><strong>Fecha:</strong> {{ format_dt(row.created_at) }}</div>
+        <div><strong>IP:</strong> {{ row.ip or '' }}</div>
+      </div>
+
+      <div class="card">
+        <h3 style="margin:0 0 8px">Estado / notas</h3>
+        <form method="post" action="{{ url_for('postulaciones_admin.update_application', app_id=row.id) }}">
+          <label for="status">Estado</label>
+          <select id="status" name="status">
+            {% for s in ['new','reviewed','discarded'] %}
+              <option value="{{ s }}" {% if row.status == s %}selected{% endif %}>{{ s }}</option>
+            {% endfor %}
+          </select>
+
+          <label for="admin_note">Notas</label>
+          <textarea id="admin_note" name="admin_note" rows="6">{{ row.admin_note or '' }}</textarea>
+
+          <button class="btn primary" type="submit" style="margin-top:10px">Guardar</button>
+        </form>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h3 style="margin:0 0 8px">Archivos adjuntos</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Archivo</th>
+            <th>Tamaño</th>
+            <th>Tipo</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for f in row.files %}
+            <tr>
+              <td>{{ f.original_filename }}</td>
+              <td>{{ (f.size_bytes / 1024)|round(1) }} KB</td>
+              <td>{{ f.mime_type or '' }}</td>
+              <td>
+                <a class="btn" href="{{ url_for('postulaciones_admin.open_file', file_id=f.id) }}" target="_blank" rel="noopener">Abrir</a>
+                <a class="btn" href="{{ url_for('postulaciones_admin.download_file', file_id=f.id) }}">Descargar</a>
+              </td>
+            </tr>
+          {% endfor %}
+          {% if not row.files %}
+            <tr><td colspan="4" style="opacity:.7">Sin adjuntos.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

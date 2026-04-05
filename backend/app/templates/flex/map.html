@@ -1,0 +1,38 @@
+{% extends "flex/base.html" %}
+
+{% block head %}
+  <!-- Leaflet (sin API key). Requiere internet para tiles. -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+{% endblock %}
+
+{% block content %}
+  <div class="fx-card">
+    <div class="fx-row" style="gap:8px; flex-wrap:wrap">
+      <a class="fx-btn ghost" href="{{ url_for('cadete_flex.route_stops', route_id=route.id) }}">Volver</a>
+      <a id="lnkGoogle" class="fx-btn ghost" target="_blank" rel="noopener">Abrir en Google Maps</a>
+      <a id="lnkWaze" class="fx-btn ghost" target="_blank" rel="noopener">Abrir en Waze</a>
+    </div>
+    <div class="fx-muted" style="margin-top:8px">Vista de mapa (si hay coordenadas). Si no, usá las direcciones para navegar.</div>
+  </div>
+
+  <div id="map" class="fx-map"></div>
+
+  <div class="fx-sheet fx-sheet-map" id="mapSheet" hidden>
+    <div class="fx-sheet-handle"></div>
+    <div class="fx-sheet-title" id="msTitle"></div>
+    <div class="fx-row">
+      <a id="msNav" class="fx-btn primary" target="_blank" rel="noopener">Navegar</a>
+      <a id="msOpen" class="fx-btn ghost">Abrir parada</a>
+    </div>
+  </div>
+
+  <script>
+    window.FLEX_ROUTE_ID = {{ route.id }};
+    window.FLEX_STOPS = {{ stops|tojson }};
+  </script>
+{% endblock %}
+
+{% block scripts %}
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="{{ url_for('static', filename='flex/flex_map.js') }}"></script>
+{% endblock %}

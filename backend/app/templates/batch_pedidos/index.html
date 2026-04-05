@@ -1,0 +1,905 @@
+{% extends "base.html" %}
+{% block content %}
+<style>
+  /* Popup tipo Excel */
+  .xl-filter-popup{
+    position: absolute;
+    z-index: 9999;
+    min-width: 280px;
+    max-width: 360px;
+    background: #1f1f1f;
+    color: #fff;
+    border: 1px solid rgba(255,255,255,.12);
+    border-radius: 8px;
+    box-shadow: 0 10px 30px rgba(0,0,0,.35);
+    padding: 10px;
+    display:none;
+  }
+  .xl-filter-popup *{
+    color: #fff !important;
+    opacity: 1 !important;
+  }
+  .xl-filter-popup .row{ display:flex; gap:8px; align-items:center; }
+  .xl-filter-popup .row + .row{ margin-top:8px; }
+  .xl-filter-popup .menu-item{
+    width:100%;
+    padding:8px 10px;
+    border-radius:6px;
+    cursor:pointer;
+    user-select:none;
+    background: transparent;
+    border: 1px solid rgba(255,255,255,.10);
+  }
+  .xl-filter-popup .menu-item:hover{ background: rgba(255,255,255,.08); }
+  .xl-filter-popup input[type="text"],
+  .xl-filter-popup input[type="number"],
+  .xl-filter-popup input[type="date"],
+  .xl-filter-popup input[type="time"]{
+    width:100%;
+    padding:8px 10px;
+    border-radius:6px;
+    border: 1px solid rgba(255,255,255,.12);
+    background:#111;
+    color:#fff;
+    outline:none;
+  }
+
+  .xl-filter-popup select{
+    padding:8px 10px;
+    border-radius:6px;
+    border: 1px solid rgba(255,255,255,.12);
+    background:#111;
+    color:#fff;
+    outline:none;
+  }
+
+  .xl-filter-list{
+    max-height: 220px;
+    overflow:auto;
+    border: 1px solid rgba(255,255,255,.10);
+    border-radius:6px;
+    padding:6px 8px;
+    background:#151515;
+    color:#fff !important;
+  }
+  .xl-filter-list label{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    padding:6px 6px;
+    font-size: 13px;
+    white-space: nowrap;
+    color:#fff !important;
+    opacity:1 !important;
+  }
+  .xl-filter-list label:hover{
+    background: rgba(255,255,255,.08);
+    border-radius:6px;
+  }
+  .xl-filter-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:8px;
+    margin-top:8px;
+  }
+  .xl-filter-actions button{
+    padding:7px 12px;
+    border-radius:6px;
+    border: 1px solid rgba(255,255,255,.12);
+    background:#111;
+    color:#fff;
+    cursor:pointer;
+  }
+  .xl-filter-actions button:hover{ background: rgba(255,255,255,.08); }
+
+  .th-wrap{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+  }
+  .th-label{ cursor:pointer; user-select:none; }
+  .th-icons{ display:flex; gap:6px; align-items:center; }
+  .filter-btn{
+    width:22px; height:22px;
+    display:inline-flex;
+    align-items:center; justify-content:center;
+    border-radius:6px;
+    border: 1px solid rgba(255,255,255,.10);
+    background: transparent;
+    cursor:pointer;
+    opacity:.9;
+  }
+  .filter-btn:hover{ background: rgba(255,255,255,.08); }
+  .filter-dot{
+    width:7px; height:7px; border-radius:50%;
+    background:#4ade80; /* verde */
+    display:none;
+  }
+  .filter-on .filter-dot{ display:inline-block; }
+  .sort-ind{
+    font-size: 11px;
+    opacity:.85;
+  }
+</style>
+
+<div class="card">
+  <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+    <div>
+      <h3 style="margin:0 0 6px 0;">Pedidos por Batch (Inventario)</h3>
+      <div style="font-size:13px; opacity:.85;">
+        Scan automático cada 5 segundos. Importa el último batch nuevo de Odoo (BATCH/xxxxx) y lista sus pedidos.
+      </div>
+    </div>
+    <div style="display:flex; gap:8px; align-items:center;">
+      <button class="btn" id="btnPoll">Escanear ahora</button>
+      <button class="btn" id="btnClear">Limpiar filtros</button>
+      <button class="btn" id="btnExport">Exportar Excel</button>
+      <button class="btn" id="btnExportFacturas">Exportar facturas (ZIP)</button>
+      <span id="status" style="font-size:13px; opacity:.85;"></span>
+    </div>
+  </div>
+
+  <div style="margin-top:12px; overflow:auto;">
+    <table id="tbl">
+      <thead>
+        <tr>
+          <!-- FIX: Fecha debe filtrar/sortear por 'hora' (timestamp) pero el filtro key correcto es 'hora' SOLO si backend filtra por timestamp.
+               Para calendario: usamos filter-type="date" sobre 'hora' (datetime_range con from_date/to_date). -->
+          <th data-key="fecha" data-filter-key="hora" data-filter-type="date">
+            <div class="th-wrap">
+              <span class="th-label">Fecha <span class="sort-ind" data-sort="hora"></span></span>
+              <span class="th-icons"><span class="filter-dot"></span><button class="filter-btn" title="Filtrar">▾</button></span>
+            </div>
+          </th>
+
+          <th data-key="hora_solo" data-filter-key="hora" data-filter-type="time">
+            <div class="th-wrap">
+              <span class="th-label">Hora <span class="sort-ind" data-sort="hora"></span></span>
+              <span class="th-icons"><span class="filter-dot"></span><button class="filter-btn" title="Filtrar">▾</button></span>
+            </div>
+          </th>
+
+          <th data-key="order_fecha" data-filter-key="order_date" data-filter-type="date">
+            <div class="th-wrap">
+              <span class="th-label">Fecha pedido (Odoo) <span class="sort-ind" data-sort="order_date"></span></span>
+              <span class="th-icons"><span class="filter-dot"></span><button class="filter-btn" title="Filtrar">▾</button></span>
+            </div>
+          </th>
+
+          <th data-key="order_hora" data-filter-key="order_date" data-filter-type="time">
+            <div class="th-wrap">
+              <span class="th-label">Hora pedido (Odoo) <span class="sort-ind" data-sort="order_date"></span></span>
+              <span class="th-icons"><span class="filter-dot"></span><button class="filter-btn" title="Filtrar">▾</button></span>
+            </div>
+          </th>
+
+          <th data-key="batch_name" data-filter-key="batch_name" data-filter-type="text">
+            <div class="th-wrap">
+              <span class="th-label">ID Batch <span class="sort-ind" data-sort="batch_name"></span></span>
+              <span class="th-icons"><span class="filter-dot"></span><button class="filter-btn" title="Filtrar">▾</button></span>
+            </div>
+          </th>
+
+          <th data-key="id_web" data-filter-key="id_web" data-filter-type="text">
+            <div class="th-wrap">
+              <span class="th-label">ID Web <span class="sort-ind" data-sort="id_web"></span></span>
+              <span class="th-icons"><span class="filter-dot"></span><button class="filter-btn" title="Filtrar">▾</button></span>
+            </div>
+          </th>
+
+          <th data-key="id_melicart" data-filter-key="id_melicart" data-filter-type="text">
+            <div class="th-wrap">
+              <span class="th-label">ID MeliCart <span class="sort-ind" data-sort="id_melicart"></span></span>
+              <span class="th-icons"><span class="filter-dot"></span><button class="filter-btn" title="Filtrar">▾</button></span>
+            </div>
+          </th>
+
+          <th data-key="id_meli" data-filter-key="id_meli" data-filter-type="text">
+            <div class="th-wrap">
+              <span class="th-label">ID Meli <span class="sort-ind" data-sort="id_meli"></span></span>
+              <span class="th-icons"><span class="filter-dot"></span><button class="filter-btn" title="Filtrar">▾</button></span>
+            </div>
+          </th>
+
+          <th data-key="cliente" data-filter-key="cliente" data-filter-type="text">
+            <div class="th-wrap">
+              <span class="th-label">Cliente <span class="sort-ind" data-sort="cliente"></span></span>
+              <span class="th-icons"><span class="filter-dot"></span><button class="filter-btn" title="Filtrar">▾</button></span>
+            </div>
+          </th>
+
+          <th data-key="monto_compra" data-filter-key="monto_compra" data-filter-type="range">
+            <div class="th-wrap">
+              <span class="th-label">Monto <span class="sort-ind" data-sort="monto_compra"></span></span>
+              <span class="th-icons"><span class="filter-dot"></span><button class="filter-btn" title="Filtrar">▾</button></span>
+            </div>
+          </th>
+
+          <th data-key="n_factura" data-filter-key="n_factura" data-filter-type="text">
+            <div class="th-wrap">
+              <span class="th-label">N° Factura <span class="sort-ind" data-sort="n_factura"></span></span>
+              <span class="th-icons"><span class="filter-dot"></span><button class="filter-btn" title="Filtrar">▾</button></span>
+            </div>
+          </th>
+
+          <th style="text-align:right;">Ver</th>
+        </tr>
+      </thead>
+
+      <tbody id="tbody">
+        <tr><td colspan="12" style="opacity:.7;">Cargando…</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="pager" style="margin-top:10px; display:flex; align-items:center; justify-content:flex-end; gap:8px; flex-wrap:wrap;">
+    <button class="btn" id="btnPrev">Anterior</button>
+    <span id="pageInfo" style="font-size:13px; opacity:.85;"></span>
+    <button class="btn" id="btnNext">Siguiente</button>
+  </div>
+</div>
+
+<div id="xlPopup" class="xl-filter-popup" role="dialog" aria-hidden="true"></div>
+
+<script>
+(function(){
+  // Zona horaria configurada en Admin > Settings (APP_TIMEZONE)
+  const APP_TZ = "{{ app_timezone|default('UTC')|e }}";
+  const statusEl = document.getElementById('status');
+  const tbody = document.getElementById('tbody');
+  const btnPoll = document.getElementById('btnPoll');
+  const btnClear = document.getElementById('btnClear');
+  const btnExport = document.getElementById('btnExport');
+  const btnExportFacturas = document.getElementById('btnExportFacturas');
+  const popup = document.getElementById('xlPopup');
+  const btnPrev = document.getElementById('btnPrev');
+  const btnNext = document.getElementById('btnNext');
+  const pageInfo = document.getElementById('pageInfo');
+
+  let rowsAll = []; // página actual
+  let totalRows = 0;
+  let page = 1;
+  const pageSize = 80;
+  let sortKey = 'hora';
+  let sortDir = 'desc'; // asc|desc
+
+  // filters (server-side):
+  //   key -> {mode:'values'|'text'|'range'|'datetime_range', ...}
+  const filters = {};
+
+  function fmtHora(iso){
+    if(!iso) return '';
+    const d = new Date(iso);
+    if (isNaN(d.getTime())) return iso;
+    try {
+      return d.toLocaleString(undefined, { timeZone: APP_TZ });
+    } catch(e) {
+      return d.toLocaleString();
+    }
+  }
+
+  function fmtMonto(v){
+    if(v === null || v === undefined || v === '') return '';
+    const n = Number(v);
+    if (isNaN(n)) return String(v);
+    return n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  }
+
+  function esc(s){
+    const str = (s === null || s === undefined) ? '' : String(s);
+    return str
+      .replace(/&/g,'&amp;')
+      .replace(/</g,'&lt;')
+      .replace(/>/g,'&gt;')
+      .replace(/\"/g,'&quot;')
+      .replace(/'/g,'&#039;');
+  }
+
+  // Valor "crudo" para filtros/sort (debe ser comparable y entendible por backend)
+  function rawForKey(r, key){
+    if(key === 'hora') return ((r.hora || '')).toString();
+    if(key === 'order_date') return ((r.order_date || '')).toString();
+    if(key === 'monto_compra') return (r.monto_compra === null || r.monto_compra === undefined) ? '' : String(r.monto_compra);
+    // IMPORTANTE: la columna visible de factura es la normalizada (n_factura_fmt)
+    // para que el filtro de texto (ej: "empieza con A") coincida con lo que ve el usuario.
+    if(key === 'n_factura') return ((r.n_factura_fmt || '')).toString();
+    return ((r[key] || '')).toString();
+  }
+
+  // Etiqueta visible en UI
+  function labelForKey(rOrVal, key){
+    const v = (typeof rOrVal === 'object' && rOrVal !== null) ? rawForKey(rOrVal, key) : ((rOrVal || '')).toString();
+    if(key === 'hora' || key === 'order_date') return fmtHora(v);
+    if(key === 'monto_compra') return fmtMonto(v);
+    return v;
+  }
+
+  function getUniqueValues(key){
+    const set = new Set();
+    for(const r of rowsAll){
+      set.add(rawForKey(r, key));
+    }
+    return Array.from(set).sort((a,b)=>a.localeCompare(b, undefined, {numeric:true, sensitivity:'base'}));
+  }
+
+  // Opciones de filtro server-side (para que no dependan de la página actual)
+  async function fetchFilterOptions(field, q){
+    const qs = new URLSearchParams({field: field, q: q || '', limit: '500'});
+    const resp = await fetch(`/inventario/batch-pedidos/api/filter_options?${qs.toString()}`);
+    if(!resp.ok) throw new Error('filter_options_failed');
+    const data = await resp.json();
+    if(!data || !Array.isArray(data.items)) return [];
+    // IMPORTANT: sin '??' para evitar errores en parsers viejos
+    return data.items.map(function(x){
+      if(x === null || x === undefined) return '';
+      return String(x);
+    });
+  }
+
+  function debounce(fn, ms){
+    let t = null;
+    return (...args)=>{
+      if(t) clearTimeout(t);
+      t = setTimeout(()=>fn(...args), ms);
+    };
+  }
+
+  function serializeFilters(){
+    return filters;
+  }
+
+  function updateHeaderIndicators(){
+    // sort indicators
+    document.querySelectorAll('[data-sort]').forEach(el=>{
+      const k = el.getAttribute('data-sort');
+      if(k === sortKey){
+        el.textContent = sortDir === 'asc' ? '▲' : '▼';
+      } else {
+        el.textContent = '';
+      }
+    });
+
+    // filter dot
+    document.querySelectorAll('th[data-key]').forEach(th=>{
+      const fk = th.getAttribute('data-filter-key') || th.getAttribute('data-key');
+      const dotWrap = th.querySelector('.th-icons');
+      if(!dotWrap) return;
+      const f = filters[fk];
+      let has = false;
+      if(f){
+        if(f.mode === 'values') has = Array.isArray(f.values) && f.values.length;
+        else if(f.mode === 'text') has = !!(f.value && String(f.value).trim());
+        else if(f.mode === 'range') has = (f.min !== '' && f.min !== null && f.min !== undefined) || (f.max !== '' && f.max !== null && f.max !== undefined);
+        else if(f.mode === 'datetime_range') has = !!(f.from_date || f.to_date || f.from_time || f.to_time);
+      }
+      dotWrap.classList.toggle('filter-on', has);
+    });
+  }
+
+  function renderTable(){
+    updateHeaderIndicators();
+
+    if(!rowsAll.length){
+      tbody.innerHTML = `<tr><td colspan="12" style="opacity:.7;">Sin resultados</td></tr>`;
+      return;
+    }
+
+    const html = rowsAll.map(r => {
+      const link = (r.link_factura || '').toString();
+      const verCell = (link && link.toLowerCase() === 'facturado')
+        ? `<span>Facturado</span>`
+        : (link ? `<button class="btn" data-link="${esc(link)}">Ir</button>` : `<span style="opacity:.6;">—</span>`);
+
+      return `<tr>
+        <td>${esc(r.fecha || '')}</td>
+        <td>${esc(r.hora_solo || '')}</td>
+        <td>${esc(r.order_fecha || '')}</td>
+        <td>${esc(r.order_hora || '')}</td>
+        <td>${esc(r.batch_name || '')}</td>
+        <td>${esc(r.id_web || '')}</td>
+        <td>${esc(r.id_melicart || '')}</td>
+        <td>${esc(r.id_meli || '')}</td>
+        <td>${esc(r.cliente || '')}</td>
+        <td>${esc(fmtMonto(r.monto_compra))}</td>
+        <td>${esc(r.n_factura_fmt || '')}</td>
+        <td style="text-align:right;">${verCell}</td>
+      </tr>`;
+    }).join('');
+
+    tbody.innerHTML = html;
+  }
+
+  async function fetchList(){
+    const payload = {
+      page: page,
+      page_size: pageSize,
+      sort_key: sortKey,
+      sort_dir: sortDir,
+      filters: serializeFilters(),
+    };
+
+    const res = await fetch('/inventario/batch-pedidos/api/list', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify(payload),
+      cache:'no-store'
+    });
+    if(!res.ok) throw new Error('No se pudo obtener lista');
+    const j = await res.json();
+    rowsAll = j.items || [];
+    totalRows = Number(j.total || 0);
+    const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
+    page = Math.max(1, Math.min(page, totalPages));
+    pageInfo.textContent = `Página ${page} / ${totalPages} (Total: ${totalRows})`;
+    btnPrev.disabled = (page <= 1);
+    btnNext.disabled = (page >= totalPages);
+    renderTable();
+  }
+
+  async function pollNow(){
+    try{
+      statusEl.textContent = 'Escaneando…';
+      const res = await fetch('/inventario/batch-pedidos/api/poll_now', {method:'POST'});
+      const j = await res.json().catch(()=>({}));
+      if(res.ok){
+        statusEl.textContent = j.imported ? `Importado: ${j.batch_name || ''}` : 'Sin nuevos batches';
+      } else {
+        statusEl.textContent = j.error ? `Error: ${j.error}` : 'Error en escaneo';
+      }
+    } catch(e){
+      statusEl.textContent = 'Error en escaneo';
+    } finally {
+      try { await fetchList(); } catch(_){}
+      setTimeout(()=>{ statusEl.textContent = ''; }, 2500);
+    }
+  }
+
+  async function exportXlsx(){
+    if(!totalRows){
+      statusEl.textContent = 'No hay filas para exportar';
+      setTimeout(()=>{ statusEl.textContent = ''; }, 2500);
+      return;
+    }
+
+    try{
+      statusEl.textContent = 'Generando Excel…';
+
+      const res = await fetch('/inventario/batch-pedidos/api/export_xlsx', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          filters: serializeFilters(),
+          sort_key: sortKey,
+          sort_dir: sortDir,
+        }),
+      });
+      if(!res.ok){
+        const j = await res.json().catch(()=>null);
+        throw new Error((j && j.error) ? j.error : 'No se pudo exportar');
+      }
+
+      const blob = await res.blob();
+      const cd = res.headers.get('content-disposition') || '';
+      const m = /filename\*=UTF-8''([^;]+)|filename="([^"]+)"/i.exec(cd);
+      const fname = decodeURIComponent((m && (m[1] || m[2])) ? (m[1] || m[2]) : 'pedidos_por_batch.xlsx');
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fname;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+
+      statusEl.textContent = 'Excel generado';
+    } catch(e){
+      statusEl.textContent = 'Error al exportar';
+    } finally {
+      setTimeout(()=>{ statusEl.textContent = ''; }, 2500);
+    }
+  }
+
+  async function exportFacturasZip(){
+    if(!totalRows){
+      statusEl.textContent = 'No hay filas para exportar';
+      setTimeout(()=>{ statusEl.textContent = ''; }, 2500);
+      return;
+    }
+
+    try{
+      statusEl.textContent = 'Generando ZIP…';
+      const res = await fetch('/inventario/batch-pedidos/api/export_facturas_zip', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({
+          filters: serializeFilters(),
+          sort_key: sortKey,
+          sort_dir: sortDir,
+        }),
+      });
+      if(!res.ok){
+        const j = await res.json().catch(()=>null);
+        throw new Error((j && j.error) ? j.error : 'No se pudo exportar');
+      }
+
+      const blob = await res.blob();
+      const cd = res.headers.get('content-disposition') || '';
+      const m = /filename\*=UTF-8''([^;]+)|filename="([^"]+)"/i.exec(cd);
+      const fname = decodeURIComponent((m && (m[1] || m[2])) ? (m[1] || m[2]) : 'facturas_batch.zip');
+
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = fname;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+
+      statusEl.textContent = 'ZIP generado';
+    } catch(e){
+      statusEl.textContent = 'Error al exportar ZIP';
+    } finally {
+      setTimeout(()=>{ statusEl.textContent = ''; }, 2500);
+    }
+  }
+
+  function closePopup(){
+    popup.style.display = 'none';
+    popup.innerHTML = '';
+  }
+
+  async function openPopupForKey(key, anchorEl){
+    const th = anchorEl.closest('th');
+    const filterKey = (th && (th.getAttribute('data-filter-key') || th.getAttribute('data-key'))) || key;
+    const filterType = (th && th.getAttribute('data-filter-type')) || 'text';
+    const existing = filters[filterKey] || null;
+
+    // posicionar
+    const r = anchorEl.getBoundingClientRect();
+    const top = r.bottom + window.scrollY + 6;
+    const left = Math.max(8, Math.min(window.scrollX + r.left - 240, window.scrollX + window.innerWidth - 380));
+    popup.style.top = `${top}px`;
+    popup.style.left = `${left}px`;
+
+    // valores (para modo lista)
+    let allVals = [];
+    const hadFilter = !!existing;
+    let userTouched = false;
+
+    if(filterKey === 'batch_name'){
+      try{
+        allVals = await fetchFilterOptions('batch_name', '');
+      } catch(e){
+        allVals = [];
+      }
+    } else {
+      allVals = getUniqueValues(filterKey);
+    }
+
+    let current = (hadFilter && existing.mode === 'values' && Array.isArray(existing.values)) ? new Set(existing.values) : new Set(allVals);
+
+    // HTML popup (tipo Excel: texto + lista + rangos)
+    const textOp = (existing && existing.mode === 'text' && existing.op) ? existing.op : 'contains';
+    const textVal = (existing && existing.mode === 'text' && existing.value) ? String(existing.value) : '';
+    const rangeMin = (existing && existing.mode === 'range' && existing.min !== undefined) ? String(existing.min) : '';
+    const rangeMax = (existing && existing.mode === 'range' && existing.max !== undefined) ? String(existing.max) : '';
+    const dtFromDate = (existing && existing.mode === 'datetime_range' && existing.from_date) ? String(existing.from_date) : '';
+    const dtToDate = (existing && existing.mode === 'datetime_range' && existing.to_date) ? String(existing.to_date) : '';
+    const dtFromTime = (existing && existing.mode === 'datetime_range' && existing.from_time) ? String(existing.from_time) : '';
+    const dtToTime = (existing && existing.mode === 'datetime_range' && existing.to_time) ? String(existing.to_time) : '';
+
+    popup.innerHTML = `
+      <div class="row">
+        <div class="menu-item" id="xlSortAsc">Ordenar de A a Z</div>
+      </div>
+      <div class="row">
+        <div class="menu-item" id="xlSortDesc">Ordenar de Z a A</div>
+      </div>
+      <div class="row">
+        <div class="menu-item" id="xlClear">Borrar filtro</div>
+      </div>
+
+      <div class="row" id="xlTextRow" style="gap:6px;">
+        <select id="xlTextOp" style="flex:0 0 120px;">
+          <option value="contains">contiene</option>
+          <option value="starts">empieza con</option>
+          <option value="eq">igual</option>
+          <option value="not_contains">no contiene</option>
+        </select>
+        <input type="text" id="xlText" placeholder="Filtrar por texto" value="${esc(textVal)}" />
+      </div>
+
+      <div class="row" id="xlRangeRow" style="display:none; gap:6px;">
+        <input type="number" id="xlMin" placeholder="Desde" value="${esc(rangeMin)}" />
+        <input type="number" id="xlMax" placeholder="Hasta" value="${esc(rangeMax)}" />
+      </div>
+
+      <div class="row" id="xlDateRow" style="display:none; gap:6px;">
+        <input type="date" id="xlFromDate" value="${esc(dtFromDate)}" />
+        <input type="date" id="xlToDate" value="${esc(dtToDate)}" />
+      </div>
+
+      <div class="row" id="xlTimeRow" style="display:none; gap:6px;">
+        <input type="time" id="xlFromTime" value="${esc(dtFromTime)}" />
+        <input type="time" id="xlToTime" value="${esc(dtToTime)}" />
+      </div>
+
+      <div class="row" id="xlSearchRow">
+        <input type="text" id="xlSearch" placeholder="Buscar" />
+      </div>
+      <div class="row" id="xlListRow">
+        <div class="xl-filter-list" id="xlList"></div>
+      </div>
+      <div class="xl-filter-actions">
+        <button id="xlCancel">Cancelar</button>
+        <button id="xlOk">Aceptar</button>
+      </div>
+    `;
+
+    const listEl = popup.querySelector('#xlList');
+    const searchEl = popup.querySelector('#xlSearch');
+
+    function renderList(filterText){
+      const ft = (filterText || '').toLowerCase();
+      const vals = ft ? allVals.filter(v => labelForKey(v, filterKey).toLowerCase().includes(ft)) : allVals;
+
+      const allChecked = vals.length && vals.every(v => current.has(v));
+      let out = `
+        <label><input type="checkbox" id="xlAll" ${allChecked ? 'checked':''} /> <span>(Seleccionar todo)</span></label>
+        <div style="height:6px;"></div>
+      `;
+      for(const v of vals){
+        const chk = current.has(v) ? 'checked' : '';
+        const shown = labelForKey(v, filterKey);
+        const label = (shown === '' ? '(Vacío)' : esc(shown));
+        out += `<label><input type="checkbox" class="xlVal" data-val="${esc(v)}" ${chk} /> <span>${label}</span></label>`;
+      }
+      listEl.innerHTML = out;
+
+      // handlers
+      const allBox = popup.querySelector('#xlAll');
+      if(allBox){
+        allBox.addEventListener('change', (e)=>{
+          userTouched = true;
+          if(e.target.checked){
+            for(const v of vals) current.add(v);
+          } else {
+            for(const v of vals) current.delete(v);
+          }
+          renderList(searchEl.value);
+        });
+      }
+      listEl.querySelectorAll('.xlVal').forEach(cb=>{
+        cb.addEventListener('change', (e)=>{
+          userTouched = true;
+          const v = e.target.getAttribute('data-val') || '';
+          if(e.target.checked) current.add(v);
+          else current.delete(v);
+          renderList(searchEl.value);
+        });
+      });
+    }
+
+    renderList('');
+
+    // Ajustar UI según tipo
+    const textOpEl = popup.querySelector('#xlTextOp');
+    const textEl = popup.querySelector('#xlText');
+    const rangeRow = popup.querySelector('#xlRangeRow');
+    const dateRow = popup.querySelector('#xlDateRow');
+    const timeRow = popup.querySelector('#xlTimeRow');
+
+    if(textOpEl) textOpEl.value = textOp;
+
+    if(filterKey === 'monto_compra'){
+      if(rangeRow) rangeRow.style.display = 'flex';
+    }
+
+    if(filterType === 'date'){
+      if(dateRow) dateRow.style.display = 'flex';
+      popup.querySelector('#xlTextRow').style.display = 'none';
+      popup.querySelector('#xlSearchRow').style.display = 'none';
+      popup.querySelector('#xlListRow').style.display = 'none';
+    }
+
+    if(filterType === 'time'){
+      if(timeRow) timeRow.style.display = 'flex';
+      popup.querySelector('#xlTextRow').style.display = 'none';
+      popup.querySelector('#xlSearchRow').style.display = 'none';
+      popup.querySelector('#xlListRow').style.display = 'none';
+    }
+
+    const sortTarget = (th && th.querySelector('[data-sort]') && th.querySelector('[data-sort]').getAttribute('data-sort')) || filterKey;
+
+    // acciones
+    popup.querySelector('#xlSortAsc').addEventListener('click', ()=>{
+      sortKey = sortTarget; sortDir = 'asc';
+      page = 1;
+      closePopup(); fetchList().catch(()=>{});
+    });
+    popup.querySelector('#xlSortDesc').addEventListener('click', ()=>{
+      sortKey = sortTarget; sortDir = 'desc';
+      page = 1;
+      closePopup(); fetchList().catch(()=>{});
+    });
+    popup.querySelector('#xlClear').addEventListener('click', ()=>{
+      delete filters[filterKey];
+      page = 1;
+      closePopup(); fetchList().catch(()=>{});
+    });
+    popup.querySelector('#xlCancel').addEventListener('click', ()=>{
+      closePopup();
+    });
+
+    // ENTER aplica (Excel feel)
+    if(textEl){
+      textEl.addEventListener('keydown', function(e){
+        if(e.key === 'Enter'){
+          e.preventDefault();
+          popup.querySelector('#xlOk').click();
+        }
+      });
+    }
+
+    popup.querySelector('#xlOk').addEventListener('click', ()=>{
+      // Fecha/hora: guardamos rango
+      if(filterType === 'date' || filterType === 'time'){
+        const cur = (filters[filterKey] && filters[filterKey].mode === 'datetime_range') ? Object.assign({}, filters[filterKey]) : {mode:'datetime_range'};
+        if(filterType === 'date'){
+          cur.from_date = (popup.querySelector('#xlFromDate').value || '').trim();
+          cur.to_date = (popup.querySelector('#xlToDate').value || '').trim();
+        } else {
+          cur.from_time = (popup.querySelector('#xlFromTime').value || '').trim();
+          cur.to_time = (popup.querySelector('#xlToTime').value || '').trim();
+        }
+        if(!cur.from_date) delete cur.from_date;
+        if(!cur.to_date) delete cur.to_date;
+        if(!cur.from_time) delete cur.from_time;
+        if(!cur.to_time) delete cur.to_time;
+
+        if(!(cur.from_date || cur.to_date || cur.from_time || cur.to_time)){
+          delete filters[filterKey];
+        } else {
+          filters[filterKey] = cur;
+        }
+      } else {
+        // Texto tiene prioridad
+        const tval = (textEl && textEl.value) ? textEl.value.trim() : '';
+        if(tval){
+          filters[filterKey] = {mode:'text', op:(textOpEl ? textOpEl.value : 'contains'), value:tval};
+        } else if(filterKey === 'monto_compra'){
+          const minv = (popup.querySelector('#xlMin').value || '').trim();
+          const maxv = (popup.querySelector('#xlMax').value || '').trim();
+          if(minv || maxv) filters[filterKey] = {mode:'range', min:minv, max:maxv};
+          else delete filters[filterKey];
+        } else {
+          // Lista de valores
+          const allSelected = allVals.length && allVals.every(v => current.has(v));
+          if(allSelected){
+            delete filters[filterKey];
+          } else {
+            filters[filterKey] = {mode:'values', values:Array.from(current)};
+          }
+        }
+      }
+
+      page = 1;
+      closePopup(); fetchList().catch(()=>{});
+    });
+
+    const onSearch = debounce(async ()=>{
+      const q = (searchEl.value || '').trim();
+      if(filterKey === 'batch_name'){
+        try{
+          const newVals = await fetchFilterOptions('batch_name', q);
+          allVals = newVals;
+          if(!hadFilter && !userTouched){
+            current = new Set(allVals);
+          }
+          renderList(''); // ya viene filtrado por server
+        } catch(e){
+          renderList('');
+        }
+      } else {
+        renderList(searchEl.value);
+      }
+    }, 250);
+
+    if(searchEl){
+      searchEl.addEventListener('input', onSearch);
+    }
+
+    popup.style.display = 'block';
+  }
+
+  // Eventos tabla
+  document.getElementById('tbl').addEventListener('click', (ev)=>{
+    const btn = ev.target.closest('button.btn[data-link]');
+    if(btn){
+      const link = btn.getAttribute('data-link');
+      if(link) window.open(link, '_blank', 'noopener');
+      return;
+    }
+  });
+
+  // Header: click en label => sort; click en ▾ => popup
+  document.querySelectorAll('th[data-key]').forEach(th=>{
+    const key = th.getAttribute('data-key');
+    const filterKey = th.getAttribute('data-filter-key') || key;
+    const sortTarget = (th.querySelector('[data-sort]') && th.querySelector('[data-sort]').getAttribute('data-sort')) || filterKey;
+    const label = th.querySelector('.th-label');
+    const fbtn = th.querySelector('.filter-btn');
+
+    if(label){
+      label.addEventListener('click', ()=>{
+        if(sortKey === sortTarget){
+          sortDir = (sortDir === 'asc') ? 'desc' : 'asc';
+        } else {
+          sortKey = sortTarget;
+          sortDir = 'asc';
+        }
+        page = 1;
+        fetchList().catch(()=>{});
+      });
+    }
+    if(fbtn){
+      fbtn.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        openPopupForKey(filterKey, fbtn);
+      });
+    }
+  });
+
+  // Cerrar popup al click afuera / escape
+  document.addEventListener('click', (e)=>{
+    if(popup.style.display === 'block'){
+      if(!popup.contains(e.target) && !e.target.closest('.filter-btn')) closePopup();
+    }
+  });
+  document.addEventListener('keydown', (e)=>{
+    if(e.key === 'Escape') closePopup();
+  });
+
+  btnPoll.addEventListener('click', pollNow);
+
+  btnClear.addEventListener('click', ()=>{
+    for(const k in filters) delete filters[k];
+    sortKey = 'hora';
+    sortDir = 'desc';
+    page = 1;
+    fetchList().catch(()=>{});
+  });
+
+  btnExport.addEventListener('click', exportXlsx);
+  btnExportFacturas.addEventListener('click', exportFacturasZip);
+
+  btnPrev.addEventListener('click', ()=>{
+    if(page > 1){
+      page -= 1;
+      fetchList().catch(()=>{});
+    }
+  });
+
+  btnNext.addEventListener('click', ()=>{
+    const totalPages = Math.max(1, Math.ceil(totalRows / pageSize));
+    if(page < totalPages){
+      page += 1;
+      fetchList().catch(()=>{});
+    }
+  });
+
+  // init
+  (async function(){
+    try{
+      await fetchList();
+    } catch(e){
+      tbody.innerHTML = `<tr><td colspan="12" style="opacity:.7;">No se pudo cargar.</td></tr>`;
+    }
+    setInterval(pollNow, 14000);
+  })();
+})();
+</script>
+{% endblock %}

@@ -1,0 +1,17 @@
+Flask==3.0.3
+Flask-SQLAlchemy==3.1.1
+Flask-Login==0.6.3
+Flask-Mail==0.9.1
+Flask-Migrate==4.0.7
+python-dotenv==1.0.1
+psycopg2-binary
+reportlab==4.2.5
+itsdangerous==2.2.0
+Jinja2==3.1.4
+
+# Python 3.13 en Windows no trae base de zonas horarias IANA; ZoneInfo requiere tzdata.
+tzdata
+
+# Rastreo: decodificar QR desde foto / fallback (Android & iOS)
+numpy
+opencv-python-headless

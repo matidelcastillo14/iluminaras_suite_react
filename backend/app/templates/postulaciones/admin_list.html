@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="card">
+    <h2 style="margin:0 0 10px">Postulaciones</h2>
+
+    <form method="get" action="{{ url_for('postulaciones_admin.list_applications') }}" style="display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end">
+      <div style="min-width:240px;flex:1">
+        <label for="q">Buscar (nombre/apellido/email)</label>
+        <input id="q" name="q" value="{{ q }}" placeholder="Buscar..." />
+      </div>
+      <div>
+        <label for="position_id">Puesto</label>
+        <select id="position_id" name="position_id">
+          <option value="">(Todos)</option>
+          {% for p in puestos %}
+            <option value="{{ p.id }}" {% if position_id|int == p.id %}selected{% endif %}>{{ p.name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <label for="status">Estado</label>
+        <select id="status" name="status">
+          <option value="">(Todos)</option>
+          {% for s in statuses %}
+            <option value="{{ s }}" {% if status == s %}selected{% endif %}>{{ s }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <button class="btn primary" type="submit">Filtrar</button>
+        <a class="btn" href="{{ url_for('postulaciones_admin.puestos_list') }}">Configurar Puestos</a>
+      </div>
+    </form>
+
+    <div style="margin-top:14px">
+      <table>
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Nombre</th>
+            <th>Email</th>
+            <th>Puesto</th>
+            <th>Estado</th>
+            <th>Adjuntos</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rows %}
+            <tr>
+              <td>{{ format_dt(r.created_at) }}</td>
+              <td>{{ r.first_name }} {{ r.last_name }}</td>
+              <td>{{ r.email }}</td>
+              <td>{{ r.position.name if r.position else '' }}</td>
+              <td>{{ r.status }}</td>
+              <td>{{ r.files|length }}</td>
+              <td><a class="btn" href="{{ url_for('postulaciones_admin.view_application', app_id=r.id) }}">Abrir</a></td>
+            </tr>
+          {% endfor %}
+          {% if not rows %}
+            <tr><td colspan="7" style="opacity:.7">Sin resultados.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}

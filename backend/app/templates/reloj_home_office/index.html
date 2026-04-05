@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:820px;margin:0 auto;">
+  <h2 style="margin:0 0 10px 0;">Reloj Home Office</h2>
+  <p style="margin:0 0 14px 0;color:#555;">La marcada se registra en la misma tabla del bridge y luego se procesa hacia Odoo con la misma lógica del reloj físico.</p>
+
+  <div class="grid">
+    <div>
+      <label>Usuario</label>
+      <input value="{{ current_user.full_name }} ({{ current_user.username }})" disabled />
+    </div>
+    <div>
+      <label>Cédula de identidad</label>
+      <input value="{{ snapshot.ref_code or '' }}" disabled />
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <label>Módulo habilitado</label>
+      <input value="{{ 'Sí' if snapshot.module_enabled else 'No' }}" disabled />
+    </div>
+    <div>
+      <label>Usuario habilitado</label>
+      <input value="{{ 'Sí' if snapshot.enabled else 'No' }}" disabled />
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <label>Última marcada local</label>
+      <input value="{{ format_dt(snapshot.last_event_ts) if snapshot.last_event_ts else 'Sin registros' }}" disabled />
+    </div>
+    <div>
+      <label>Último estado</label>
+      <input value="{{ snapshot.last_event_state or '-' }}{% if snapshot.last_event_source %} / {{ snapshot.last_event_source }}{% endif %}" disabled />
+    </div>
+  </div>
+
+  {% if snapshot.last_event_error %}
+  <div style="margin-top:10px;">
+    <label>Último detalle</label>
+    <textarea rows="3" disabled>{{ snapshot.last_event_error }}</textarea>
+  </div>
+  {% endif %}
+
+  <div style="margin-top:14px;display:flex;gap:10px;align-items:center;">
+    <form method="post" action="{{ url_for('reloj_home_office.marcar') }}">
+      <button class="btn primary" type="submit" {% if not snapshot.module_enabled or not snapshot.enabled or not snapshot.has_ref_code %}disabled{% endif %}>Marcar ahora</button>
+    </form>
+    {% if not snapshot.has_ref_code %}
+      <span style="font-size:13px;color:#a00;">Falta configurar la Cédula de identidad en el usuario.</span>
+    {% elif not snapshot.enabled %}
+      <span style="font-size:13px;color:#a00;">Tu usuario no está habilitado para este módulo.</span>
+    {% elif not snapshot.module_enabled %}
+      <span style="font-size:13px;color:#a00;">El módulo está deshabilitado a nivel general.</span>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

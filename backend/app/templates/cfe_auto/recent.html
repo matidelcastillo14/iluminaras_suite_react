@@ -1,0 +1,352 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="padding:0; overflow:hidden;">
+  <div style="padding:18px;">
+    <div class="top" style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+      <div class="brand" style="display:flex; align-items:center; gap:10px;">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="logo" style="width:44px; height:auto;" />
+        <div>
+          <h1 style="margin:0; font-size:18px;">CFEs recientes</h1>
+          <div class="meta" style="font-size:12px; color:#444;">CFE Auto</div>
+        </div>
+      </div>
+      <div class="controls" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+        <button class="btn primary" id="btnPoll" type="button">Actualizar</button>
+        <span class="muted" id="lastUpdate" style="color:#666; font-size:12px;"></span>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:12px; padding:0;">
+      <div style="overflow:auto; max-height: calc(100vh - 260px);">
+        <table style="width:100%; border-collapse:collapse;">
+          <thead>
+            <tr>
+              <th><div class="thcell"><span>Fecha</span><button class="fbtn" type="button" data-col="fecha" aria-label="Filtrar Fecha">▾</button></div></th>
+              <th><div class="thcell"><span>Empresa</span><button class="fbtn" type="button" data-col="empresa" aria-label="Filtrar Empresa">▾</button></div></th>
+              <th><div class="thcell"><span>Tipo</span><button class="fbtn" type="button" data-col="tipo" aria-label="Filtrar Tipo">▾</button></div></th>
+              <th><div class="thcell"><span>Serie</span><button class="fbtn" type="button" data-col="serie" aria-label="Filtrar Serie">▾</button></div></th>
+              <th><div class="thcell"><span>Número</span><button class="fbtn" type="button" data-col="numero" aria-label="Filtrar Número">▾</button></div></th>
+              <th><div class="thcell"><span>Receptor</span><button class="fbtn" type="button" data-col="receptor" aria-label="Filtrar Receptor">▾</button></div></th>
+              <th>Cambio</th>
+              <th><div class="thcell"><span>Estado</span><button class="fbtn" type="button" data-col="estado" aria-label="Filtrar Estado">▾</button></div></th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="9" class="muted">Cargando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .btn{ display:inline-block; border:1px solid #d0d0d0; background:#fff; border-radius:10px; padding:8px 10px; cursor:pointer; font-size:13px; text-decoration:none; color:#0969da; }
+  .btn.primary{ border-color:#1f6feb; color:#111; }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; color:#666; }
+  th, td{ text-align:left; padding:10px 8px; border-bottom:1px solid #eee; font-size:13px; }
+  th{ font-size:12px; color:#333; background:#fafafa; position:sticky; top:0; z-index:2; }
+  .badge{ display:inline-block; padding:3px 8px; border-radius:999px; font-size:12px; border:1px solid #ddd; }
+  .ok{ border-color:#1a7f37; }
+  .pending{ border-color:#9a6700; }
+  .err{ border-color:#cf222e; }
+  .thcell{ display:flex; align-items:center; justify-content:space-between; gap:6px; }
+  .fbtn{
+    border:1px solid #d0d0d0;
+    background:#fff;
+    border-radius:8px;
+    padding:2px 8px;
+    line-height:16px;
+    font-size:12px;
+    cursor:pointer;
+    user-select:none;
+  }
+  .fbtn.active{ border-color:#1f6feb; }
+  .fmenu{
+    position:fixed;
+    min-width:260px;
+    max-width:360px;
+    max-height:min(70vh, 420px);
+    display:none;
+    flex-direction:column;
+    overflow:hidden;
+    background:#fff;
+    border:1px solid #e5e5e5;
+    border-radius:12px;
+    box-shadow: 0 12px 40px rgba(0,0,0,.12);
+    z-index: 9999;
+  }
+  .fmenu header{ padding:10px 12px; border-bottom:1px solid #eee; font-size:13px; font-weight:bold; background:#fafafa; color:#111; }
+  .fmenu .search{ padding:10px 12px; border-bottom:1px solid #eee; }
+  .fmenu input{ width:100%; border:1px solid #ddd; border-radius:10px; padding:8px 10px; font-size:13px; }
+  .fmenu .list{ padding:8px 12px; overflow:auto; }
+  .fmenu label{ display:flex; align-items:center; gap:8px; padding:6px 2px; font-size:13px; cursor:pointer; }
+  .fmenu footer{ padding:10px 12px; border-top:1px solid #eee; background:#fafafa; display:flex; justify-content:flex-end; gap:8px; }
+  .toast{ display:none; margin-top:10px; padding:10px 12px; border-radius:10px; border:1px solid #e5e5e5; background:#fff; font-size:13px; }
+  .toast.show{ display:block; }
+</style>
+
+<div class="fmenu" id="fmenu" role="dialog" aria-modal="true">
+  <header id="fTitle">Filtro</header>
+  <div class="search"><input id="fSearch" placeholder="Buscar…" /></div>
+  <div class="list" id="fList"></div>
+  <footer>
+    <button class="btn" type="button" id="fClear">Limpiar</button>
+    <button class="btn primary" type="button" id="fApply">Aplicar</button>
+  </footer>
+</div>
+
+<script>
+  const API_CFES = "{{ url_for('cfe_auto.api_cfes') }}";
+  const API_POLL_NOW = "{{ url_for('cfe_auto.api_poll_now') }}";
+
+  const tbody = document.getElementById('tbody');
+  const btnPoll = document.getElementById('btnPoll');
+  const toast = document.getElementById('toast');
+  const lastUpdate = document.getElementById('lastUpdate');
+
+  const menu = document.getElementById('fmenu');
+  const fTitle = document.getElementById('fTitle');
+  const fSearch = document.getElementById('fSearch');
+  const fList = document.getElementById('fList');
+  const fClear = document.getElementById('fClear');
+  const fApply = document.getElementById('fApply');
+
+  let allItems = [];
+  const activeFilters = {}; // col -> Set(values)
+  let currentCol = null;
+
+  const COLS = {
+    fecha:   { title:'Fecha',    value: (it)=> fmtDate(it.create_date || it.fecha_em || it.updated_at || '') },
+    empresa: { title:'Empresa',  value: (it)=> (it.empresa || '') },
+    tipo:    { title:'Tipo',     value: (it)=> (it.tipo_texto || '') },
+    serie:   { title:'Serie',    value: (it)=> (it.serie || '') },
+    numero:  { title:'Número',   value: (it)=> (it.numero || '') },
+    receptor:{ title:'Receptor', value: (it)=> (it.receptor || '') },
+    estado:  { title:'Estado',   value: (it)=> (it.status || 'pending').toLowerCase() }
+  };
+
+  function norm(s){ return String(s || '').toLowerCase().trim(); }
+
+  function estadoLabel(v){
+    const s = (v || 'pending').toLowerCase();
+    if(s === 'ok') return 'OK';
+    if(s === 'error') return 'ERROR';
+    return 'PENDIENTE';
+  }
+
+  function badge(status){
+    const s = (status || 'pending').toLowerCase();
+    if(s === 'ok') return {cls:'badge ok', txt:'OK'};
+    if(s === 'error') return {cls:'badge err', txt:'ERROR'};
+    return {cls:'badge pending', txt:'PENDIENTE'};
+  }
+
+  function esc(s){
+    return String(s || '').replace(/[&<>"']/g, (c)=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]));
+  }
+
+  function fmtDate(iso){
+    if(!iso) return '';
+    try{
+      // soportar 'YYYY-MM-DD HH:MM:SS' o ISO
+      const t = String(iso).replace(' ', 'T');
+      const d = new Date(t);
+      if(String(d) === 'Invalid Date') return String(iso).split('T')[0];
+      return d.toLocaleDateString();
+    }catch(_){
+      return String(iso).split('T')[0];
+    }
+  }
+
+  function getUniqueValues(colKey){
+    const fn = COLS[colKey].value;
+    const set = new Set();
+    allItems.forEach(it => set.add(String(fn(it) || '')));
+    const arr = Array.from(set);
+    arr.sort((a,b)=> a.localeCompare(b));
+    return arr;
+  }
+
+  function updateFilterButtonStates(){
+    document.querySelectorAll('.fbtn').forEach(btn=>{
+      const col = btn.getAttribute('data-col');
+      const active = activeFilters[col] && activeFilters[col].size > 0;
+      btn.classList.toggle('active', !!active);
+    });
+  }
+
+  function openMenuFor(colKey, btnEl){
+    currentCol = colKey;
+    fTitle.textContent = 'Filtrar: ' + (COLS[colKey]?.title || colKey);
+
+    const values = getUniqueValues(colKey);
+    const selected = activeFilters[colKey] ? new Set(activeFilters[colKey]) : new Set(values);
+
+    fSearch.value = '';
+    fList.innerHTML = values.map(v=>{
+      const id = 'opt_' + colKey + '_' + btoa(unescape(encodeURIComponent(v))).replace(/=/g,'');
+      const checked = selected.has(v);
+      return `<label><input type="checkbox" data-val="${esc(v)}" ${checked?'checked':''}/> <span>${esc(v || '(vacío)')}</span></label>`;
+    }).join('');
+
+    const rect = btnEl.getBoundingClientRect();
+    menu.style.display = 'flex';
+    // posicionar debajo del botón, con clamp al viewport
+    const left = Math.min(window.innerWidth - 380, Math.max(12, rect.left));
+    const top = Math.min(window.innerHeight - 460, rect.bottom + 6);
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+
+    // aplicar búsqueda
+    fSearch.oninput = ()=>{
+      const q = norm(fSearch.value);
+      fList.querySelectorAll('label').forEach(lb=>{
+        const txt = norm(lb.textContent);
+        lb.style.display = txt.includes(q) ? '' : 'none';
+      });
+    };
+
+    fClear.onclick = ()=>{
+      fList.querySelectorAll('input[type=checkbox]').forEach(cb=> cb.checked = false);
+    };
+
+    fApply.onclick = ()=>{
+      const set = new Set();
+      fList.querySelectorAll('input[type=checkbox]').forEach(cb=>{
+        if(cb.checked) set.add(cb.getAttribute('data-val') || '');
+      });
+      // si queda vacío, lo interpretamos como "sin filtro" (todo)
+      if(set.size === 0){
+        delete activeFilters[colKey];
+      }else{
+        activeFilters[colKey] = set;
+      }
+      closeMenu();
+      updateFilterButtonStates();
+      renderTable();
+    };
+  }
+
+  function closeMenu(){
+    menu.style.display = 'none';
+    currentCol = null;
+  }
+
+  document.addEventListener('click', (ev)=>{
+    const b = ev.target.closest('.fbtn');
+    if(b){
+      ev.preventDefault();
+      const col = b.getAttribute('data-col');
+      if(col) openMenuFor(col, b);
+      return;
+    }
+    if(menu.style.display === 'flex' && !ev.target.closest('#fmenu')){
+      closeMenu();
+    }
+  });
+
+  function getFilteredItems(){
+    const cols = Object.keys(activeFilters);
+    if(cols.length === 0) return allItems;
+
+    return allItems.filter(it=>{
+      for(const col of cols){
+        const set = activeFilters[col];
+        if(!set || set.size === 0) continue;
+        const v = String(COLS[col].value(it) || '');
+        if(!set.has(v)) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderTable(){
+    const items = getFilteredItems();
+
+    if(items.length === 0){
+      tbody.innerHTML = '<tr><td colspan="9" class="muted">Sin resultados.</td></tr>';
+      return;
+    }
+
+    tbody.innerHTML = items.map(it => {
+      const b = badge(it.status);
+      const openDisabled = !it.pdf_url;
+      const changeDisabled = !it.change_pdf_url;
+
+      const btnCambio = changeDisabled
+        ? '<button class="btn" disabled>Cambio</button>'
+        : `<a class="btn rowlink" href="${it.change_pdf_url}?t=${Date.now()}" target="_blank" rel="noopener">Cambio</a>`;
+
+      const btn = openDisabled
+        ? '<button class="btn" disabled>Abrir</button>'
+        : `<a class="btn rowlink" href="${it.pdf_url}?t=${Date.now()}" target="_blank" rel="noopener">Abrir</a>`;
+
+      const tipo = esc(it.tipo_texto || '');
+      const receptor = esc(it.receptor || '');
+      const serie = esc(it.serie || '');
+      const numero = esc(it.numero || '');
+      const fecha = esc(fmtDate(it.create_date || it.fecha_em || it.updated_at || ''));
+      const empresa = esc(it.empresa || '');
+
+      const err = it.error ? ` title="${esc(it.error)}"` : '';
+      return `<tr${err}>
+        <td>${fecha}</td>
+        <td>${empresa}</td>
+        <td>${tipo}</td>
+        <td>${serie}</td>
+        <td>${numero}</td>
+        <td>${receptor}</td>
+        <td style="text-align:center;">${btnCambio}</td>
+        <td><span class="${b.cls}">${b.txt}</span></td>
+        <td style="text-align:right;">${btn}</td>
+      </tr>`;
+    }).join('');
+  }
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 2500);
+  }
+
+  async function loadList(){
+    try{
+      const r = await fetch(API_CFES, {cache:'no-store'});
+      const data = await r.json();
+      if(!data.ok) throw new Error(data.error || 'not ok');
+
+      allItems = data.items || [];
+      updateFilterButtonStates();
+      renderTable();
+
+      lastUpdate.textContent = 'Actualizado: ' + new Date().toLocaleTimeString();
+    }catch(ex){
+      tbody.innerHTML = '<tr><td colspan="9" class="muted">Error consultando CFEs.</td></tr>';
+    }
+  }
+
+  async function pollNow(){
+    btnPoll.disabled = true;
+    try{
+      const r = await fetch(API_POLL_NOW, {method:'POST'});
+      const data = await r.json();
+      if(!data.ok) throw new Error(data.error || 'poll error');
+      showToast('Listo.');
+      await loadList();
+    }catch(ex){
+      showToast('Error al actualizar.');
+    }finally{
+      btnPoll.disabled = false;
+    }
+  }
+
+  btnPoll.addEventListener('click', pollNow);
+
+  loadList();
+  setInterval(loadList, 30000);
+</script>
+{% endblock %}

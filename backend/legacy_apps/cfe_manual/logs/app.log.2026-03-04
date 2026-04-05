@@ -1,0 +1,189 @@
+2026-03-04 11:51:50,181 INFO access pid=17236 rid=e1e5bdf94c32 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 11:51:50,191 INFO access pid=17236 rid=e1e5bdf94c32 end status=200 ms=10 bytes=12920
+2026-03-04 11:51:50,241 INFO access pid=17236 rid=ffb7ba6b6bdc start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 11:51:50,243 INFO access pid=17236 rid=ffb7ba6b6bdc end status=304 ms=1 bytes=-
+2026-03-04 11:51:55,433 INFO access pid=17236 rid=b905efc2d9b0 start GET /api/orders/search?q=323519 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 11:51:57,736 INFO access pid=17236 rid=b905efc2d9b0 end status=200 ms=2303 bytes=684
+2026-03-04 11:51:57,772 INFO access pid=17236 rid=924060ddec0d start GET /api/orders/search?q=323519 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 11:51:59,324 INFO access pid=17236 rid=924060ddec0d end status=200 ms=1552 bytes=684
+2026-03-04 11:52:02,213 INFO access pid=17236 rid=1b0de6998762 start GET /api/orders/83851?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 11:52:03,095 INFO access pid=17236 rid=1b0de6998762 end status=200 ms=881 bytes=472
+2026-03-04 11:52:04,588 INFO access pid=17236 rid=738503c3e901 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 11:52:04,590 INFO app pid=17236 generate_start doc_type=move doc_id=83851
+2026-03-04 11:52:05,040 INFO app pid=17236 pdf_start tipo=e-Ticket serie=A nro=323519 total=668.0
+2026-03-04 11:52:05,149 INFO app pid=17236 generate_ok doc_type=move doc_id=83851 pdf=cfe_A323519_20260304_115205_f1a0bbd7.pdf
+2026-03-04 11:52:05,152 INFO access pid=17236 rid=738503c3e901 end status=200 ms=564 bytes=89
+2026-03-04 11:52:05,228 INFO access pid=17236 rid=000a7c0dc32a start GET /pdf/cfe_A323519_20260304_115205_f1a0bbd7.pdf?t=1772635925139 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 11:52:05,245 INFO access pid=17236 rid=000a7c0dc32a end status=200 ms=17 bytes=-
+2026-03-04 12:43:53,690 INFO access pid=17236 rid=6dfb493d09f4 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 12:43:53,692 INFO access pid=17236 rid=6dfb493d09f4 end status=200 ms=1 bytes=12920
+2026-03-04 12:43:56,001 INFO access pid=17236 rid=2da6adae59cc start GET /api/orders/search?q=2000015372520106 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 12:43:58,278 INFO access pid=17236 rid=2da6adae59cc end status=200 ms=2277 bytes=3
+2026-03-04 12:54:34,838 INFO access pid=17236 rid=4357440feae7 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 12:54:34,840 INFO access pid=17236 rid=4357440feae7 end status=200 ms=1 bytes=12920
+2026-03-04 12:54:39,256 INFO access pid=17236 rid=5d46b1c350e5 start GET /api/orders/search?q=41439 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 12:54:41,438 INFO access pid=17236 rid=5d46b1c350e5 end status=200 ms=2182 bytes=3135
+2026-03-04 12:54:41,476 INFO access pid=17236 rid=0b0f38442db6 start GET /api/orders/search?q=41439 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 12:54:43,029 INFO access pid=17236 rid=0b0f38442db6 end status=200 ms=1552 bytes=3135
+2026-03-04 12:54:44,367 INFO access pid=17236 rid=7b11ee246098 start GET /api/orders/80091?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 12:54:45,246 INFO access pid=17236 rid=7b11ee246098 end status=200 ms=878 bytes=395
+2026-03-04 12:54:47,621 INFO access pid=17236 rid=84f7d881ec94 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 12:54:47,636 INFO app pid=17236 generate_start doc_type=move doc_id=80091
+2026-03-04 12:54:48,093 INFO app pid=17236 pdf_start tipo=e-Factura serie=A nro=41439 total=929.0
+2026-03-04 12:54:48,207 INFO app pid=17236 generate_ok doc_type=move doc_id=80091 pdf=cfe_A41439_20260304_125448_e9d7009b.pdf
+2026-03-04 12:54:48,210 INFO access pid=17236 rid=84f7d881ec94 end status=200 ms=588 bytes=88
+2026-03-04 12:54:48,291 INFO access pid=17236 rid=724b8a051c46 start GET /pdf/cfe_A41439_20260304_125448_e9d7009b.pdf?t=1772639688175 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 12:54:48,311 INFO access pid=17236 rid=724b8a051c46 end status=200 ms=20 bytes=-
+2026-03-04 12:56:06,775 INFO access pid=17236 rid=042c48420a8b start GET /api/orders/search?q=41439 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 12:56:08,996 INFO access pid=17236 rid=042c48420a8b end status=200 ms=2221 bytes=3135
+2026-03-04 14:28:11,556 INFO access pid=17236 rid=5d9be9d60660 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:28:11,559 INFO access pid=17236 rid=5d9be9d60660 end status=200 ms=3 bytes=12920
+2026-03-04 14:28:16,821 INFO access pid=17236 rid=e6a270f40f09 start GET /api/orders/search?q=322827 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:28:19,134 INFO access pid=17236 rid=e6a270f40f09 end status=200 ms=2313 bytes=281
+2026-03-04 14:28:19,194 INFO access pid=17236 rid=cbec55c4ac2e start GET /api/orders/search?q=322827 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:28:20,202 INFO access pid=17236 rid=5376692ea701 start GET /api/orders/80150?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:28:20,203 INFO access pid=17236 rid=5376692ea701 end status=503 ms=1 bytes=47
+2026-03-04 14:28:20,748 INFO access pid=17236 rid=cbec55c4ac2e end status=200 ms=1553 bytes=281
+2026-03-04 14:28:21,721 INFO access pid=17236 rid=c6ebff31b78e start GET /api/orders/80150?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:28:23,255 INFO access pid=17236 rid=c6ebff31b78e end status=200 ms=1533 bytes=432
+2026-03-04 14:28:24,876 INFO access pid=17236 rid=282b3c17375a start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:28:24,879 INFO app pid=17236 generate_start doc_type=move doc_id=80150
+2026-03-04 14:28:25,336 INFO app pid=17236 pdf_start tipo=e-Ticket serie=A nro=322827 total=948.75
+2026-03-04 14:28:25,492 INFO app pid=17236 generate_ok doc_type=move doc_id=80150 pdf=cfe_A322827_20260304_142825_03bb0e94.pdf
+2026-03-04 14:28:25,496 INFO access pid=17236 rid=282b3c17375a end status=200 ms=619 bytes=89
+2026-03-04 14:28:25,621 INFO access pid=17236 rid=c2ebd8502029 start GET /pdf/cfe_A322827_20260304_142825_03bb0e94.pdf?t=1772645305435 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:28:25,647 INFO access pid=17236 rid=c2ebd8502029 end status=200 ms=25 bytes=-
+2026-03-04 14:56:39,128 INFO access pid=17236 rid=0279896d0ba9 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:56:39,131 INFO access pid=17236 rid=0279896d0ba9 end status=200 ms=2 bytes=12920
+2026-03-04 14:56:44,264 INFO access pid=17236 rid=d5484152501d start GET /api/orders/search?q=323821 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:56:46,462 INFO access pid=17236 rid=d5484152501d end status=200 ms=2197 bytes=277
+2026-03-04 14:56:48,661 INFO access pid=17236 rid=b39e579b1300 start GET /api/orders/84337?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:56:49,559 INFO access pid=17236 rid=b39e579b1300 end status=200 ms=898 bytes=415
+2026-03-04 14:56:51,496 INFO access pid=17236 rid=f70f6c95f5dc start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:56:51,499 INFO app pid=17236 generate_start doc_type=move doc_id=84337
+2026-03-04 14:56:51,939 INFO app pid=17236 pdf_start tipo=e-Ticket serie=A nro=323821 total=1222.65
+2026-03-04 14:56:52,068 INFO app pid=17236 generate_ok doc_type=move doc_id=84337 pdf=cfe_A323821_20260304_145651_a73dd9f6.pdf
+2026-03-04 14:56:52,072 INFO access pid=17236 rid=f70f6c95f5dc end status=200 ms=575 bytes=89
+2026-03-04 14:56:52,149 INFO access pid=17236 rid=bf367f67e01d start GET /pdf/cfe_A323821_20260304_145651_a73dd9f6.pdf?t=1772647012004 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 14:56:52,169 INFO access pid=17236 rid=bf367f67e01d end status=200 ms=20 bytes=-
+2026-03-04 16:34:17,489 INFO access pid=17236 rid=b4e38b877672 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 16:34:17,492 INFO access pid=17236 rid=b4e38b877672 end status=200 ms=2 bytes=12920
+2026-03-04 16:34:17,546 INFO access pid=17236 rid=878cb5146a4a start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 16:34:17,549 INFO access pid=17236 rid=878cb5146a4a end status=304 ms=2 bytes=-
+2026-03-04 16:34:22,608 INFO access pid=17236 rid=e5197d9be6ce start GET /api/orders/search?q=322394 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 16:34:24,907 INFO access pid=17236 rid=e5197d9be6ce end status=200 ms=2298 bytes=263
+2026-03-04 16:34:24,943 INFO access pid=17236 rid=13ff97888192 start GET /api/orders/search?q=322394 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 16:34:25,507 INFO access pid=17236 rid=63d595a21641 start GET /api/orders/80440?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 16:34:25,509 INFO access pid=17236 rid=63d595a21641 end status=503 ms=1 bytes=47
+2026-03-04 16:34:27,064 INFO access pid=17236 rid=1d860bffbe33 start GET /api/orders/80440?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 16:34:27,066 INFO access pid=17236 rid=1d860bffbe33 end status=503 ms=1 bytes=47
+2026-03-04 16:34:27,146 INFO access pid=17236 rid=13ff97888192 end status=200 ms=2202 bytes=263
+2026-03-04 16:34:27,956 INFO access pid=17236 rid=2557624ab88b start GET /api/orders/80440?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 16:34:29,228 INFO access pid=17236 rid=2557624ab88b end status=200 ms=1272 bytes=378
+2026-03-04 16:34:30,913 INFO access pid=17236 rid=cee6d5aabc8d start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 16:34:30,918 INFO app pid=17236 generate_start doc_type=move doc_id=80440
+2026-03-04 16:34:31,360 INFO app pid=17236 pdf_start tipo=e-Ticket serie=A nro=322394 total=1962.99
+2026-03-04 16:34:31,443 INFO app pid=17236 generate_ok doc_type=move doc_id=80440 pdf=cfe_A322394_20260304_163431_d9c6357b.pdf
+2026-03-04 16:34:31,445 INFO access pid=17236 rid=cee6d5aabc8d end status=200 ms=531 bytes=89
+2026-03-04 16:34:31,522 INFO access pid=17236 rid=6abfbd7d8518 start GET /pdf/cfe_A322394_20260304_163431_d9c6357b.pdf?t=1772652871348 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-04 16:34:31,539 INFO access pid=17236 rid=6abfbd7d8518 end status=200 ms=16 bytes=-
+2026-03-04 18:03:31,061 INFO access pid=17236 rid=0de3c3f1c44e start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-04 18:03:31,084 INFO access pid=17236 rid=0de3c3f1c44e end status=200 ms=24 bytes=12920
+2026-03-04 18:03:31,141 INFO access pid=17236 rid=c4635187b885 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-04 18:03:31,145 INFO access pid=17236 rid=c4635187b885 end status=304 ms=4 bytes=-
+2026-03-04 18:03:45,946 INFO access pid=17236 rid=47f42dff9dc5 start GET /api/orders/search?q=323517 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-04 18:03:48,327 INFO access pid=17236 rid=47f42dff9dc5 end status=200 ms=2381 bytes=1002
+2026-03-04 18:03:54,877 INFO access pid=17236 rid=fca480c3693a start GET /api/orders/84789?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-04 18:03:55,757 INFO access pid=17236 rid=fca480c3693a end status=200 ms=880 bytes=502
+2026-03-04 18:03:59,812 INFO access pid=17236 rid=44e91799ca92 start GET /api/orders/search?q=323517 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-04 18:04:01,331 INFO access pid=17236 rid=44e91799ca92 end status=200 ms=1518 bytes=1002
+2026-03-04 18:04:07,802 INFO access pid=17236 rid=17e2b6aef0df start GET /api/orders/83834?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-04 18:04:08,658 INFO access pid=17236 rid=17e2b6aef0df end status=200 ms=856 bytes=473
+2026-03-04 18:04:10,759 INFO access pid=17236 rid=80d6da61c6f9 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-04 18:04:10,765 INFO app pid=17236 generate_start doc_type=move doc_id=83834
+2026-03-04 18:04:11,258 INFO app pid=17236 pdf_start tipo=e-Ticket serie=A nro=323517 total=2531.0
+2026-03-04 18:04:11,370 INFO app pid=17236 generate_ok doc_type=move doc_id=83834 pdf=cfe_A323517_20260304_180411_0cbceca8.pdf
+2026-03-04 18:04:11,373 INFO access pid=17236 rid=80d6da61c6f9 end status=200 ms=613 bytes=89
+2026-03-04 18:04:11,558 INFO access pid=17236 rid=5cf8120a96df start GET /pdf/cfe_A323517_20260304_180411_0cbceca8.pdf?t=1772658249957 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-04 18:04:11,644 INFO access pid=17236 rid=5cf8120a96df end status=200 ms=85 bytes=-
+2026-03-04 18:14:59,354 ERROR app pid=17236 Exception on /auth/login [POST]
+Traceback (most recent call last):
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Servidor\iluminaras_suite2\app\blueprints\auth\routes.py", line 81, in login_post
+    if not user or not user.is_active or not user.check_password(password):
+                                             ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Servidor\iluminaras_suite2\app\models\user.py", line 36, in check_password
+    return check_password_hash(self.password_hash, raw)
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\werkzeug\security.py", line 142, in check_password_hash
+    return hmac.compare_digest(_hash_internal(method, salt, password)[0], hashval)
+                               ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\werkzeug\security.py", line 54, in _hash_internal
+    hashlib.scrypt(
+    ~~~~~~~~~~~~~~^
+        password_bytes, salt=salt_bytes, n=n, r=r, p=p, maxmem=maxmem
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).hex(),
+    ^
+ValueError: [digital envelope routines] malloc failure
+2026-03-04 18:15:13,541 ERROR app pid=17236 Exception on /auth/login [POST]
+Traceback (most recent call last):
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Servidor\iluminaras_suite2\app\blueprints\auth\routes.py", line 81, in login_post
+    if not user or not user.is_active or not user.check_password(password):
+                                             ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Servidor\iluminaras_suite2\app\models\user.py", line 36, in check_password
+    return check_password_hash(self.password_hash, raw)
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\werkzeug\security.py", line 142, in check_password_hash
+    return hmac.compare_digest(_hash_internal(method, salt, password)[0], hashval)
+                               ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\werkzeug\security.py", line 54, in _hash_internal
+    hashlib.scrypt(
+    ~~~~~~~~~~~~~~^
+        password_bytes, salt=salt_bytes, n=n, r=r, p=p, maxmem=maxmem
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).hex(),
+    ^
+ValueError: [digital envelope routines] malloc failure
+2026-03-04 18:15:38,775 ERROR app pid=17236 Exception on /auth/login [POST]
+Traceback (most recent call last):
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 1473, in wsgi_app
+    response = self.full_dispatch_request()
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 882, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 880, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\flask\app.py", line 865, in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**view_args)  # type: ignore[no-any-return]
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\Servidor\iluminaras_suite2\app\blueprints\auth\routes.py", line 81, in login_post
+    if not user or not user.is_active or not user.check_password(password):
+                                             ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "C:\Servidor\iluminaras_suite2\app\models\user.py", line 36, in check_password
+    return check_password_hash(self.password_hash, raw)
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\werkzeug\security.py", line 142, in check_password_hash
+    return hmac.compare_digest(_hash_internal(method, salt, password)[0], hashval)
+                               ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Servidor\iluminaras_suite2\.venv\Lib\site-packages\werkzeug\security.py", line 54, in _hash_internal
+    hashlib.scrypt(
+    ~~~~~~~~~~~~~~^
+        password_bytes, salt=salt_bytes, n=n, r=r, p=p, maxmem=maxmem
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ).hex(),
+    ^
+ValueError: [digital envelope routines] malloc failure

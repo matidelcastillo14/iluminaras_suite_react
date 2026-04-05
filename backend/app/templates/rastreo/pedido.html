@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">Pedido {{ order.name }}</h2>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;">
+    <a class="btn" href="{{ url_for('rastreo.go', tracking_code=shipment.tracking_code) }}">Volver al rastreo</a>
+  </div>
+
+  <div class="grid" style="grid-template-columns:1fr;gap:14px;">
+    <div class="card">
+      <h3 style="margin:0 0 10px 0;">Cliente / Envío</h3>
+      <table>
+        <tr><th style="width:170px;">Cliente</th><td>{{ order.partner.name }}</td></tr>
+        <tr><th>Dirección</th><td>{{ order.partner.street }}{% if order.partner.street2 %} {{ order.partner.street2 }}{% endif %}, {{ order.partner.city }} {{ order.partner.zip }}</td></tr>
+        <tr><th>Teléfono</th><td>{{ order.partner.phone }}</td></tr>
+        <tr><th>Email</th><td>{{ order.partner.email }}</td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px 0;">Líneas</h3>
+      <table>
+        <thead><tr><th>Producto/Descripción</th><th style="width:80px;">Cant.</th><th style="width:140px;">Total</th></tr></thead>
+        <tbody>
+          {% for ln in order.lines %}
+            <tr>
+              <td>{{ ln.product }}<br><span style="color:#666;">{{ ln.name }}</span></td>
+              <td>{{ ln.qty }}</td>
+              <td>{{ ln.price_total }}</td>
+            </tr>
+          {% endfor %}
+          {% if not order.lines %}
+            <tr><td colspan="3" style="color:#666;">Sin líneas.</td></tr>
+          {% endif %}
+        </tbody>
+      </table>
+      <div style="margin-top:10px;font-weight:bold;">Total: {{ order.amount_total }} {{ order.currency }}</div>
+    </div>
+
+    {% if order.note %}
+      <div class="card">
+        <h3 style="margin:0 0 10px 0;">Notas</h3>
+        <pre style="white-space:pre-wrap;margin:0;">{{ order.note }}</pre>
+      </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

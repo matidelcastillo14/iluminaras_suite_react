@@ -1,0 +1,10 @@
+{
+  "username": "Admin",
+  "password": "M098706612.",
+  "first_name": "Matías",
+  "last_name": "del Castillo",
+  "email": "matias.delcastillo.iluminaras@gmail.com",
+  "phone": "094116203",
+  "role": "admin",
+  "must_change_password": false
+}

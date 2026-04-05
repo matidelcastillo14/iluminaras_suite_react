@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Etiquetas - Iluminarás</title>
+  <style>
+    body{ font-family: Arial, Helvetica, sans-serif; margin: 18px; color:#111; }
+    .wrap{ max-width: 860px; margin: 0 auto; }
+    .card{ border:1px solid #e5e5e5; border-radius:12px; padding:14px; }
+    h1{ margin:0 0 10px 0; font-size:18px; }
+    .meta{ font-size:12px; color:#444; margin-bottom:10px; }
+    form{ display:grid; gap:10px; }
+    label{ font-size:12px; color:#333; display:block; margin-bottom:4px; }
+    input, textarea, select{
+      width:100%; box-sizing:border-box; padding:8px 10px;
+      border:1px solid #cfcfcf; border-radius:10px; font-size:14px;
+      background:#fff;
+    }
+    textarea{ min-height:90px; resize:vertical; }
+    .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .row3{ display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; }
+    .btns{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+    button{
+      padding:10px 12px; border-radius:10px; border:1px solid #cfcfcf; background:#f6f6f6; cursor:pointer;
+      font-weight:700;
+    }
+    .hint{ font-size:12px; color:#555; }
+    .ok{ font-size:13px; color:#0a5; display:none; }
+    .err{ font-size:13px; color:#b00; display:none; }
+    .logo{ height:22px; vertical-align:middle; }
+    .lookup{ margin: 12px 0 16px 0; }
+    .lookupRow{ display:flex; gap:8px; align-items:center; }
+    .lookupRow input{ flex:1; }
+    .results{ border:1px solid #cfcfcf; border-radius:10px; margin-top:6px; display:none; overflow:hidden; }
+    .item{ padding:9px 10px; cursor:pointer; border-top:1px solid #eee; }
+    .item:first-child{ border-top:0; }
+    .item:hover{ background:#f6f6f6; }
+    .muted{ color:#666; font-size:12px; }
+    .warn{ font-size:12px; color:#b00; display:none; margin-top:6px; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Generador de etiquetas <img class="logo" src="{{ url_for('static', filename='logo.png') }}" alt="logo"></h1>
+      <div class="meta">
+        Tamaño etiqueta: <b>{{ label_width_mm }}mm × {{ label_height_mm }}mm</b> (configurable con variables de entorno LABEL_WIDTH_MM y LABEL_HEIGHT_MM).
+        &nbsp;|&nbsp;
+        <a href="{{ url_for('designer') }}" target="_blank" rel="noopener">Diseñar formato</a>
+      </div>
+
+      <div class="lookup">
+        <label>Buscar pedido / cliente / teléfono / dirección / ID Web / Meli Cart / ID Meli / Código de envío</label>
+        <div class="lookupRow">
+          <input id="search" placeholder="Ej: SO12345 o Juan Pérez o 099..." autocomplete="off" />
+          <button id="searchBtn" type="button">Buscar</button>
+        </div>
+        <div id="results" class="results"></div>
+        <div id="lookupErr" class="warn">Búsqueda no disponible (Odoo no configurado o sin conexión). Podés completar el formulario manualmente.</div>
+        <div class="muted">Tip: ingresá el dato y presioná <b>Buscar</b>.</div>
+      </div>
+
+      <form id="f">
+        <input type="hidden" name="odoo_order_id" />
+        <div class="row3">
+          <div>
+            <label>Zona</label>
+            <input name="zona" placeholder="Ej: ZONA 10" />
+          </div>
+          <div>
+            <label>Envío</label>
+            <input name="envio" placeholder="Ej: Flex / Agencia / Retira" />
+          </div>
+          <div>
+            <label>Código de envío</label>
+            <input name="codigo_envio" placeholder="Ej: 2000000000000000" />
+          </div>
+        </div>
+
+        <div class="row3">
+          <div>
+            <label>ID Web</label>
+            <input name="id_web" placeholder="Ej: 123456" />
+          </div>
+          <div>
+            <label>Meli Cart</label>
+            <input name="meli_cart" placeholder="Ej: 2000000000" />
+          </div>
+          <div>
+            <label>ID Meli</label>
+            <input name="id_meli" placeholder="Ej: 3000000000" />
+          </div>
+        </div>
+
+        <div>
+          <label>Nombre</label>
+          <input name="nombre" />
+        </div>
+
+        <div>
+          <label>Dirección</label>
+          <input name="direccion" />
+        </div>
+
+        <div class="row2">
+          <div>
+            <label>Teléfono</label>
+            <input name="telefono" />
+          </div>
+          <div>
+            <label>N° de Pedido</label>
+            <input name="pedido" />
+          </div>
+        </div>
+
+        <div>
+          <label>Observaciones</label>
+          <textarea name="observaciones" placeholder=""></textarea>
+        </div>
+
+        <div class="btns">
+          <button type="submit">Generar PDF</button>
+          <button type="button" id="generateWithCfeBtn">Generar etiqueta + CFE</button>
+          <button type="button" onclick="document.getElementById('f').reset()">Limpiar</button>
+          <span class="hint">Al generar, se abre el PDF en una pestaña nueva.</span>
+        </div>
+
+        <div id="ok" class="ok">PDF generado.</div>
+        <div id="outLinks" class="btns" style="display:none; margin-top:8px;"></div>
+        <div id="err" class="err">Error generando PDF.</div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const API_SEARCH = "{{ url_for('api_orders_search') }}";
+    const API_ORDER  = "{{ url_for('api_order_detail', order_id=0) }}"; // replace /0 with /<id>
+    const API_GENERATE = "{{ url_for('generate') }}";
+
+    const form = document.getElementById('f');
+    const ok = document.getElementById('ok');
+    const err = document.getElementById('err');
+    const outLinks = document.getElementById('outLinks');
+    const generateWithCfeBtn = document.getElementById('generateWithCfeBtn');
+
+    // --- Odoo lookup UI ---
+    const search = document.getElementById('search');
+    const results = document.getElementById('results');
+    const lookupErr = document.getElementById('lookupErr');
+    const searchBtn = document.getElementById('searchBtn');
+
+    function hideResults(){
+      results.style.display = 'none';
+      results.innerHTML = '';
+    }
+
+    function fillForm(d){
+      if(!d || typeof d !== 'object') return;
+      const set = (name, val) => {
+        const el = form.querySelector(`[name="${name}"]`);
+        if(!el) return;
+        el.value = (val ?? '').toString();
+      };
+      if(d.zona !== undefined) set('zona', d.zona);
+      if(d.envio !== undefined) set('envio', d.envio);
+      if(d.codigo_envio !== undefined) set('codigo_envio', d.codigo_envio);
+      if(d.nombre !== undefined) set('nombre', d.nombre);
+      if(d.direccion !== undefined) set('direccion', d.direccion);
+      if(d.telefono !== undefined) set('telefono', d.telefono);
+      if(d.pedido !== undefined) set('pedido', d.pedido);
+      if(d.id_web !== undefined) set('id_web', d.id_web);
+      if(d.meli_cart !== undefined) set('meli_cart', d.meli_cart);
+      if(d.id_meli !== undefined) set('id_meli', d.id_meli);
+      if(d.observaciones !== undefined) set('observaciones', d.observaciones);
+    }
+
+    async function loadOrder(id){
+      try{
+        const hid = form.querySelector('[name="odoo_order_id"]');
+        if(hid) hid.value = (id ?? '').toString();
+      }catch(e){}
+      try{
+        const r = await fetch(API_ORDER.replace('/0', `/${id}`));
+        if(!r.ok){
+          lookupErr.style.display = 'block';
+          return;
+        }
+        const d = await r.json();
+        if(d && d.error){
+          lookupErr.style.display = 'block';
+          return;
+        }
+        fillForm(d);
+        lookupErr.style.display = 'none';
+        hideResults();
+      }catch(e){
+        lookupErr.style.display = 'block';
+      }
+    }
+
+    function fmtFecha(s){
+      const v = (s || '').toString().trim();
+      if(!v) return '';
+      // Common Odoo format: YYYY-MM-DD HH:MM:SS
+      const m = v.match(/^(\d{4})-(\d{2})-(\d{2})\s+(\d{2}):(\d{2})(?::\d{2})?$/);
+      if(m){
+        const [_, Y, Mo, D, H, Mi] = m;
+        return `${D}/${Mo}/${Y} ${H}:${Mi}`;
+      }
+      return v;
+    }
+
+    async function runSearch(){
+      const q = (search.value || '').trim();
+      if(q.length < 2){
+        hideResults();
+        return;
+      }
+
+      try{
+        const r = await fetch(API_SEARCH + '?q=' + encodeURIComponent(q));
+        const data = await r.json();
+
+        if(!r.ok || (data && data.error)){
+          lookupErr.style.display = 'block';
+          hideResults();
+          return;
+        }
+        lookupErr.style.display = 'none';
+
+        if(!Array.isArray(data) || data.length === 0){
+          hideResults();
+          return;
+        }
+
+        results.innerHTML = data.map(x => {
+          const pedido = (x.pedido || '').toString();
+          const cliente = (x.cliente || '').toString();
+          const ref = (x.ref || '').toString();
+          const idWeb = (x.id_web || '').toString();
+          const meliCart = (x.meli_cart || '').toString();
+          const idMeli = (x.id_meli || '').toString();
+          const codigo = (x.codigo_envio || '').toString();
+          const estado = (x.estado || '').toString();
+          const fecha = fmtFecha(x.fecha);
+          const metaParts = [];
+          if(fecha) metaParts.push('Fecha: ' + fecha);
+          if(ref) metaParts.push('Ref: ' + ref);
+          if(idWeb) metaParts.push('ID Web: ' + idWeb);
+          if(meliCart) metaParts.push('Meli Cart: ' + meliCart);
+          if(idMeli) metaParts.push('ID Meli: ' + idMeli);
+          if(codigo) metaParts.push('Cód. envío: ' + codigo);
+          if(estado) metaParts.push(estado);
+          const meta = metaParts.join(' · ');
+          return `<div class="item" data-id="${x.id}">
+            <div><b>${pedido}</b> — ${cliente}</div>
+            <div class="muted">${meta}</div>
+          </div>`;
+        }).join('');
+
+        [...results.querySelectorAll('.item[data-id]')].forEach(el => {
+          el.onclick = () => loadOrder(el.getAttribute('data-id'));
+        });
+
+        results.style.display = 'block';
+      }catch(e){
+        lookupErr.style.display = 'block';
+        hideResults();
+      }
+    }
+
+    searchBtn.addEventListener('click', () => runSearch());
+    search.addEventListener('keydown', (ev) => {
+      if(ev.key === 'Enter'){
+        ev.preventDefault();
+        runSearch();
+      }
+    });
+
+    function renderLinks(data){
+      const links = [];
+      if(data && data.pdf_url){
+        links.push(`<a class="btn" href="${data.pdf_url}?t=${Date.now()}" target="_blank" rel="noopener">Abrir etiqueta</a>`);
+      }
+      if(data && data.cfe_pdf_url){
+        links.push(`<a class="btn" href="${data.cfe_pdf_url}?t=${Date.now()}" target="_blank" rel="noopener">Abrir CFE</a>`);
+      }
+      outLinks.innerHTML = links.join('');
+      outLinks.style.display = links.length ? 'flex' : 'none';
+    }
+
+    async function submitGenerate(generateCfe){
+      ok.style.display = 'none';
+      err.style.display = 'none';
+      outLinks.style.display = 'none';
+      outLinks.innerHTML = '';
+
+      const fd = new FormData(form);
+      if(generateCfe) fd.append('generate_cfe', '1');
+      try{
+        const res = await fetch(API_GENERATE, { method:'POST', body: fd });
+        const data = await res.json();
+        if(!data.ok) throw new Error((data && (data.detail || data.error)) || 'not ok');
+        ok.style.display = 'block';
+        renderLinks(data);
+
+        if(data.pdf_url){
+          window.open(data.pdf_url + '?t=' + Date.now(), '_blank');
+        }
+        if(data.cfe_pdf_url){
+          window.open(data.cfe_pdf_url + '?t=' + Date.now(), '_blank');
+        }
+      }catch(ex){
+        err.textContent = 'Error generando PDF.' + (ex && ex.message ? ' ' + ex.message : '');
+        err.style.display = 'block';
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await submitGenerate(false);
+    });
+
+    generateWithCfeBtn.addEventListener('click', async () => {
+      await submitGenerate(true);
+    });
+  </script>
+</body>
+</html>

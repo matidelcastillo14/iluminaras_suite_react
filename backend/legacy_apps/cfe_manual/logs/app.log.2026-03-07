@@ -1,0 +1,44 @@
+2026-03-07 10:43:04,542 INFO access pid=17236 rid=2353566b4f3a start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:04,547 INFO access pid=17236 rid=2353566b4f3a end status=200 ms=4 bytes=12920
+2026-03-07 10:43:04,786 INFO access pid=17236 rid=3bf11d652a0d start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:04,798 INFO access pid=17236 rid=3bf11d652a0d end status=304 ms=11 bytes=-
+2026-03-07 10:43:07,083 INFO access pid=17236 rid=35b5a0d4694c start GET /api/orders/search?q=649701 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:09,392 INFO access pid=17236 rid=35b5a0d4694c end status=200 ms=2309 bytes=745
+2026-03-07 10:43:11,350 INFO access pid=17236 rid=313cb2546330 start GET /api/orders/79427?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:12,217 INFO access pid=17236 rid=313cb2546330 end status=200 ms=867 bytes=416
+2026-03-07 10:43:16,423 INFO access pid=17236 rid=ab5b34d3bfea start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:16,425 INFO app pid=17236 generate_start doc_type=move doc_id=79427
+2026-03-07 10:43:16,878 INFO app pid=17236 pdf_start tipo=e-Ticket serie=A nro=321963 total=1126.0
+2026-03-07 10:43:16,943 INFO app pid=17236 generate_ok doc_type=move doc_id=79427 pdf=cfe_A321963_20260307_104316_9e1989ee.pdf
+2026-03-07 10:43:16,945 INFO access pid=17236 rid=ab5b34d3bfea end status=200 ms=521 bytes=89
+2026-03-07 10:43:17,058 INFO access pid=17236 rid=f244edd3942b start GET /pdf/cfe_A321963_20260307_104316_9e1989ee.pdf?t=1772890998251 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:17,069 INFO access pid=17236 rid=f244edd3942b end status=200 ms=11 bytes=-
+2026-03-07 10:43:22,440 INFO access pid=17236 rid=18893d8c419d start GET /api/orders/search?q=649701 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:23,993 INFO access pid=17236 rid=18893d8c419d end status=200 ms=1553 bytes=745
+2026-03-07 10:43:28,984 INFO access pid=17236 rid=a0c9f3f45eb4 start GET /api/orders/85561?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:30,071 INFO access pid=17236 rid=a0c9f3f45eb4 end status=200 ms=1086 bytes=534
+2026-03-07 10:43:32,688 INFO access pid=17236 rid=2d45201f88ac start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:32,690 INFO app pid=17236 generate_start doc_type=sale doc_id=85561
+2026-03-07 10:43:33,582 INFO app pid=17236 pdf_start tipo=e-Ticket serie=A nro=321963 total=1126.0
+2026-03-07 10:43:33,690 INFO app pid=17236 generate_ok doc_type=sale doc_id=85561 pdf=cfe_A321963_20260307_104333_1e596b2f.pdf
+2026-03-07 10:43:33,693 INFO access pid=17236 rid=2d45201f88ac end status=200 ms=1004 bytes=89
+2026-03-07 10:43:33,760 INFO access pid=17236 rid=2c47417e5fd0 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:33,762 INFO app pid=17236 generate_start doc_type=sale doc_id=85561
+2026-03-07 10:43:33,887 INFO access pid=17236 rid=8f36504a034d start GET /pdf/cfe_A321963_20260307_104333_1e596b2f.pdf?t=1772891014993 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:33,904 INFO access pid=17236 rid=8f36504a034d end status=200 ms=17 bytes=-
+2026-03-07 10:43:34,822 INFO app pid=17236 pdf_start tipo=e-Ticket serie=A nro=321963 total=1126.0
+2026-03-07 10:43:34,934 INFO app pid=17236 generate_ok doc_type=sale doc_id=85561 pdf=cfe_A321963_20260307_104334_eae0b085.pdf
+2026-03-07 10:43:34,961 INFO access pid=17236 rid=2c47417e5fd0 end status=200 ms=1200 bytes=89
+2026-03-07 10:43:44,352 INFO access pid=17236 rid=d0f3c86ba855 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:44,354 INFO access pid=17236 rid=d0f3c86ba855 end status=200 ms=1 bytes=12920
+2026-03-07 10:43:54,011 INFO access pid=17236 rid=33c386e62ed2 start GET /api/orders/search?q=321963 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:55,578 INFO access pid=17236 rid=33c386e62ed2 end status=200 ms=1567 bytes=269
+2026-03-07 10:43:56,969 INFO access pid=17236 rid=ee77d312a1f2 start GET /api/orders/79427?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:43:57,825 INFO access pid=17236 rid=ee77d312a1f2 end status=200 ms=855 bytes=416
+2026-03-07 10:44:00,450 INFO access pid=17236 rid=666362c3e613 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:44:00,452 INFO app pid=17236 generate_start doc_type=move doc_id=79427
+2026-03-07 10:44:00,886 INFO app pid=17236 pdf_start tipo=e-Ticket serie=A nro=321963 total=1126.0
+2026-03-07 10:44:00,991 INFO app pid=17236 generate_ok doc_type=move doc_id=79427 pdf=cfe_A321963_20260307_104400_3fff6b7b.pdf
+2026-03-07 10:44:00,994 INFO access pid=17236 rid=666362c3e613 end status=200 ms=543 bytes=89
+2026-03-07 10:44:01,113 INFO access pid=17236 rid=b5df82ffb202 start GET /pdf/cfe_A321963_20260307_104400_3fff6b7b.pdf?t=1772891042302 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-07 10:44:01,127 INFO access pid=17236 rid=b5df82ffb202 end status=200 ms=14 bytes=-

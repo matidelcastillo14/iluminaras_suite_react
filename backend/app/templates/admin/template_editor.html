@@ -1,0 +1,326 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">Editor visual</h2>
+  <div style="font-size:13px;color:#444;margin-bottom:10px;">
+    Plantilla: <code>{{ tpl.template_type }}</code> / {{ tpl.name }} (ancho ticket recomendado: <strong>72.1mm</strong>)
+  </div>
+
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">Canvas</h3>
+      <div style="font-size:12px;color:#555;margin-bottom:8px;">Arrastrá los elementos. Doble click para editar el texto (o usá Propiedades).</div>
+      <div id="canvasWrap" style="border:1px dashed #bbb;border-radius:12px;overflow:auto;padding:10px;background:#fafafa;">
+        <div id="canvas" style="position:relative;background:#fff;border:1px solid #ddd;border-radius:8px;"></div>
+      </div>
+      <div style="margin-top:10px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="btn" onclick="addText()">+ Texto</button>
+        <button class="btn" onclick="addItemsRepeat()">+ Repeat items</button>
+        <button class="btn" onclick="downloadJSON()">Export JSON</button>
+        <button class="btn primary" onclick="save()">Guardar</button>
+      </div>
+      <div id="saveStatus" style="margin-top:10px;font-size:13px;color:#444;"></div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">Propiedades</h3>
+      <div id="props" style="font-size:13px;color:#444;">Seleccioná un elemento.</div>
+
+      <h3 style="margin:14px 0 8px 0;">JSON (avanzado)</h3>
+      <textarea id="json" rows="18" style="font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;"></textarea>
+      <div style="margin-top:10px;">
+        <button class="btn" onclick="applyJSON()">Aplicar JSON</button>
+        <form method="post" action="{{ url_for('admin.template_preview', tpl_id=tpl.id) }}" target="_blank" style="display:inline;margin-left:6px;">
+          <button class="btn" type="submit">Preview PDF</button>
+        </form>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:#666;">
+        Variables útiles (CFE): <code>{{ "{{ cfe.emisor_razon_social }}" }}</code>, <code>{{ "{{ cfe.total }}" }}</code>,
+        items: <code>{{ "{{ item.descripcion }}" }}</code>, <code>{{ "{{ item.cantidad }}" }}</code>.
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const MM_TO_PX = 4.0; // simple scaling
+let layout = {{ layout_json|safe }};
+if(!layout.page) layout.page = {width_mm:72.1, min_height_mm:220};
+if(!layout.elements) layout.elements = [];
+
+let selectedId = null;
+let drag = null;
+
+function uid(){ return Math.random().toString(16).slice(2); }
+
+function canvasSize(){
+  const widthMm = Number(layout.page.width_mm || 72.1);
+  const minH = Number(layout.page.min_height_mm || 220);
+  return { w: widthMm*MM_TO_PX, h: minH*MM_TO_PX };
+}
+
+function syncJSON(){
+  document.getElementById('json').value = JSON.stringify(layout, null, 2);
+}
+
+function render(){
+  const c = document.getElementById('canvas');
+  const sz = canvasSize();
+  c.style.width = sz.w + 'px';
+  c.style.height = sz.h + 'px';
+
+  c.innerHTML = '';
+  for(const el of layout.elements){
+    if(!el.id) el.id = uid();
+    if(el.type === 'repeat'){
+      // show a placeholder box
+      const div = document.createElement('div');
+      div.dataset.id = el.id;
+      div.style.position = 'absolute';
+      div.style.left = (Number(el.x_mm||0)*MM_TO_PX)+'px';
+      div.style.top = (Number(el.y_mm||0)*MM_TO_PX)+'px';
+      div.style.width = (Number(el.w_mm|| (Number(layout.page.width_mm||72.1)-Number(el.x_mm||0)))*MM_TO_PX)+'px';
+      div.style.height = (Number(el.preview_h_mm||40)*MM_TO_PX)+'px';
+      div.style.border = (selectedId===el.id? '2px solid #111' : '1px dashed #888');
+      div.style.borderRadius = '6px';
+      div.style.background = '#f9f9f9';
+      div.style.padding = '6px';
+      div.style.fontSize = '12px';
+      div.innerText = 'REPEAT: ' + (el.dataset || 'items') + ' (row ' + (el.row_height_mm||4.5) + 'mm)';
+      div.addEventListener('pointerdown', ev => startDrag(ev, el.id));
+      div.addEventListener('click', () => select(el.id));
+      c.appendChild(div);
+      continue;
+    }
+    const div = document.createElement('div');
+    div.dataset.id = el.id;
+    div.style.position = 'absolute';
+    div.style.left = (Number(el.x_mm||0)*MM_TO_PX)+'px';
+    div.style.top = (Number(el.y_mm||0)*MM_TO_PX)+'px';
+    div.style.width = (Number(el.w_mm||50)*MM_TO_PX)+'px';
+    div.style.minHeight = '18px';
+    div.style.padding = '2px 4px';
+    div.style.border = (selectedId===el.id? '2px solid #111' : '1px solid #bbb');
+    div.style.borderRadius = '6px';
+    div.style.background = '#fff';
+    div.style.cursor = 'move';
+    div.style.userSelect = 'none';
+    div.style.fontSize = ((Number(el.size||9))*1.2) + 'px';
+    div.style.fontWeight = el.bold ? '700' : '400';
+    div.style.textAlign = (el.align||'left');
+    div.textContent = (el.value || 'Texto');
+    div.addEventListener('pointerdown', ev => startDrag(ev, el.id));
+    div.addEventListener('dblclick', () => {
+      const nv = prompt('Texto (Jinja):', el.value||'');
+      if(nv !== null){
+        el.value = nv;
+        render();
+        syncJSON();
+        renderProps();
+      }
+    });
+    div.addEventListener('click', () => select(el.id));
+    c.appendChild(div);
+  }
+  syncJSON();
+}
+
+function select(id){
+  selectedId = id;
+  render();
+  renderProps();
+}
+
+function findEl(id){
+  return layout.elements.find(e => e.id === id);
+}
+
+function startDrag(ev, id){
+  ev.preventDefault();
+  selectedId = id;
+  const el = findEl(id);
+  const startX = ev.clientX;
+  const startY = ev.clientY;
+  drag = { id, startX, startY, ox: Number(el.x_mm||0), oy: Number(el.y_mm||0) };
+  window.addEventListener('pointermove', onDrag);
+  window.addEventListener('pointerup', endDrag, {once:true});
+  renderProps();
+}
+
+function onDrag(ev){
+  if(!drag) return;
+  const el = findEl(drag.id);
+  const dx = (ev.clientX - drag.startX)/MM_TO_PX;
+  const dy = (ev.clientY - drag.startY)/MM_TO_PX;
+  el.x_mm = Math.max(0, +(drag.ox + dx).toFixed(2));
+  el.y_mm = Math.max(0, +(drag.oy + dy).toFixed(2));
+  render();
+  renderProps(false);
+}
+
+function endDrag(){
+  window.removeEventListener('pointermove', onDrag);
+  drag = null;
+  syncJSON();
+}
+
+/* IMPORTANT:
+   Estos placeholders (doble llave) son para el motor de PDF.
+   En este HTML NO deben ser evaluados por Jinja, por eso los escapamos.
+*/
+const PLACE_CFE_TOTAL = {{ '"{{ cfe.total }}"'|safe }};
+const PLACE_ITEM_DESC  = {{ '"{{ item.descripcion }}"'|safe }};
+const PLACE_ITEM_QTY   = {{ '"{{ item.cantidad }}"'|safe }};
+const PLACE_ITEM_TOTAL = {{ '"{{ item.total_linea }}"'|safe }};
+
+function addText(){
+  layout.elements.push({
+    id: uid(),
+    type:'text',
+    x_mm:3,
+    y_mm:10,
+    w_mm: 66,
+    size: 9,
+    bold:false,
+    align:'left',
+    value: PLACE_CFE_TOTAL
+  });
+  render();
+}
+
+function addItemsRepeat(){
+  layout.elements.push({
+    id: uid(),
+    type:'repeat',
+    dataset:'items',
+    x_mm:3,
+    y_mm:60,
+    w_mm:66,
+    row_height_mm:4.5,
+    preview_h_mm:40,
+    children:[
+      {type:'text', x_mm:0,  y_mm:0, w_mm:44, size:8, align:'left',  value: PLACE_ITEM_DESC},
+      {type:'text', x_mm:44, y_mm:0, w_mm:8,  size:8, align:'right', value: PLACE_ITEM_QTY},
+      {type:'text', x_mm:52, y_mm:0, w_mm:14, size:8, align:'right', value: PLACE_ITEM_TOTAL},
+    ]
+  });
+  render();
+}
+
+function renderProps(updateJSON=true){
+  const p = document.getElementById('props');
+  const el = selectedId ? findEl(selectedId) : null;
+  if(!el){ p.innerHTML = 'Seleccioná un elemento.'; return; }
+
+  const isRepeat = el.type === 'repeat';
+  if(isRepeat){
+    p.innerHTML = `
+      <div><strong>Tipo:</strong> repeat</div>
+      <label>dataset</label><input id="p_dataset" value="${el.dataset||'items'}"/>
+      <label>x_mm</label><input id="p_x" value="${el.x_mm||0}"/>
+      <label>y_mm</label><input id="p_y" value="${el.y_mm||0}"/>
+      <label>row_height_mm</label><input id="p_rh" value="${el.row_height_mm||4.5}"/>
+      <label>preview_h_mm</label><input id="p_ph" value="${el.preview_h_mm||40}"/>
+      <div style="margin-top:10px;display:flex;gap:8px;">
+        <button class="btn" onclick="applyPropsRepeat()">Aplicar</button>
+        <button class="btn" onclick="removeSelected()">Eliminar</button>
+      </div>
+      <div style="margin-top:10px;font-size:12px;color:#666;">Los children se editan mejor desde el JSON (avanzado).</div>
+    `;
+    return;
+  }
+
+  p.innerHTML = `
+    <div><strong>Tipo:</strong> text</div>
+    <label>value</label><input id="p_val" value="${(el.value||'').replaceAll('"','&quot;')}"/>
+    <label>x_mm</label><input id="p_x" value="${el.x_mm||0}"/>
+    <label>y_mm</label><input id="p_y" value="${el.y_mm||0}"/>
+    <label>w_mm</label><input id="p_w" value="${el.w_mm||50}"/>
+    <label>size</label><input id="p_size" value="${el.size||9}"/>
+    <label>bold</label>
+    <select id="p_bold">
+      <option value="0"${!el.bold?' selected':''}>No</option>
+      <option value="1"${el.bold?' selected':''}>Sí</option>
+    </select>
+    <label>align</label>
+    <select id="p_align">
+      <option value="left"${(el.align||'left')==='left'?' selected':''}>left</option>
+      <option value="center"${(el.align||'left')==='center'?' selected':''}>center</option>
+      <option value="right"${(el.align||'left')==='right'?' selected':''}>right</option>
+    </select>
+    <div style="margin-top:10px;display:flex;gap:8px;">
+      <button class="btn" onclick="applyPropsText()">Aplicar</button>
+      <button class="btn" onclick="removeSelected()">Eliminar</button>
+    </div>
+  `;
+}
+
+function applyPropsText(){
+  const el = findEl(selectedId);
+  el.value = document.getElementById('p_val').value;
+  el.x_mm = +Number(document.getElementById('p_x').value || 0).toFixed(2);
+  el.y_mm = +Number(document.getElementById('p_y').value || 0).toFixed(2);
+  el.w_mm = +Number(document.getElementById('p_w').value || 50).toFixed(2);
+  el.size = +Number(document.getElementById('p_size').value || 9).toFixed(2);
+  el.bold = document.getElementById('p_bold').value === '1';
+  el.align = document.getElementById('p_align').value;
+  render();
+  renderProps();
+}
+
+function applyPropsRepeat(){
+  const el = findEl(selectedId);
+  el.dataset = document.getElementById('p_dataset').value;
+  el.x_mm = +Number(document.getElementById('p_x').value || 0).toFixed(2);
+  el.y_mm = +Number(document.getElementById('p_y').value || 0).toFixed(2);
+  el.row_height_mm = +Number(document.getElementById('p_rh').value || 4.5).toFixed(2);
+  el.preview_h_mm = +Number(document.getElementById('p_ph').value || 40).toFixed(2);
+  render();
+  renderProps();
+}
+
+function removeSelected(){
+  layout.elements = layout.elements.filter(e => e.id !== selectedId);
+  selectedId = null;
+  render();
+  renderProps();
+}
+
+function applyJSON(){
+  try{
+    const obj = JSON.parse(document.getElementById('json').value);
+    layout = obj;
+    if(!layout.page) layout.page = {width_mm:72.1, min_height_mm:220};
+    if(!layout.elements) layout.elements = [];
+    selectedId = null;
+    render();
+    renderProps();
+  }catch(e){
+    alert('JSON inválido: ' + e);
+  }
+}
+
+function downloadJSON(){
+  const blob = new Blob([JSON.stringify(layout,null,2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = '{{ tpl.template_type }}_layout.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+async function save(){
+  document.getElementById('saveStatus').innerText = 'Guardando...';
+  const r = await fetch(`{{ url_for('admin.template_save', tpl_id=tpl.id) }}`, {
+    method:'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({layout})
+  });
+  const d = await r.json();
+  if(!d.ok){ document.getElementById('saveStatus').innerText = 'Error guardando.'; return; }
+  document.getElementById('saveStatus').innerText = 'Guardado.';
+}
+
+render();
+</script>
+{% endblock %}

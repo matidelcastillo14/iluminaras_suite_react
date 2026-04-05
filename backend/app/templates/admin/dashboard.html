@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">Administración</h2>
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">Usuarios</h3>
+      <p style="margin:0 0 10px 0;font-size:13px;color:#444;">Crear, deshabilitar, resetear contraseñas.</p>
+      <a class="btn primary" href="{{ url_for('admin.users') }}">Abrir</a>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">Configuración</h3>
+      <p style="margin:0 0 10px 0;font-size:13px;color:#444;">Odoo, ancho ticket 72.1mm, polling, SMTP.</p>
+      <a class="btn primary" href="{{ url_for('admin.settings') }}">Abrir</a>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">Plantillas</h3>
+      <p style="margin:0 0 10px 0;font-size:13px;color:#444;">Editor visual (layout JSON) + activar plantilla.</p>
+      <a class="btn primary" href="{{ url_for('admin.templates') }}">Abrir</a>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">Permisos de vistas</h3>
+      <p style="margin:0 0 10px 0;font-size:13px;color:#444;">Habilitar/deshabilitar interfaces por rol.</p>
+      <a class="btn primary" href="{{ url_for('admin.view_permissions') }}">Abrir</a>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">Módulos</h3>
+      <p style="margin:0 0 10px 0;font-size:13px;color:#444;">Apagar/encender módulos (interno y público).</p>
+      <a class="btn primary" href="{{ url_for('admin.modules') }}">Abrir</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,622 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">Administración de Tracking</h2>
+
+  <form method="get" style="margin-bottom:12px;">
+    <div class="grid" style="grid-template-columns:2fr 1fr auto auto;gap:10px;align-items:end;">
+      <div>
+        <label>Búsqueda (código, pedido o id_web)</label>
+        <input name="q" value="{{ q }}" placeholder="Ej: SO123... / ABCD..." />
+      </div>
+      <div>
+        <label>Estado</label>
+        <select name="status">
+          <option value="" {% if not status %}selected{% endif %}>Todos</option>
+          {% for st in ['LABEL_CREATED','PICKING_STARTED','STOCK_MISSING','STOCK_RESOLVED','READY_FOR_DISPATCH','IN_TRANSIT','OUT_FOR_DELIVERY','ON_ROUTE_TO_DELIVERY','DELIVERED','DELIVERY_FAILED','RETURNED'] %}
+            <option value="{{ st }}" {% if status==st %}selected{% endif %}>{{ label_status(st) }} ({{ st }})</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div>
+        <button class="btn primary" type="submit">Filtrar</button>
+      </div>
+      <div>
+        <button id="btnExportXlsx" class="btn" type="button">Exportar Excel</button>
+      </div>
+    </div>
+  </form>
+
+  <style>
+    /* Controles estilo "Excel" (orden + filtro por columna) */
+    table.excel-grid th{ position:relative; white-space:nowrap; user-select:none; }
+    .xl-th{ display:flex; align-items:center; gap:8px; }
+    .xl-th .xl-title{ cursor:pointer; }
+    .xl-th .xl-sort{ font-size:11px; opacity:.6; }
+    .xl-th .xl-filter-btn{ margin-left:auto; border:1px solid #d6d6d6; background:#fff; border-radius:8px; padding:2px 6px; cursor:pointer; font-size:12px; line-height:18px; }
+    .xl-th .xl-filter-btn.active{ background:#111; color:#fff; border-color:#111; }
+    .xl-pop{ position:fixed; z-index:9999; width:260px; background:#fff; border:1px solid #d9d9d9; border-radius:12px; box-shadow:0 10px 35px rgba(0,0,0,.12); padding:10px; }
+    .xl-pop input[type="text"]{ width:100%; padding:8px 10px; border:1px solid #cfcfcf; border-radius:10px; font-size:13px; }
+    .xl-pop .xl-actions{ display:flex; gap:8px; margin-top:10px; }
+    .xl-pop .xl-actions .btn{ padding:7px 10px; border-radius:10px; }
+    .xl-pop .xl-list{ margin-top:10px; max-height:260px; overflow:auto; border:1px solid #eee; border-radius:10px; padding:6px; }
+    .xl-pop label{ margin:0; font-size:13px; display:flex; align-items:center; gap:8px; padding:3px 4px; }
+    .xl-pop .xl-row{ display:flex; gap:8px; }
+    .xl-pop .xl-row .btn{ padding:6px 8px; border-radius:10px; font-size:12px; }
+  </style>
+
+  <div style="overflow-x:auto;">
+  <table id="ventasTable" class="excel-grid" style="min-width:1200px; width:100%;">
+    <thead>
+      <tr>
+        <th style="width:140px;">Fecha</th>
+        <th style="width:110px;">Hora</th>
+        <th style="width:180px;">Código</th>
+        <th>Pedido</th>
+        <th style="width:220px;">Cliente</th>
+        <th style="width:280px;">Dirección entrega</th>
+        <th style="width:160px;">Cadete</th>
+        <th style="width:160px;">Estado</th>
+        <th style="width:150px;">Link</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody id="ventasRows">
+      {% include "rastreo/_ventas_rows.html" %}
+    </tbody>
+  </table>
+  </div>
+
+  <div style="display:flex; gap:10px; align-items:center; margin-top:12px;">
+    {% if prev_url %}<a class="btn" href="{{ prev_url }}">Anterior</a>{% else %}<span class="btn" style="opacity:.4; pointer-events:none;">Anterior</span>{% endif %}
+    <div style="color:#666;">Página {{ page }}{% if per_page %} · {{ per_page }} por página{% endif %}{% if total is not none %} · Total {{ total }}{% endif %}</div>
+    {% if next_url %}<a class="btn" href="{{ next_url }}">Siguiente</a>{% else %}<span class="btn" style="opacity:.4; pointer-events:none;">Siguiente</span>{% endif %}
+  </div>
+
+  <script>
+    // Exportar XLSX (solo filas visibles/filtradas en la grilla)
+    (function(){
+      const btn = document.getElementById('btnExportXlsx');
+      const tbody = document.getElementById('ventasRows');
+      if(!btn || !tbody) return;
+
+      function getCellValue(td){
+        if(!td) return '';
+        const v = (td.getAttribute('data-val') || td.dataset.val || '').trim();
+        if(v) return v;
+        return (td.textContent || '').replace(/\s+/g,' ').trim();
+      }
+
+      function buildPublicUrl(code){
+        const base = {{ public_tracking_base_url|tojson }};
+        return String(base || '').replace(/\/$/, '') + '/' + encodeURIComponent(code);
+      }
+
+      async function exportXlsx(){
+        const trs = Array.from(tbody.querySelectorAll('tr'))
+          .filter(tr => tr.style.display !== 'none');
+
+        const rows = [];
+        for(const tr of trs){
+          const tds = tr.querySelectorAll('td');
+          if(!tds || tds.length < 9) continue; // ignora fila "Sin resultados"
+          const codigo = getCellValue(tds[2]);
+          rows.push({
+            fecha: getCellValue(tds[0]),
+            hora: getCellValue(tds[1]),
+            codigo: codigo,
+            pedido: getCellValue(tds[3]),
+            cliente: getCellValue(tds[4]),
+            direccion_entrega: getCellValue(tds[5]),
+            cadete: getCellValue(tds[6]),
+            estado: getCellValue(tds[7]),
+            link_publico: codigo ? buildPublicUrl(codigo) : '',
+          });
+        }
+
+        if(rows.length === 0){
+          alert('No hay filas filtradas para exportar.');
+          return;
+        }
+
+        btn.disabled = true;
+        const prev = btn.textContent;
+        btn.textContent = 'Exportando...';
+        try {
+          const url = {{ url_for('rastreo.ventas_export_xlsx')|tojson }};
+          const resp = await fetch(url, {
+            method: 'POST',
+            headers: {'Content-Type':'application/json','X-Requested-With':'fetch'},
+            body: JSON.stringify({rows})
+          });
+          if(!resp.ok){
+            let msg = 'Error al exportar';
+            try {
+              const j = await resp.json();
+              if(j && j.error) msg = j.error;
+            } catch(e) {}
+            alert(msg);
+            return;
+          }
+          const blob = await resp.blob();
+          const a = document.createElement('a');
+          const u = URL.createObjectURL(blob);
+          a.href = u;
+          a.download = 'tracking_ventas.xlsx';
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(u);
+        } finally {
+          btn.disabled = false;
+          btn.textContent = prev;
+        }
+      }
+
+      btn.addEventListener('click', exportXlsx);
+    })();
+
+    // Auto-refresh de la grilla cada 10s sin perder filtros.
+    (function(){
+      const tbody = document.getElementById('ventasRows');
+      if(!tbody) return;
+      const base = {{ url_for('rastreo.ventas_partial')|tojson }};
+      async function refresh(){
+        try {
+          const qs = new URLSearchParams(window.location.search);
+          const url = base + (qs.toString()? ('?' + qs.toString()): '');
+          const resp = await fetch(url, {headers: {'X-Requested-With':'fetch'}});
+          if(!resp.ok) return;
+          const html = await resp.text();
+          tbody.innerHTML = html;
+          // Re-aplicar orden y filtros (si están activos)
+          if(window.VentasExcelGrid && typeof window.VentasExcelGrid.rebind === 'function'){
+            window.VentasExcelGrid.rebind();
+          }
+        } catch(e) { /* noop */ }
+      }
+      setInterval(refresh, 10000);
+    })();
+
+    // Copiar link público al portapapeles (delegación para soportar auto-refresh)
+    (function(){
+      const tbody = document.getElementById('ventasRows');
+      if(!tbody) return;
+      function buildPublicUrl(code){
+        const base = {{ public_tracking_base_url|tojson }};
+        return String(base || '').replace(/\/$/, '') + '/' + encodeURIComponent(code);
+      }
+      async function copyText(text){
+        if(navigator.clipboard && window.isSecureContext){
+          return navigator.clipboard.writeText(text);
+        }
+        // Fallback
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.left = '-9999px';
+        ta.style.top = '0';
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        try { document.execCommand('copy'); } finally { document.body.removeChild(ta); }
+      }
+      tbody.addEventListener('click', async (ev)=>{
+        const btn = ev.target.closest('.copy-track-link');
+        if(!btn) return;
+        ev.preventDefault();
+        const code = btn.getAttribute('data-code');
+        if(!code) return;
+        const url = buildPublicUrl(code);
+        const prev = btn.textContent;
+        btn.disabled = true;
+        try {
+          await copyText(url);
+          btn.textContent = 'Copiado';
+        } catch(e){
+          btn.textContent = 'Error';
+        }
+        setTimeout(()=>{ btn.textContent = prev; btn.disabled = false; }, 1500);
+      });
+    })();
+
+    // Orden + filtro por columna (estilo Excel, sin librerías externas)
+    (function(){
+      const table = document.getElementById('ventasTable');
+      const tbody = document.getElementById('ventasRows');
+      if(!table || !tbody) return;
+
+      // Columnas:
+      // 0 Fecha, 1 Hora, 2 Código, 3 Pedido, 4 Cliente, 5 Dirección, 6 Cadete, 7 Estado, 8 Link, 9 Abrir
+      const FILTERABLE_COLS = new Set([0,1,2,3,4,5,6,7]); // no: Link/Abrir
+      const state = {
+        filters: new Map(), // colIdx -> Set(values)
+        sort: { col: null, dir: 1 }, // dir: 1 asc, -1 desc
+        pop: null,
+        popCol: null,
+      };
+
+      function getCellValue(td){
+        if(!td) return '';
+        const v = (td.getAttribute('data-val') || td.dataset.val || '').trim();
+        if(v) return v;
+        return (td.textContent || '').replace(/\s+/g,' ').trim();
+      }
+
+      function parseComparable(v){
+        const s = (v || '').trim();
+        // Hora HH:MM o HH:MM:SS
+        if(/^\d{2}:\d{2}(?::\d{2})?$/.test(s)){
+          const parts = s.split(':').map(x => parseInt(x, 10));
+          const sec = (parts[0]||0) * 3600 + (parts[1]||0) * 60 + (parts[2]||0);
+          return {t:'n', v: sec};
+        }
+        // ISO datetime: 2026-01-30 13:51:07 o 2026-01-30T...
+        const iso = s.replace(' ', 'T');
+        const d = new Date(iso);
+        if(!Number.isNaN(d.getTime()) && /^\d{4}-\d{2}-\d{2}/.test(s)) return {t:'d', v:d.getTime()};
+        if(/^[-+]?\d+(?:[\.,]\d+)?$/.test(s)) return {t:'n', v: parseFloat(s.replace(',','.'))};
+        return {t:'s', v: s.toLowerCase()};
+      }
+
+      function closePop(){
+        if(state.pop){ state.pop.remove(); state.pop = null; state.popCol = null; }
+      }
+
+      function buildDistinctValues(colIdx){
+        const vals = new Set();
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        for(const tr of rows){
+          const tds = tr.querySelectorAll('td');
+          // Fila válida = 10 celdas (incluye Link y Abrir). "Sin resultados" tiene 1 celda.
+          if(!tds || tds.length < 10) continue;
+          const v = getCellValue(tds[colIdx]);
+          vals.add(v || '-');
+        }
+        return Array.from(vals).sort((a,b)=> a.localeCompare(b, 'es'));
+      }
+
+      function applyFilters(){
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        for(const tr of rows){
+          const tds = tr.querySelectorAll('td');
+          if(!tds || tds.length < 10){ continue; }
+          let ok = true;
+          for(const [colIdx, allowed] of state.filters.entries()){
+            if(!allowed) continue;
+            const v = getCellValue(tds[colIdx]) || '';
+
+            // Filtro especial por fecha (col 0): rango o fecha exacta
+            if(typeof allowed === 'object' && !(allowed instanceof Set) && allowed.type === 'date'){
+              const exact = (allowed.exact || '').trim();
+              const from = (allowed.from || '').trim();
+              const to = (allowed.to || '').trim();
+              const dv = (v || '').trim();
+              if(!dv){ ok = false; break; }
+              if(exact){
+                if(dv !== exact) { ok = false; break; }
+              } else {
+                if(from && dv < from) { ok = false; break; }
+                if(to && dv > to) { ok = false; break; }
+              }
+              continue;
+            }
+
+            // Filtro estándar por lista de valores
+            if(allowed instanceof Set){
+              if(allowed.size === 0) continue;
+              const vv = v || '-';
+              if(!allowed.has(vv)) { ok = false; break; }
+              continue;
+            }
+          }
+          tr.style.display = ok ? '' : 'none';
+        }
+      }
+
+      function applySort(){
+        if(state.sort.col === null) return;
+        const colIdx = state.sort.col;
+        const dir = state.sort.dir;
+        const rows = Array.from(tbody.querySelectorAll('tr'))
+          .filter(tr => (tr.querySelectorAll('td') || []).length >= 6);
+
+        rows.sort((a,b)=>{
+          const av = getCellValue(a.querySelectorAll('td')[colIdx]);
+          const bv = getCellValue(b.querySelectorAll('td')[colIdx]);
+          const ac = parseComparable(av);
+          const bc = parseComparable(bv);
+          if(ac.t === bc.t){
+            if(ac.v < bc.v) return -1 * dir;
+            if(ac.v > bc.v) return  1 * dir;
+            return 0;
+          }
+          // prioridad: fecha > num > texto
+          const pr = {d:3, n:2, s:1};
+          return (pr[ac.t] - pr[bc.t]) * (-1);
+        });
+        for(const tr of rows){ tbody.appendChild(tr); }
+      }
+
+      function updateHeaderBadges(){
+        const ths = Array.from(table.querySelectorAll('thead th'));
+        for(let i=0;i<ths.length;i++){
+          const th = ths[i];
+          const filterBtn = th.querySelector('.xl-filter-btn');
+          const sortSpan = th.querySelector('.xl-sort');
+          if(filterBtn){
+            let active = false;
+            if(state.filters.has(i)){
+              const f = state.filters.get(i);
+              if(f instanceof Set) active = f.size > 0;
+              else if(f && typeof f === 'object' && f.type === 'date') active = !!((f.exact||'').trim() || (f.from||'').trim() || (f.to||'').trim());
+            }
+            filterBtn.classList.toggle('active', !!active);
+          }
+          if(sortSpan){
+            if(state.sort.col === i){
+              sortSpan.textContent = state.sort.dir === 1 ? '▲' : '▼';
+              sortSpan.style.opacity = '1';
+            } else {
+              sortSpan.textContent = '';
+              sortSpan.style.opacity = '.6';
+            }
+          }
+        }
+      }
+
+      function applyAll(){
+        applyFilters();
+        applySort();
+        updateHeaderBadges();
+      }
+
+      function openFilter(colIdx, anchorEl){
+        closePop();
+        state.popCol = colIdx;
+
+        function escapeAttr(s){
+          return (s||'').replace(/[\"']/g, (c)=>({ '\"':'&quot;', "'":'&#39;' }[c]));
+        }
+
+        if(colIdx === 0){
+          // Filtro por día: fecha exacta o rango
+          const prev = state.filters.get(0);
+          const prevExact = (prev && typeof prev === 'object' && prev.type === 'date') ? (prev.exact || '') : '';
+          const prevFrom = (prev && typeof prev === 'object' && prev.type === 'date') ? (prev.from || '') : '';
+          const prevTo = (prev && typeof prev === 'object' && prev.type === 'date') ? (prev.to || '') : '';
+
+          const pop = document.createElement('div');
+          pop.className = 'xl-pop';
+          pop.innerHTML = `
+            <div style="font-size:13px; font-weight:600; margin-bottom:8px;">Filtro por día</div>
+            <div style="display:grid; grid-template-columns:1fr; gap:8px;">
+              <div>
+                <div style="font-size:12px; color:#555; margin-bottom:4px;">Fecha exacta</div>
+                <input type="date" data-k="exact" value="${escapeAttr(prevExact)}" />
+              </div>
+              <div>
+                <div style="font-size:12px; color:#555; margin-bottom:4px;">Rango (inclusive)</div>
+                <div class="xl-row" style="gap:6px;">
+                  <input type="date" data-k="from" value="${escapeAttr(prevFrom)}" style="width:100%;" />
+                  <input type="date" data-k="to" value="${escapeAttr(prevTo)}" style="width:100%;" />
+                </div>
+              </div>
+            </div>
+            <div class="xl-actions" style="margin-top:10px;">
+              <button class="btn primary" type="button" data-act="apply">Aplicar</button>
+              <button class="btn" type="button" data-act="clear">Limpiar</button>
+            </div>
+          `;
+          document.body.appendChild(pop);
+          state.pop = pop;
+
+          const r = anchorEl.getBoundingClientRect();
+          const left = Math.min(r.left, window.innerWidth - 280);
+          const top = Math.min(r.bottom + 6, window.innerHeight - 260);
+          pop.style.left = `${Math.max(10,left)}px`;
+          pop.style.top = `${Math.max(10,top)}px`;
+
+          const exactEl = pop.querySelector('input[data-k="exact"]');
+          const fromEl = pop.querySelector('input[data-k="from"]');
+          const toEl = pop.querySelector('input[data-k="to"]');
+          if(exactEl) exactEl.focus();
+
+          pop.addEventListener('click', (ev)=>{
+            const btn = ev.target.closest('button[data-act]');
+            if(!btn) return;
+            const act = btn.getAttribute('data-act');
+            if(act === 'clear'){
+              state.filters.delete(0);
+              closePop();
+              applyAll();
+              return;
+            }
+            if(act === 'apply'){
+              const exact = (exactEl && exactEl.value) ? String(exactEl.value).trim() : '';
+              const from = (fromEl && fromEl.value) ? String(fromEl.value).trim() : '';
+              const to = (toEl && toEl.value) ? String(toEl.value).trim() : '';
+
+              if(exact){
+                state.filters.set(0, {type:'date', exact});
+              } else if(from || to){
+                state.filters.set(0, {type:'date', from, to});
+              } else {
+                state.filters.delete(0);
+              }
+              closePop();
+              applyAll();
+            }
+          });
+
+          // Si el usuario elige "fecha exacta", limpiamos el rango (y viceversa) para evitar ambigüedad.
+          if(exactEl){
+            exactEl.addEventListener('input', ()=>{
+              if(exactEl.value){ if(fromEl) fromEl.value = ''; if(toEl) toEl.value = ''; }
+            });
+          }
+          if(fromEl){
+            fromEl.addEventListener('input', ()=>{ if(fromEl.value || (toEl && toEl.value)){ if(exactEl) exactEl.value = ''; } });
+          }
+          if(toEl){
+            toEl.addEventListener('input', ()=>{ if((fromEl && fromEl.value) || toEl.value){ if(exactEl) exactEl.value = ''; } });
+          }
+          return;
+        }
+
+        const allVals = buildDistinctValues(colIdx);
+        const selected = state.filters.get(colIdx) ? new Set(state.filters.get(colIdx)) : new Set(allVals);
+
+        const pop = document.createElement('div');
+        pop.className = 'xl-pop';
+        pop.innerHTML = `
+          <div class="xl-row">
+            <input type="text" placeholder="Buscar..." aria-label="Buscar" />
+            <button class="btn" type="button" data-act="all">Todo</button>
+            <button class="btn" type="button" data-act="none">Nada</button>
+          </div>
+          <div class="xl-list"></div>
+          <div class="xl-actions">
+            <button class="btn primary" type="button" data-act="apply">Aplicar</button>
+            <button class="btn" type="button" data-act="clear">Limpiar</button>
+          </div>
+        `;
+        document.body.appendChild(pop);
+        state.pop = pop;
+
+        // posicionamiento
+        const r = anchorEl.getBoundingClientRect();
+        const left = Math.min(r.left, window.innerWidth - 280);
+        const top = Math.min(r.bottom + 6, window.innerHeight - 360);
+        pop.style.left = `${Math.max(10,left)}px`;
+        pop.style.top = `${Math.max(10,top)}px`;
+
+        const search = pop.querySelector('input[type="text"]');
+        const list = pop.querySelector('.xl-list');
+
+        function renderList(filterText){
+          const ft = (filterText || '').toLowerCase().trim();
+          list.innerHTML = '';
+          const vals = ft ? allVals.filter(v => (v||'').toLowerCase().includes(ft)) : allVals;
+          for(const v of vals){
+            const id = `xl_${colIdx}_${Math.random().toString(16).slice(2)}`;
+            const row = document.createElement('label');
+            const checked = selected.has(v);
+            row.innerHTML = `<input type="checkbox" id="${id}" ${checked?'checked':''} /> <span>${escapeHtml(v)}</span>`;
+            row.querySelector('input').addEventListener('change', (ev)=>{
+              if(ev.target.checked) selected.add(v); else selected.delete(v);
+            });
+            list.appendChild(row);
+          }
+        }
+
+        function escapeHtml(s){
+          return (s||'').replace(/[&<>\"']/g, (c)=>({
+            '&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'
+          }[c]));
+        }
+
+        renderList('');
+        search.addEventListener('input', ()=> renderList(search.value));
+        search.focus();
+
+        pop.addEventListener('click', (ev)=>{
+          const btn = ev.target.closest('button[data-act]');
+          if(!btn) return;
+          const act = btn.getAttribute('data-act');
+          if(act === 'all'){
+            selected.clear();
+            for(const v of allVals) selected.add(v);
+            renderList(search.value);
+          }
+          if(act === 'none'){
+            selected.clear();
+            renderList(search.value);
+          }
+          if(act === 'apply'){
+            // Si selecciona todos (o ninguno), interpretamos como "sin filtro".
+            if(selected.size === 0 || selected.size === allVals.length){
+              state.filters.delete(colIdx);
+            } else {
+              state.filters.set(colIdx, new Set(selected));
+            }
+            closePop();
+            applyAll();
+          }
+          if(act === 'clear'){
+            state.filters.delete(colIdx);
+            closePop();
+            applyAll();
+          }
+        });
+      }
+
+      function wireHeader(){
+        const ths = Array.from(table.querySelectorAll('thead th'));
+        ths.forEach((th, idx)=>{
+          const label = (th.textContent || '').trim();
+          th.innerHTML = '';
+          const wrap = document.createElement('div');
+          wrap.className = 'xl-th';
+
+          const title = document.createElement('span');
+          title.className = 'xl-title';
+          title.textContent = label;
+          title.title = 'Click para ordenar';
+
+          const sort = document.createElement('span');
+          sort.className = 'xl-sort';
+
+          wrap.appendChild(title);
+          wrap.appendChild(sort);
+
+          if(FILTERABLE_COLS.has(idx)){
+            const fbtn = document.createElement('button');
+            fbtn.type = 'button';
+            fbtn.className = 'xl-filter-btn';
+            fbtn.textContent = '▾';
+            fbtn.title = 'Filtrar columna';
+            wrap.appendChild(fbtn);
+
+            fbtn.addEventListener('click', (ev)=>{
+              ev.stopPropagation();
+              openFilter(idx, fbtn);
+            });
+          }
+
+          title.addEventListener('click', ()=>{
+            if(state.sort.col === idx){
+              state.sort.dir = state.sort.dir * -1;
+            } else {
+              state.sort.col = idx;
+              state.sort.dir = 1;
+            }
+            closePop();
+            applyAll();
+          });
+
+          th.appendChild(wrap);
+        });
+      }
+
+      document.addEventListener('click', (ev)=>{
+        if(!state.pop) return;
+        if(state.pop.contains(ev.target)) return;
+        closePop();
+      });
+      document.addEventListener('keydown', (ev)=>{
+        if(ev.key === 'Escape') closePop();
+      });
+
+      wireHeader();
+
+      // API pública (para re-aplicar luego del auto-refresh)
+      window.VentasExcelGrid = {
+        rebind: function(){ applyAll(); },
+      };
+
+      applyAll();
+    })();
+  </script>
+</div>
+{% endblock %}

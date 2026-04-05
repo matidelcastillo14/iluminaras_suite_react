@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">Permisos de vistas por rol</h2>
+  <p style="margin:0 0 14px 0;font-size:13px;color:#444;">
+    Admin siempre puede ver todo. Para otros roles, marcá qué vistas quedan habilitadas.
+  </p>
+
+  <form method="post" action="{{ url_for('admin.view_permissions_post') }}">
+    <div class="card" style="margin-bottom:14px;">
+      <h3 style="margin:0 0 8px 0;">Agregar rol (opcional)</h3>
+      <div class="grid" style="grid-template-columns:1fr auto;gap:10px;align-items:end;">
+        <div>
+          <label>Nombre de rol (string)</label>
+          <input name="new_role" placeholder="ej: deposito" />
+        </div>
+        <div>
+          <button class="btn" type="submit">Crear rol</button>
+        </div>
+      </div>
+      <p style="margin:10px 0 0 0;font-size:12px;color:#666;">Luego de crearlo, recargá o guardá cambios.</p>
+    </div>
+
+    {% for group, views in groups.items() %}
+      <div class="card" style="margin-bottom:14px;">
+        <h3 style="margin:0 0 10px 0;">{{ group }}</h3>
+        <table>
+          <thead>
+            <tr>
+              <th style="width:220px;">Vista</th>
+              {% for role in roles %}
+                <th>{{ role }}</th>
+              {% endfor %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for v in views %}
+              <tr>
+                <td><strong>{{ v.label }}</strong><br><code>{{ v.key }}</code></td>
+                {% for role in roles %}
+                  <td>
+                    <input type="checkbox" name="{{ role }}__{{ v.key }}" {% if perms[(role, v.key)] %}checked{% endif %} />
+                  </td>
+                {% endfor %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% endfor %}
+
+    <button class="btn primary" type="submit">Guardar permisos</button>
+    <a class="btn" href="{{ url_for('admin.dashboard') }}" style="margin-left:8px;">Volver</a>
+  </form>
+</div>
+{% endblock %}

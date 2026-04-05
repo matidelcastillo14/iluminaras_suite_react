@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">Panel</h2>
+  <div class="grid">
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">CFE Manual</h3>
+      <p style="margin:0 0 10px 0;font-size:13px;">Buscar un pedido y generar el ticket PDF (y ticket de cambio).</p>
+      <a class="btn primary" href="{{ url_for('cfe_manual.index') }}">Abrir</a>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">CFE Auto</h3>
+      <p style="margin:0 0 10px 0;font-size:13px;">Polling de facturas nuevas y generación automática de PDFs.</p>
+      <a class="btn primary" href="{{ url_for('cfe_auto.index') }}">Abrir</a>
+    </div>
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">Etiquetas</h3>
+      <p style="margin:0 0 10px 0;font-size:13px;">Buscar pedidos y generar etiquetas de envío.</p>
+      <a class="btn primary" href="{{ url_for('etiquetas.index') }}">Abrir</a>
+    </div>
+    {% if can_view('reloj_home_office') %}
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">Reloj Home Office</h3>
+      <p style="margin:0 0 10px 0;font-size:13px;">Registrar marcadas desde Suite usando la misma cola que el bridge del reloj.</p>
+      <a class="btn primary" href="{{ url_for('reloj_home_office.index') }}">Abrir</a>
+    </div>
+    {% endif %}
+    {% if current_user.role == 'admin' %}
+    <div class="card">
+      <h3 style="margin:0 0 8px 0;">Administración</h3>
+      <p style="margin:0 0 10px 0;font-size:13px;">Usuarios, configuraciones, plantillas.</p>
+      <a class="btn primary" href="{{ url_for('admin.dashboard') }}">Abrir</a>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

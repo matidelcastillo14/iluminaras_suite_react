@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">{{ title }}</h2>
+
+  <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:12px;">
+    <a class="btn" href="{{ url_for('rastreo.deposito') }}">Volver a escáner</a>
+  </div>
+
+  {% if not items or items|length == 0 %}
+    <div class="msg info">No tenés devoluciones pendientes para confirmar.</div>
+  {% else %}
+    <table>
+      <tr>
+        <th>Código</th>
+        <th>Pedido</th>
+        <th>ID Web</th>
+        <th>Fecha</th>
+        <th>Acción</th>
+      </tr>
+      {% for it in items %}
+        <tr>
+          <td><code>{{ it.shipment.tracking_code }}</code></td>
+          <td>{{ it.shipment.order_name }}</td>
+          <td>{{ it.shipment.id_web }}</td>
+          <td>{{ it.event.created_at }}</td>
+          <td>
+            <form method="post" action="{{ url_for('rastreo.deposito_devolucion_confirm', shipment_id=it.shipment.id) }}">
+              <button class="btn primary" type="submit">Confirmar recepción</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </table>
+  {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Diseñador de etiquetas</title>
+  <style>
+    body{ font-family: Arial, Helvetica, sans-serif; margin:0; color:#111; }
+    .top{ display:flex; gap:10px; align-items:center; padding:10px 12px; border-bottom:1px solid #e5e5e5; }
+    .top button{ padding:9px 12px; border-radius:10px; border:1px solid #cfcfcf; background:#f6f6f6; cursor:pointer; font-weight:700; }
+    .top .danger{ background:#fff3f3; border-color:#f0b0b0; }
+    .top .meta{ margin-left:auto; font-size:12px; color:#444; }
+    .wrap{ display:grid; grid-template-columns: 1fr 340px; height: calc(100vh - 54px); }
+    .stage{ padding:14px; overflow:auto; background:#fafafa; }
+    .panel{ border-left:1px solid #e5e5e5; padding:12px; overflow:auto; }
+    .canvasWrap{ display:inline-block; background:#fff; border:1px solid #ddd; border-radius:12px; padding:12px; }
+    #canvas{ position:relative; background:#fff; }
+    .el{ position:absolute; box-sizing:border-box; user-select:none; }
+    .el.selected{ outline:2px solid #111; }
+    .el .handle{ position:absolute; width:10px; height:10px; background:#111; right:-5px; bottom:-5px; cursor:nwse-resize; }
+    .el.line .handle{ right:-5px; bottom:50%; transform: translateY(50%); }
+    .el.line .handle2{ position:absolute; width:10px; height:10px; background:#111; left:-5px; top:50%; transform: translateY(-50%); cursor:nwse-resize; }
+    .el.rect{ background:transparent; }
+    .el.qr{ display:flex; align-items:center; justify-content:center; font-size:12px; color:#555; border:1px dashed #bbb; }
+    .toolbar{ display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+    .toolbar button{ padding:8px 10px; border-radius:10px; border:1px solid #cfcfcf; background:#fff; cursor:pointer; font-weight:700; }
+    label{ display:block; font-size:12px; color:#333; margin:10px 0 4px; }
+    input, select, textarea{ width:100%; box-sizing:border-box; padding:8px 10px; border:1px solid #cfcfcf; border-radius:10px; font-size:14px; background:#fff; }
+    textarea{ min-height:80px; resize:vertical; }
+    .row2{ display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+    .muted{ font-size:12px; color:#666; }
+    .dangerText{ color:#b00; }
+  </style>
+</head>
+<body>
+  <div class="top">
+    <button onclick="location.href='{{ url_for('index') }}'">Volver</button>
+    <button id="saveBtn">Guardar template</button>
+    <button id="resetBtn" class="danger">Reset a default</button>
+    <div class="meta">Etiqueta: {{ label_width_mm }}mm × {{ label_height_mm }}mm</div>
+  </div>
+
+  <div class="wrap">
+    <div class="stage">
+      <div class="canvasWrap">
+        <div class="muted" style="margin:0 0 8px 2px;">
+          Arrastrá para mover. Usá el cuadrito para redimensionar. Click para seleccionar. Supr/Del para eliminar.
+        </div>
+        <div id="canvas"></div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="toolbar">
+        <button id="addText">+ Texto</button>
+        <button id="addLine">+ Línea</button>
+        <button id="addRect">+ Rect</button>
+        <button id="addImg">+ Imagen/Logo</button>
+        <button id="addQr">+ QR</button>
+        <button id="delEl" class="dangerText">Eliminar</button>
+      </div>
+
+      <div id="noSel" class="muted">Seleccioná un elemento para editar sus propiedades.</div>
+      <div id="props" style="display:none;"></div>
+      <hr style="border:none;border-top:1px solid #eee;margin:14px 0;"/>
+      <div class="muted">
+        Placeholders disponibles: <code>{nombre}</code> <code>{direccion}</code> <code>{telefono}</code> <code>{id_web}</code> <code>{zona}</code> <code>{envio}</code> <code>{tracking_code}</code> <code>{tracking_url}</code>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    window.__LABEL = {
+      width_mm: {{ label_width_mm|float }},
+      height_mm: {{ label_height_mm|float }},
+      api: {
+        templateGet: "{{ url_for('api_template_get') }}",
+        templateSet: "{{ url_for('api_template_set') }}",
+        templateReset: "{{ url_for('api_template_reset') }}",
+        upload: "{{ url_for('api_assets_upload') }}",
+        logoPreview: "{{ url_for('api_logo_preview') }}",
+      }
+    }
+  </script>
+  <script src="{{ url_for('static', filename='designer.js') }}"></script>
+</body>
+</html>

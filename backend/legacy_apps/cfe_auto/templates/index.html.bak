@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CFEs recientes - Iluminarás</title>
+  <style>
+    body{ font-family: Arial, Helvetica, sans-serif; margin: 18px; color:#111; }
+    .wrap{ max-width: 980px; margin: 0 auto; }
+    .top{ display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; }
+    .brand{ display:flex; align-items:center; gap:10px; }
+    .brand img{ width:44px; height:auto; }
+    h1{ margin:0; font-size:18px; }
+    .meta{ font-size:12px; color:#444; }
+    .card{ border:1px solid #e5e5e5; border-radius:12px; padding:14px; margin-top:12px; }
+    table{ width:100%; border-collapse:collapse; }
+    th, td{ text-align:left; padding:10px 8px; border-bottom:1px solid #eee; font-size:13px; }
+    th{ font-size:12px; color:#333; background:#fafafa; position:sticky; top:0; }
+    .btn{ display:inline-block; border:1px solid #d0d0d0; background:#fff; border-radius:10px; padding:8px 10px; cursor:pointer; font-size:13px; }
+    .btn.primary{ border-color:#1f6feb; }
+    .btn:disabled{ opacity:.5; cursor:not-allowed; }
+    .badge{ display:inline-block; padding:3px 8px; border-radius:999px; font-size:12px; border:1px solid #ddd; }
+    .ok{ border-color:#1a7f37; }
+    .pending{ border-color:#9a6700; }
+    .err{ border-color:#cf222e; }
+    .muted{ color:#666; font-size:12px; }
+    .rowlink{ color:#0969da; text-decoration:none; }
+    .rowlink:hover{ text-decoration:underline; }
+    .controls{ display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+    .toast{ display:none; margin-top:10px; padding:10px 12px; border-radius:10px; border:1px solid #e5e5e5; background:#fff; font-size:13px; }
+    .toast.show{ display:block; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <div class="brand">
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Iluminarás" />
+        <div>
+          <h1>CFEs recientes</h1>
+          <div class="meta">
+            Actualiza cada <b id="sec">{{ poll_seconds|int }}</b>s · muestra últimos <b>{{ list_limit }}</b>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="btn primary" id="btnPoll">Actualizar ahora</button>
+        <span class="muted" id="lastUpdate">—</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="muted" style="margin-bottom:10px;">
+        Click en <b>Abrir</b> para abrir la factura, o en <b>Cambio</b> para abrir el ticket de cambio en una pestaña nueva (desde ahí imprimís).
+      </div>
+      <div style="overflow:auto; max-height:70vh;">
+        <table>
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Tipo</th>
+              <th>Serie</th>
+              <th>Número</th>
+              <th>Receptor</th>
+              <th>Cambio</th>
+              <th>Estado</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="8" class="muted">Cargando…</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+
+<script>
+  const POLL_SECONDS = Number({{ poll_seconds|int }}) || 5;
+
+  const tbody = document.getElementById('tbody');
+  const toast = document.getElementById('toast');
+  const lastUpdate = document.getElementById('lastUpdate');
+  const btnPoll = document.getElementById('btnPoll');
+
+  function badge(status){
+    const s = (status || 'pending').toLowerCase();
+    let cls = 'badge pending', txt = 'Pendiente';
+    if(s === 'ok'){ cls = 'badge ok'; txt = 'OK'; }
+    if(s === 'error'){ cls = 'badge err'; txt = 'Error'; }
+    return {cls, txt};
+  }
+
+  function esc(s){
+    return String(s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+  }
+
+  function fmtDate(s){
+    if(!s) return '';
+    // Odoo suele devolver "YYYY-MM-DD HH:MM:SS"
+    return s.replace('T',' ').slice(0,19);
+  }
+
+  function showToast(msg){
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(()=>toast.classList.remove('show'), 2500);
+  }
+
+  async function loadList(){
+    try{
+      const r = await fetch('/api/cfes', {cache:'no-store'});
+      const data = await r.json();
+      if(!data.ok) throw new Error(data.error || 'not ok');
+
+      const items = data.items || [];
+      if(items.length === 0){
+        tbody.innerHTML = '<tr><td colspan="8" class="muted">Sin CFEs para mostrar.</td></tr>';
+      }else{
+        tbody.innerHTML = items.map(it => {
+          const b = badge(it.status);
+          const openDisabled = !it.pdf_url;
+          const changeDisabled = !it.change_pdf_url;
+          const btnCambio = changeDisabled
+            ? '<button class="btn" disabled>Cambio</button>'
+            : `<a class="btn rowlink" href="${it.change_pdf_url}?t=${Date.now()}" target="_blank" rel="noopener">Cambio</a>`;
+          const btn = openDisabled
+            ? '<button class="btn" disabled>Abrir</button>'
+            : `<a class="btn rowlink" href="${it.pdf_url}?t=${Date.now()}" target="_blank" rel="noopener">Abrir</a>`;
+          const tipo = esc(it.tipo_texto || '');
+          const receptor = esc(it.receptor || '');
+          const serie = esc(it.serie || '');
+          const numero = esc(it.numero || '');
+          const fecha = esc(fmtDate(it.create_date || it.fecha_em || ''));
+          const err = it.error ? ` title="${esc(it.error)}"` : '';
+          return `<tr${err}>
+            <td>${fecha}</td>
+            <td>${tipo}</td>
+            <td>${serie}</td>
+            <td>${numero}</td>
+            <td>${receptor}</td>
+            <td style="text-align:center;">${btnCambio}</td>
+            <td><span class="${b.cls}">${b.txt}</span></td>
+            <td style="text-align:right;">${btn}</td>
+          </tr>`;
+        }).join('');
+      }
+
+      lastUpdate.textContent = 'Actualizado: ' + new Date().toLocaleTimeString();
+    }catch(ex){
+      tbody.innerHTML = '<tr><td colspan="8" class="muted">Error consultando /api/cfes.</td></tr>';
+    }
+  }
+
+  async function pollNow(){
+    btnPoll.disabled = true;
+    try{
+      const r = await fetch('/api/cfes/poll_now', {method:'POST'});
+      const data = await r.json();
+      if(!data.ok) throw new Error(data.error || 'poll error');
+      showToast('Listo.');
+      await loadList();
+    }catch(ex){
+      showToast('Error al actualizar.');
+    }finally{
+      btnPoll.disabled = false;
+    }
+  }
+
+  btnPoll.addEventListener('click', pollNow);
+
+  loadList();
+  setInterval(loadList, POLL_SECONDS * 1000);
+</script>
+</body>
+</html>

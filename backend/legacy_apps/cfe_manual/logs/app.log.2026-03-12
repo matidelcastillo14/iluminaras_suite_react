@@ -1,0 +1,23 @@
+2026-03-12 12:08:00,930 INFO access pid=8012 rid=787eca343566 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-12 12:08:00,941 INFO access pid=8012 rid=787eca343566 end status=200 ms=11 bytes=12920
+2026-03-12 12:08:00,993 INFO access pid=8012 rid=09d95b7f0389 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-12 12:08:00,995 INFO access pid=8012 rid=09d95b7f0389 end status=304 ms=1 bytes=-
+2026-03-12 12:08:34,778 INFO access pid=8012 rid=2274b97375a5 start GET /api/orders/search?q=DEL%20CASTILLO ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-12 12:08:37,122 INFO access pid=8012 rid=2274b97375a5 end status=200 ms=2343 bytes=12965
+2026-03-12 12:08:37,164 INFO access pid=8012 rid=868a65622505 start GET /api/orders/search?q=DEL%20CASTILLO ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-12 12:08:38,748 INFO access pid=8012 rid=868a65622505 end status=200 ms=1583 bytes=12965
+2026-03-12 13:30:16,260 INFO access pid=8012 rid=1cc54b518858 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-12 13:30:16,261 INFO access pid=8012 rid=1cc54b518858 end status=200 ms=1 bytes=12920
+2026-03-12 13:30:16,308 INFO access pid=8012 rid=fe83cc8834d1 start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-12 13:30:16,309 INFO access pid=8012 rid=fe83cc8834d1 end status=304 ms=1 bytes=-
+2026-03-12 13:30:23,252 INFO access pid=8012 rid=c9ba42f8bb00 start GET /api/orders/search?q=325215 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-12 13:30:25,609 INFO access pid=8012 rid=c9ba42f8bb00 end status=200 ms=2356 bytes=262
+2026-03-12 13:30:26,650 INFO access pid=8012 rid=8e93c0d0a86e start GET /api/orders/87596?type=move ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-12 13:30:27,486 INFO access pid=8012 rid=8e93c0d0a86e end status=200 ms=835 bytes=437
+2026-03-12 13:30:28,627 INFO access pid=8012 rid=9d4e2dacdb30 start POST /generate? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-12 13:30:28,628 INFO app pid=8012 generate_start doc_type=move doc_id=87596
+2026-03-12 13:30:29,065 INFO app pid=8012 pdf_start tipo=e-Ticket serie=A nro=325215 total=1296.99
+2026-03-12 13:30:29,132 INFO app pid=8012 generate_ok doc_type=move doc_id=87596 pdf=cfe_A325215_20260312_133029_eafe4174.pdf
+2026-03-12 13:30:29,134 INFO access pid=8012 rid=9d4e2dacdb30 end status=200 ms=507 bytes=89
+2026-03-12 13:30:29,212 INFO access pid=8012 rid=d1d77038f48b start GET /pdf/cfe_A325215_20260312_133029_eafe4174.pdf?t=1773333028689 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/146.0.0.0 Safari/537.36"
+2026-03-12 13:30:29,224 INFO access pid=8012 rid=d1d77038f48b end status=200 ms=12 bytes=-

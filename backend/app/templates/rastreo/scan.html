@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <h2 style="margin:0 0 10px 0;">{{ title }}</h2>
+
+  <div class="grid" style="grid-template-columns:1fr;gap:14px;">
+    <div class="card">
+      <h3 style="margin:0 0 10px 0;">Escanear etiqueta</h3>
+      <p id="scan_status" style="margin:0 0 10px 0;font-size:13px;color:#444;">
+        Presioná <strong>Escanear</strong> para abrir la cámara y leer el QR (Android e iOS).
+      </p>
+
+      <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+        <button class="btn primary" type="button" id="btn_start_cam">Escanear</button>
+        <label class="btn" for="qr_file" style="cursor:pointer;">Sacar foto</label>
+        <input id="qr_file" type="file" accept="image/*" capture="environment" style="display:none;" />
+      </div>
+
+      <div style="margin-top:12px;">
+        <video id="qr_video" playsinline muted style="width:100%;max-height:320px;border-radius:12px;border:1px solid #eee;background:#000;"></video>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3 style="margin:0 0 10px 0;">Ingreso manual</h3>
+      <form method="post">
+        <label>Código de rastreo</label>
+        <input name="code" placeholder="Ej: ABCD1234..." />
+        <button class="btn primary" type="submit" style="margin-top:10px;">Abrir</button>
+      </form>
+    </div>
+
+    {% if mode == 'deposito' %}
+      <div class="card">
+        <a class="btn" href="{{ url_for('rastreo.deposito_devoluciones') }}">Devoluciones pendientes</a>
+      </div>
+    {% endif %}
+
+    {% if mode == 'cadeteria' %}
+      <div class="card">
+        <a class="btn" href="{{ url_for('rastreo.my_scans') }}">Ver mis pedidos escaneados</a>
+      </div>
+    {% endif %}
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='rastreo_scanner.js') }}"></script>
+<script>
+  (function(){
+    const mode = {{ mode|tojson }};
+    const go = (raw) => {
+      let code = (raw || '').trim();
+      if (!code) return;
+      // si el QR contiene URL /rastreo/go/<code>, extraer último segmento
+      const idx = code.indexOf('/rastreo/go/');
+      if (idx >= 0){
+        code = code.substring(idx + '/rastreo/go/'.length).split('?')[0].replace(/\/+$/,'');
+      }
+      const base = (mode === 'deposito') ? '/rastreo/deposito/' : (mode === 'cadeteria') ? '/rastreo/cadeteria/' : '/rastreo/ventas/';
+      window.location.href = base + encodeURIComponent(code);
+    };
+
+    let stopFn = null;
+    document.getElementById('btn_start_cam').addEventListener('click', async () => {
+      if (stopFn) return;
+      stopFn = await window.RastreoScanner.startCameraScan({
+        videoId: 'qr_video',
+        statusId: 'scan_status',
+        onCode: go,
+      });
+    });
+
+    document.getElementById('qr_file').addEventListener('change', async () => {
+      await window.RastreoScanner.decodeByPhoto({
+        fileId: 'qr_file',
+        statusId: 'scan_status',
+        onCode: go,
+      });
+      // reset
+      document.getElementById('qr_file').value = '';
+    });
+  })();
+</script>
+{% endblock %}

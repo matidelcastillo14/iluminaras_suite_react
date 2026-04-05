@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card" style="max-width:820px;margin:0 auto;">
+  <h2 style="margin:0 0 12px 0;">Editar usuario</h2>
+  <form method="post" action="{{ url_for('admin.users_edit_post', user_id=u.id) }}">
+    <div class="grid">
+      <div>
+        <label>Usuario</label>
+        <input name="username" value="{{ u.username }}" />
+      </div>
+      <div>
+        <label>Email</label>
+        <input name="email" value="{{ u.email }}" />
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label>Nombre</label>
+        <input name="first_name" value="{{ u.first_name }}" />
+      </div>
+      <div>
+        <label>Apellido</label>
+        <input name="last_name" value="{{ u.last_name }}" />
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label>Celular</label>
+        <input name="phone" value="{{ u.phone or '' }}" />
+      </div>
+      <div>
+        <label>Cédula de identidad</label>
+        <input name="attendance_ref_code" value="{{ u.attendance_ref_code or '' }}" />
+      </div>
+    </div>
+    <div class="grid">
+      <div>
+        <label>Rol</label>
+        <select name="role">
+          {% for r in roles %}
+            <option value="{{ r }}" {% if r == u.role %}selected{% endif %}>{{ r }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:10px;">
+      <label style="display:flex;gap:8px;align-items:center;">
+        <input type="checkbox" name="is_active" value="1" {% if u.is_active %}checked{% endif %} />
+        Activo
+      </label>
+      <div style="font-size:12px;color:#666;margin-top:6px;">Si se desactiva, no podrá iniciar sesión.</div>
+      <label style="display:flex;gap:8px;align-items:center;margin-top:12px;">
+        <input type="checkbox" name="home_office_clock_enabled" value="1" {% if u.home_office_clock_enabled %}checked{% endif %} />
+        Habilitado para reloj Home Office
+      </label>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:10px;">
+      <button class="btn primary" type="submit">Guardar</button>
+      <a class="btn" href="{{ url_for('admin.users') }}">Volver</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

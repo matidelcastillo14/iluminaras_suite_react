@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="card">
+  <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;">
+    <h2 style="margin:0;">Usuarios</h2>
+    <a class="btn primary" href="{{ url_for('admin.users_new') }}">Nuevo</a>
+  </div>
+  <div style="margin-top:12px;">
+    <table>
+      <thead><tr><th>Usuario</th><th>Nombre</th><th>Email</th><th>Cédula de identidad</th><th>Reloj HO</th><th>Rol</th><th>Estado</th><th></th></tr></thead>
+      <tbody>
+        {% for u in users %}
+        <tr>
+          <td><code>{{ u.username }}</code></td>
+          <td>{{ u.full_name }}</td>
+          <td>{{ u.email }}</td>
+          <td><code>{{ u.attendance_ref_code or '' }}</code></td>
+          <td>{{ 'Sí' if u.home_office_clock_enabled else 'No' }}</td>
+          <td>{{ u.role }}</td>
+          <td>{{ "Activo" if u.is_active else "Inactivo" }}{% if u.must_change_password %} (debe cambiar){% endif %}</td>
+          <td style="white-space:nowrap;">
+            <a class="btn" href="{{ url_for('admin.users_edit', user_id=u.id) }}">Editar</a>
+            <form method="post" action="{{ url_for('admin.users_toggle', user_id=u.id) }}" style="display:inline;">
+              <button class="btn" type="submit">{{ "Deshabilitar" if u.is_active else "Habilitar" }}</button>
+            </form>
+            <form method="post" action="{{ url_for('admin.users_reset_temp', user_id=u.id) }}" style="display:inline;margin-left:6px;">
+              <button class="btn" type="submit">Reset temp</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

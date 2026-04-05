@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Postulación enviada - Iluminarás</title>
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='postulaciones.css') }}{% if static_v %}?v={{ static_v }}{% endif %}" />
+  </head>
+  <body>
+    <header class="po-header">
+      <div class="po-header-inner">
+        <img class="po-brand" src="{{ url_for('static', filename='logo_public_tracking_web.png') }}" alt="ILUMINARÁS" />
+      </div>
+    </header>
+
+    <main class="po-main">
+      <section class="po-card po-card-success">
+        <div class="po-card-right">
+          <h1 class="po-title">¡Listo!</h1>
+          <p class="po-subtitle">Recibimos tu postulación. Nos pondremos en contacto si avanzamos con el proceso.</p>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>

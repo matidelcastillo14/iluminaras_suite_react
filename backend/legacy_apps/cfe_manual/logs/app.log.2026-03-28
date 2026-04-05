@@ -1,0 +1,23 @@
+2026-03-28 09:37:59,590 INFO app pid=15556 home_office_mark_queued user_id=36 username=CoutoV ref=47556406 event_key=366fadeb91223293db3d5b14b929a7ee4381ed664c3c9bf527f074d797b0e916
+2026-03-28 11:02:53,749 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-28 11:02:57,390 WARNING waitress.queue pid=15556 Task queue depth is 2
+2026-03-28 11:02:58,738 WARNING waitress.queue pid=15556 Task queue depth is 3
+2026-03-28 11:02:59,750 WARNING waitress.queue pid=15556 Task queue depth is 4
+2026-03-28 11:03:03,745 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-28 11:03:07,397 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-28 11:03:12,644 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-28 11:03:14,629 WARNING waitress.queue pid=15556 Task queue depth is 2
+2026-03-28 11:03:17,389 WARNING waitress.queue pid=15556 Task queue depth is 3
+2026-03-28 11:03:18,746 WARNING waitress.queue pid=15556 Task queue depth is 4
+2026-03-28 11:03:23,745 WARNING waitress.queue pid=15556 Task queue depth is 5
+2026-03-28 11:28:11,776 INFO app pid=15556 home_office_mark_queued user_id=1 username=Admin ref=51647752 event_key=9d92d15dbfdfe29326451b55c0d076b166d58a2ffca25b117461fcac76b90349
+2026-03-28 11:28:28,520 INFO app pid=15556 home_office_mark_queued user_id=1 username=Admin ref=51647752 event_key=282acbf8156507ca6301518fc2a9225428727c668d89e76c8b1baa219fa52b7a
+2026-03-28 13:29:38,093 INFO app pid=15556 home_office_mark_queued user_id=36 username=CoutoV ref=47556406 event_key=c63dd6de8688ffea29c3f3774f96dbd669ced747ad13cd6621cc192e91eb2b39
+2026-03-28 14:11:52,004 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-28 14:11:57,008 WARNING waitress.queue pid=15556 Task queue depth is 1
+2026-03-28 14:12:02,012 WARNING waitress.queue pid=15556 Task queue depth is 2
+2026-03-28 14:12:07,003 WARNING waitress.queue pid=15556 Task queue depth is 3
+2026-03-28 14:12:12,012 WARNING waitress.queue pid=15556 Task queue depth is 4
+2026-03-28 15:17:45,535 WARNING legacy_apps.cfe_auto.app pid=10080 LOG_TEST: app.logger is working (startup)
+2026-03-28 15:17:45,634 WARNING legacy_apps.cfe_auto.app pid=10080 LOG_TEST: app.logger is working (startup)
+2026-03-28 15:17:45,740 INFO waitress pid=10080 Serving on http://0.0.0.0:5800

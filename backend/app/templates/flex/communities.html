@@ -1,0 +1,19 @@
+{% extends "flex/base.html" %}
+
+{% block content %}
+  <div class="fx-card">
+    <div class="fx-muted">Seleccioná una comunidad para empezar.</div>
+  </div>
+
+  <div class="fx-list">
+    {% for c in communities %}
+      <a class="fx-community" href="{{ url_for('cadete_flex.scan', community_id=c.id) }}">
+        <div class="fx-community-bullet" style="background:{{ c.color_hex or '#49C8C4' }}"></div>
+        <div>
+          <div class="fx-community-name">{{ c.name }}</div>
+          <div class="fx-muted">Código: {{ c.code }}</div>
+        </div>
+      </a>
+    {% endfor %}
+  </div>
+{% endblock %}

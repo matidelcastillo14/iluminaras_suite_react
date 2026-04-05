@@ -1,0 +1,10 @@
+2026-03-11 11:15:34,491 INFO access pid=8012 rid=665e10360f73 start GET /? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-11 11:15:34,503 INFO access pid=8012 rid=665e10360f73 end status=200 ms=12 bytes=12920
+2026-03-11 11:15:34,568 INFO access pid=8012 rid=c60dcefcbe2a start GET /static/logo.png? ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-11 11:15:34,570 INFO access pid=8012 rid=c60dcefcbe2a end status=304 ms=2 bytes=-
+2026-03-11 11:16:08,592 INFO access pid=8012 rid=444a87f957ac start GET /api/orders/search?q=655486 ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-11 11:16:10,905 INFO access pid=8012 rid=444a87f957ac end status=200 ms=2313 bytes=481
+2026-03-11 11:16:37,023 INFO access pid=8012 rid=dd452f05d9b4 start GET /api/orders/89526?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-11 11:16:38,093 INFO access pid=8012 rid=dd452f05d9b4 end status=200 ms=1070 bytes=543
+2026-03-11 11:16:38,150 INFO access pid=8012 rid=b9c46a24eb9b start GET /api/orders/89526?type=sale ip=127.0.0.1 ua="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36"
+2026-03-11 11:16:39,204 INFO access pid=8012 rid=b9c46a24eb9b end status=200 ms=1054 bytes=543
