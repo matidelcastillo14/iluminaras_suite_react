@@ -4,5 +4,4 @@ frontend/node_modules/
 .env
 dist/
 build/
-backend/.venv/
 backend/legacy_apps/cfe_auto/generated
