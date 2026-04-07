@@ -7,6 +7,11 @@ def _bool(name: str, default: str = "0") -> bool:
     return os.getenv(name, default).strip() in ("1", "true", "True", "yes", "on", "ON", "YES")
 
 
+def _csv(name: str, default: str = "") -> list[str]:
+    raw = os.getenv(name, default)
+    return [item.strip() for item in raw.split(",") if item.strip()]
+
+
 class Config:
     # Core
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-change-me")
@@ -23,6 +28,12 @@ class Config:
     AUTO_CREATE_SCHEMA = _bool("AUTO_CREATE_SCHEMA", "1")
 
     PORT = int(os.getenv("PORT", "5500"))
+
+    # Frontend React permitido para sesión por cookie / CORS.
+    FRONTEND_ORIGINS = _csv(
+        "FRONTEND_ORIGINS",
+        "http://localhost:3000,http://127.0.0.1:3000",
+    )
 
     # Timezone (IANA). Se usa para mostrar fechas/horas en la UI.
     APP_TIMEZONE = os.getenv("APP_TIMEZONE", "America/Montevideo")

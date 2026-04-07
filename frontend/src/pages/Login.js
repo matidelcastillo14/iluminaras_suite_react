@@ -2,11 +2,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-/**
- * Login form component.
- * Collects username/email and password, calls the login function from AuthContext
- * and redirects to the home page on success. Displays any error returned by the API.
- */
 const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -14,18 +9,32 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
+  const translateError = (message) => {
+    switch (message) {
+      case 'invalid_credentials':
+        return 'Credenciales inválidas';
+      case 'must_change_password':
+        return 'Debes cambiar la contraseña antes de continuar';
+      case 'username_and_password_required':
+        return 'Usuario y contraseña son obligatorios';
+      default:
+        return message || 'No se pudo iniciar sesión';
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+
     try {
       const res = await login(username, password);
-      if (res.ok) {
+      if (res?.ok) {
         navigate('/');
-      } else {
-        setError(res.error || 'Credenciales inválidas');
+        return;
       }
+      setError(translateError(res?.error));
     } catch (err) {
-      setError(err.message);
+      setError(translateError(err?.message));
     }
   };
 
