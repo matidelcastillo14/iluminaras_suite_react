@@ -5,3 +5,4 @@ frontend/node_modules/
 dist/
 build/
 backend/legacy_apps/cfe_auto/generated
+backend/generated

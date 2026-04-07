@@ -122,3 +122,89 @@ jinja2.exceptions.TemplateNotFound: auth/login.html
 2026-04-07 01:15:27,782 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
 2026-04-07 01:15:27,810 WARNING werkzeug:  * Debugger is active!
 2026-04-07 01:15:27,810 WARNING werkzeug:  * Debugger is active!
+2026-04-07 02:13:21,951 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:13:22,019 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:13:24,499 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:13:24,589 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:13:24,611 WARNING werkzeug:  * Debugger is active!
+2026-04-07 02:13:24,611 WARNING werkzeug:  * Debugger is active!
+2026-04-07 02:13:56,612 ERROR app: poll error attachment/257524: name 'wrap_text' is not defined
+2026-04-07 02:13:56,612 ERROR app: poll error attachment/257524: name 'wrap_text' is not defined
+2026-04-07 02:13:56,824 ERROR app: poll error attachment/257522: name 'wrap_text' is not defined
+2026-04-07 02:13:56,824 ERROR app: poll error attachment/257522: name 'wrap_text' is not defined
+2026-04-07 02:13:57,049 ERROR app: poll error attachment/257520: name 'wrap_text' is not defined
+2026-04-07 02:13:57,049 ERROR app: poll error attachment/257520: name 'wrap_text' is not defined
+2026-04-07 02:13:57,271 ERROR app: poll error attachment/257518: name 'wrap_text' is not defined
+2026-04-07 02:13:57,271 ERROR app: poll error attachment/257518: name 'wrap_text' is not defined
+2026-04-07 02:13:57,496 ERROR app: poll error attachment/257514: name 'wrap_text' is not defined
+2026-04-07 02:13:57,496 ERROR app: poll error attachment/257514: name 'wrap_text' is not defined
+2026-04-07 02:13:57,725 ERROR app: poll error attachment/257512: name 'wrap_text' is not defined
+2026-04-07 02:13:57,725 ERROR app: poll error attachment/257512: name 'wrap_text' is not defined
+2026-04-07 02:13:57,949 ERROR app: poll error attachment/257508: name 'wrap_text' is not defined
+2026-04-07 02:13:57,949 ERROR app: poll error attachment/257508: name 'wrap_text' is not defined
+2026-04-07 02:13:58,171 ERROR app: poll error attachment/257506: name 'wrap_text' is not defined
+2026-04-07 02:13:58,171 ERROR app: poll error attachment/257506: name 'wrap_text' is not defined
+2026-04-07 02:13:58,409 ERROR app: poll error attachment/257504: name 'wrap_text' is not defined
+2026-04-07 02:13:58,409 ERROR app: poll error attachment/257504: name 'wrap_text' is not defined
+2026-04-07 02:13:58,626 ERROR app: poll error attachment/257502: name 'wrap_text' is not defined
+2026-04-07 02:13:58,626 ERROR app: poll error attachment/257502: name 'wrap_text' is not defined
+2026-04-07 02:15:17,418 ERROR app: poll error attachment/257524: name 'wrap_text' is not defined
+2026-04-07 02:15:17,418 ERROR app: poll error attachment/257524: name 'wrap_text' is not defined
+2026-04-07 02:15:17,641 ERROR app: poll error attachment/257522: name 'wrap_text' is not defined
+2026-04-07 02:15:17,641 ERROR app: poll error attachment/257522: name 'wrap_text' is not defined
+2026-04-07 02:15:19,224 ERROR app: poll error attachment/257520: name 'wrap_text' is not defined
+2026-04-07 02:15:19,224 ERROR app: poll error attachment/257520: name 'wrap_text' is not defined
+2026-04-07 02:15:20,803 ERROR app: poll error attachment/257518: name 'wrap_text' is not defined
+2026-04-07 02:15:20,803 ERROR app: poll error attachment/257518: name 'wrap_text' is not defined
+2026-04-07 02:15:24,118 ERROR app: poll error attachment/257514: name 'wrap_text' is not defined
+2026-04-07 02:15:24,118 ERROR app: poll error attachment/257514: name 'wrap_text' is not defined
+2026-04-07 02:15:25,979 ERROR app: poll error attachment/257512: name 'wrap_text' is not defined
+2026-04-07 02:15:25,979 ERROR app: poll error attachment/257512: name 'wrap_text' is not defined
+2026-04-07 02:15:27,608 ERROR app: poll error attachment/257508: name 'wrap_text' is not defined
+2026-04-07 02:15:27,608 ERROR app: poll error attachment/257508: name 'wrap_text' is not defined
+2026-04-07 02:15:29,240 ERROR app: poll error attachment/257506: name 'wrap_text' is not defined
+2026-04-07 02:15:29,240 ERROR app: poll error attachment/257506: name 'wrap_text' is not defined
+2026-04-07 02:15:30,877 ERROR app: poll error attachment/257504: name 'wrap_text' is not defined
+2026-04-07 02:15:30,877 ERROR app: poll error attachment/257504: name 'wrap_text' is not defined
+2026-04-07 02:15:32,764 ERROR app: poll error attachment/257502: name 'wrap_text' is not defined
+2026-04-07 02:15:32,764 ERROR app: poll error attachment/257502: name 'wrap_text' is not defined
+2026-04-07 02:45:06,085 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:45:06,175 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:45:06,203 WARNING werkzeug:  * Debugger is active!
+2026-04-07 02:45:06,203 WARNING werkzeug:  * Debugger is active!
+2026-04-07 02:45:22,985 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:45:23,066 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:45:25,573 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:45:25,649 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:45:25,667 WARNING werkzeug:  * Debugger is active!
+2026-04-07 02:45:25,667 WARNING werkzeug:  * Debugger is active!
+2026-04-07 02:47:23,305 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:47:23,460 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:47:26,401 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:47:26,520 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:47:26,541 WARNING werkzeug:  * Debugger is active!
+2026-04-07 02:47:26,541 WARNING werkzeug:  * Debugger is active!
+2026-04-07 02:48:06,515 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:48:06,628 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:48:09,413 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:48:09,532 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 02:48:09,550 WARNING werkzeug:  * Debugger is active!
+2026-04-07 02:48:09,550 WARNING werkzeug:  * Debugger is active!
+2026-04-07 03:00:51,919 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 03:00:51,998 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 03:00:52,019 WARNING werkzeug:  * Debugger is active!
+2026-04-07 03:00:52,019 WARNING werkzeug:  * Debugger is active!
+2026-04-07 03:02:42,236 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 03:02:42,354 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 03:02:45,285 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 03:02:45,401 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 03:02:45,423 WARNING werkzeug:  * Debugger is active!
+2026-04-07 03:02:45,423 WARNING werkzeug:  * Debugger is active!
+2026-04-07 03:03:24,396 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 03:03:24,514 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 03:03:24,537 WARNING werkzeug:  * Debugger is active!
+2026-04-07 03:03:24,537 WARNING werkzeug:  * Debugger is active!
+2026-04-07 03:04:01,985 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 03:04:02,059 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 03:04:27,031 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)
+2026-04-07 03:04:27,120 WARNING legacy_apps.cfe_auto.app: LOG_TEST: app.logger is working (startup)

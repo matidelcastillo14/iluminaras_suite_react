@@ -31,6 +31,35 @@ def mm(x: float) -> float:
     # millimeters -> points
     return x * 72.0 / 25.4
 
+def wrap_text(c: canvas.Canvas, text: str, max_width_pt: float, font_name: str, font_size: float) -> list[str]:
+    """Wrap text to max width while preserving explicit line breaks."""
+    c.setFont(font_name, font_size)
+
+    raw = (text or "").replace("\r", "").replace("\\n", "\n")
+    lines_out: list[str] = []
+
+    for para in raw.split("\n"):
+        para = para.strip()
+        if para == "":
+            lines_out.append("")
+            continue
+
+        words = para.split()
+        if not words:
+            lines_out.append("")
+            continue
+
+        cur = words[0]
+        for w in words[1:]:
+            trial = cur + " " + w
+            if c.stringWidth(trial, font_name, font_size) <= max_width_pt:
+                cur = trial
+            else:
+                lines_out.append(cur)
+                cur = w
+        lines_out.append(cur)
+
+    return lines_out
 
 @dataclass
 class LabelData:

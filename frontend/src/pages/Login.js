@@ -6,40 +6,31 @@ const Login = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [submitting, setSubmitting] = useState(false);
   const { login } = useAuth();
   const navigate = useNavigate();
-
-  const translateError = (message) => {
-    switch (message) {
-      case 'invalid_credentials':
-        return 'Credenciales inválidas';
-      case 'must_change_password':
-        return 'Debes cambiar la contraseña antes de continuar';
-      case 'username_and_password_required':
-        return 'Usuario y contraseña son obligatorios';
-      default:
-        return message || 'No se pudo iniciar sesión';
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-
+    setSubmitting(true);
     try {
       const res = await login(username, password);
-      if (res?.ok) {
-        navigate('/');
+      if (res?.ok && res?.authenticated) {
+        navigate('/', { replace: true });
         return;
       }
-      setError(translateError(res?.error));
+      setError(res?.error || 'No se pudo iniciar sesión');
     } catch (err) {
-      setError(translateError(err?.message));
+      const msg = err?.data?.error || err?.message || 'No se pudo iniciar sesión';
+      setError(msg === 'invalid_credentials' ? 'Credenciales inválidas' : msg);
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div style={{ maxWidth: '400px', margin: '60px auto' }}>
+    <div style={{ maxWidth: '420px', margin: '60px auto' }}>
       <h2>Iniciar sesión</h2>
       <form onSubmit={handleSubmit}>
         <div style={{ marginBottom: '10px' }}>
@@ -50,6 +41,7 @@ const Login = () => {
             onChange={(e) => setUsername(e.target.value)}
             required
             style={{ width: '100%' }}
+            autoComplete="username"
           />
         </div>
         <div style={{ marginBottom: '10px' }}>
@@ -60,10 +52,13 @@ const Login = () => {
             onChange={(e) => setPassword(e.target.value)}
             required
             style={{ width: '100%' }}
+            autoComplete="current-password"
           />
         </div>
-        {error && <p style={{ color: 'red' }}>{error}</p>}
-        <button type="submit">Entrar</button>
+        {error ? <p style={{ color: 'red' }}>{error}</p> : null}
+        <button type="submit" disabled={submitting}>
+          {submitting ? 'Entrando...' : 'Entrar'}
+        </button>
       </form>
     </div>
   );

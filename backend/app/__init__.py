@@ -452,23 +452,16 @@ def create_app() -> Flask:
     app = Flask(__name__, template_folder="templates", static_folder="static")
     app.config.from_object(Config)
 
-    frontend_origins = app.config.get("FRONTEND_ORIGINS") or ["http://localhost:3000"]
+    origins = app.config.get("FRONTEND_ORIGINS") or ["http://localhost:3000", "http://127.0.0.1:3000"]
 
     CORS(
         app,
         supports_credentials=True,
         resources={
-            r"/auth/api/*": {"origins": frontend_origins},
-            r"/cfe/auto/*": {"origins": frontend_origins},
-            r"/cfe/manual/*": {"origins": frontend_origins},
-            r"/etiquetas/*": {"origins": frontend_origins},
-            r"/rastreo/*": {"origins": frontend_origins},
-            r"/cadete_flex/*": {"origins": frontend_origins},
-            r"/puerta/*": {"origins": frontend_origins},
-            r"/inventario/batch-pedidos/*": {"origins": frontend_origins},
-            r"/reloj_home_office/*": {"origins": frontend_origins},
-            r"/admin/api/*": {"origins": frontend_origins},
-            r"/postulaciones_admin/*": {"origins": frontend_origins},
+            r"/auth/api/*": {"origins": origins},
+            r"/etiquetas/*": {"origins": origins},
+            r"/rastreo/*": {"origins": origins},
+            r"/cfe/auto/*": {"origins": origins},
         },
     )
 
@@ -565,23 +558,16 @@ def _create_core_app() -> Flask:
     app = Flask(__name__, template_folder="templates", static_folder="static")
     app.config.from_object(Config)
 
-    frontend_origins = app.config.get("FRONTEND_ORIGINS") or ["http://localhost:3000"]
+    origins = app.config.get("FRONTEND_ORIGINS") or ["http://localhost:3000", "http://127.0.0.1:3000"]
 
     CORS(
         app,
         supports_credentials=True,
         resources={
-            r"/auth/api/*": {"origins": frontend_origins},
-            r"/cfe/auto/*": {"origins": frontend_origins},
-            r"/cfe/manual/*": {"origins": frontend_origins},
-            r"/etiquetas/*": {"origins": frontend_origins},
-            r"/rastreo/*": {"origins": frontend_origins},
-            r"/cadete_flex/*": {"origins": frontend_origins},
-            r"/puerta/*": {"origins": frontend_origins},
-            r"/inventario/batch-pedidos/*": {"origins": frontend_origins},
-            r"/reloj_home_office/*": {"origins": frontend_origins},
-            r"/admin/api/*": {"origins": frontend_origins},
-            r"/postulaciones_admin/*": {"origins": frontend_origins},
+            r"/auth/api/*": {"origins": origins},
+            r"/etiquetas/*": {"origins": origins},
+            r"/rastreo/*": {"origins": origins},
+            r"/cfe/auto/*": {"origins": origins},
         },
     )
 
