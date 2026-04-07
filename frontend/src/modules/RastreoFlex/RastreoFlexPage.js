@@ -29,14 +29,14 @@ const RastreoFlexPage = () => {
       setLoading(true);
       setError('');
       try {
-        // Endpoint esperado: GET /flex/api/routes/current
-        const res = await api.get('/flex/api/routes/current');
+        // Endpoint esperado: GET /cadete_flex/api/routes/current
+        const res = await api.get('/cadete_flex/api/routes/current');
         if (res && res.route) {
           setCurrentRoute(res.route);
           setStops(res.stops || []);
         } else {
           // No hay ruta activa: listar comunidades
-          const commRes = await api.get('/flex/api/communities');
+          const commRes = await api.get('/cadete_flex/api/communities');
           setCommunities(commRes.items || []);
         }
       } catch (err) {
@@ -54,8 +54,8 @@ const RastreoFlexPage = () => {
     setLoading(true);
     setError('');
     try {
-      // Endpoint esperado: POST /flex/api/routes/start
-      const res = await api.post('/flex/api/routes/start', { community_id: commId });
+      // Endpoint esperado: POST /cadete_flex/api/routes/start
+      const res = await api.post('/cadete_flex/api/routes/start', { community_id: commId });
       if (res && res.route) {
         setCurrentRoute(res.route);
         setStops(res.stops || []);
@@ -78,8 +78,8 @@ const RastreoFlexPage = () => {
     setLoading(true);
     setError('');
     try {
-      // Endpoint esperado: GET /flex/api/stops/<stop_id>
-      const res = await api.get(`/flex/api/stops/${stopId}`);
+      // Endpoint esperado: GET /cadete_flex/api/stops/<stop_id>
+      const res = await api.get(`/cadete_flex/api/stops/${stopId}`);
       if (res && !res.error) {
         setSelectedStop(res.stop || {});
         setShipments(res.shipments || []);
@@ -99,8 +99,8 @@ const RastreoFlexPage = () => {
     setLoading(true);
     setError('');
     try {
-      // Endpoint esperado: POST /flex/api/shipments/<shipment_id>/event
-      await api.post(`/flex/api/shipments/${shipmentId}/event`, {
+      // Endpoint esperado: POST /cadete_flex/api/shipments/<shipment_id>/event
+      await api.post(`/cadete_flex/api/shipments/${shipmentId}/event`, {
         action,
         stop_id: selectedStop.id,
       });

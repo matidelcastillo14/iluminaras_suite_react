@@ -1,14 +1,18 @@
 import React from 'react';
 
 /**
- * Generic error message component.
- * Accepts either `error` or `message` to remain compatible with pages
- * created during the migration.
+ * Generic error message component.  It renders nothing when no error is
+ * provided.  When an error string is passed it displays it in red.  Use
+ * this component to surface API errors to the user without duplicating
+ * markup across pages.
  */
-const ErrorMessage = ({ error, message }) => {
-  const text = error || message;
-  if (!text) return null;
-  return <div style={{ color: 'red', margin: '10px 0' }}>{text}</div>;
+const ErrorMessage = ({ error }) => {
+  if (!error) return null;
+  return (
+    <div style={{ color: 'red', margin: '10px 0' }}>
+      {error}
+    </div>
+  );
 };
 
 export default ErrorMessage;

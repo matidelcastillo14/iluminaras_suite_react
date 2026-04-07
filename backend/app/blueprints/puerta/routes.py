@@ -56,26 +56,6 @@ def index():
     return render_template("puerta/index.html", health_code=code, health=health)
 
 
-@bp.get("/api/health")
-@view_required("puerta")
-def api_health():
-    """Return health diagnostics for the door controller in JSON form.
-
-    The legacy blueprint only exposed the door controller status via the
-    HTML view.  The React frontend requires a JSON endpoint for polling
-    health.  This route proxies the request to the controller and
-    returns the JSON payload with the appropriate HTTP status code.  If
-    the payload is not a dictionary it will be wrapped in an object
-    under the ``raw`` key.  Access is guarded by the same view
-    permission as the rest of the module.
-    """
-    code, payload = _request_json("/api/health", "GET")
-    from flask import jsonify
-    if not isinstance(payload, dict):
-        payload = {"raw": payload}
-    return jsonify(payload), code
-
-
 @bp.post("/open")
 @view_required("puerta")
 def open_door():

@@ -14,9 +14,7 @@ import api from './api';
  * last_event_source (string). See app/services/home_office_clock.py.
  */
 export async function getSnapshot() {
-  // The backend blueprint uses a hyphen in the URL prefix ("/reloj-home-office").
-  // Adjust the path accordingly so the request reaches the correct endpoint.
-  return await api.get('/reloj-home-office/api/snapshot');
+  return await api.get('/reloj_home_office/api/snapshot');
 }
 
 /**
@@ -26,7 +24,5 @@ export async function getSnapshot() {
  * enabled or there was an error.
  */
 export async function mark() {
-  // The backend blueprint uses a hyphen in the URL prefix ("/reloj-home-office").
-  // Adjust the path accordingly so the request reaches the correct endpoint.
-  return await api.post('/reloj-home-office/api/marcar');
+  return await api.post('/reloj_home_office/api/marcar');
 }

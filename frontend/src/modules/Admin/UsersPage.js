@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import Loader from '../../components/Loader';
 import ErrorMessage from '../../components/ErrorMessage';
 import Table from '../../components/Table';
-import { listUsers, toggleUser, resetUserPassword } from '../../services/admin';
+import {
+  listUsers,
+  toggleUser,
+  resetUserPassword,
+} from '../../services/admin';
 
+/**
+ * List of users for the admin panel. Allows toggling active state
+ * and resetting temporary password. To edit a user click on their
+ * row which links to the edit form. New users can be created via
+ * the "Nuevo usuario" button on the edit page (id=new).
+ */
 export default function UsersPage() {
-  const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -55,7 +64,7 @@ export default function UsersPage() {
     <div>
       <h3>Usuarios</h3>
       {loading && <Loader />}
-      {error && <ErrorMessage error={error} />}
+      {error && <ErrorMessage message={error} />}
       {msg && <p>{msg}</p>}
       {!loading && !error && (
         <div>
@@ -73,7 +82,11 @@ export default function UsersPage() {
                 u.is_active ? 'Sí' : 'No',
                 '',
               ])}
-              onRowClick={(idx) => navigate(`/admin/users/${users[idx].id}`)}
+              onRowClick={(idx) => {
+                const user = users[idx];
+                window.location.href = `/admin/users/${user.id}`;
+              }}
+              // Custom renderers for actions column
               renderCell={(rowIdx, colIdx, value) => {
                 const user = users[rowIdx];
                 if (colIdx !== 5) return value;
